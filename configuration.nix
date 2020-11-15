@@ -88,11 +88,11 @@ in
     libnotify
     lxqt.lxqt-notificationd
     scrot
-    tryer
+    trayer
     xbrightness
     xcompmgr
     xorg.xrandr
-    xorg.backlight
+    xorg.xbacklight
     xscreensaver
     xsettingsd
   ];
@@ -123,7 +123,7 @@ in
   };
 
   # services
-  services.openssh.enable = true
+  services.openssh.enable = true;
 
   # firewall
   # networking.firewall.allowedTCPPorts = [
