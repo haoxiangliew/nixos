@@ -3,6 +3,8 @@ Welcome to my NixOS configuration!
 
 ![alt text](https://github.com/haoxiangliew/nixos/blob/main/nixos.jpg?raw=true)
 
+|           |                  |
+|-----------|------------------|
 | Shell:    | fish             |
 |-----------|                  |
 | DM:       | lightdm          |
@@ -19,6 +21,7 @@ Welcome to my NixOS configuration!
 |-----------|                  |
 | GTK:      | one dark         |
 |-----------|                  |
+
 
 ## Installation
 1. Boot into `nixos-minimal`
