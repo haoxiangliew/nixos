@@ -21,12 +21,6 @@ in
   # nixpkgs
   nixpkgs.config = {
     allowUnfree = true;
-
-    packageOverrides = pkgs: {
-      unstable = import unstableTarball {
-        config = config.nixpkgs.config;
-      };
-    };
   };
 
   # bootloader
@@ -182,6 +176,4 @@ in
     shell = pkgs.fish;
     extraGroups = [ "wheel" "video" "audio" "disk" "networkmanager" ];
   };
-
-
 }
