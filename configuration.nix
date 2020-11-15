@@ -110,11 +110,6 @@ in
   programs.dconf.enable = true;
   programs.light.enable = true;
   programs.vim.defaultEditor = true;
-  programs.git = {
-    enable = true;
-    userName = "haoxiangliew";
-    userEmail = "haoxiangliew@gmail.com";
-  };
 
   programs.mtr.enable = true;
   programs.gnupg.agent = {
