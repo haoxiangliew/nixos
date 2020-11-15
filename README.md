@@ -14,6 +14,8 @@ Welcome to my NixOS configuration!
 | Browser:  | firefox          |
 | GTK:      | one dark         |
 
+Configuration is rolling release and uses systemd by default
+
 
 ## Installation
 1. Boot into `nixos-minimal`
