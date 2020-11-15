@@ -37,7 +37,6 @@ in
   networking.hostName = "nixos";
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking.networkmanager.enable = true;
-  networking.dnsExtensionMechanism = false;
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -45,9 +44,12 @@ in
 
   # internationalisation properties.
   i18n = {
-    consoleFont = "Lat2-Terminus16";
-    consoleKeyMap = "us";
     defaultLocale = "en_US.UTF-8";
+  };
+
+  console = {
+    font = "Lat2-Terminus16";
+    keyMap = "us";
   };
 
   time.timeZone = "America/New_York";
