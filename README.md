@@ -4,19 +4,12 @@ Welcome to my NixOS configuration!
 ![alt text](https://github.com/haoxiangliew/nixos/blob/main/nixos.jpg?raw=true)
 
 | Shell:    | fish             |
-|-----------|------------------|
 | DM:       | lightdm          |
-|-----------|------------------|
 | WM:       | xmonad + xmobar  |
-|-----------|------------------|
 | Editor:   | doom emacs / vim |
-|-----------|------------------|
 | Term:     | alacritty        |
-|-----------|------------------|
 | Launcher: | dmenu            |
-|-----------|------------------|
 | Browser:  | firefox          |
-|-----------|------------------|
 | GTK:      | one dark         |
 
 ## Installation
