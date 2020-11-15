@@ -62,6 +62,7 @@ in
     wget
     fish
     fzf
+    ranger
     ripgrep
     tmux
     tree
@@ -72,6 +73,8 @@ in
     vim
 
     # languages
+    gcc
+    cmake
     python-with-my-packages
     ghc
     nodejs
