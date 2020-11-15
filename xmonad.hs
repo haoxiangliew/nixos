@@ -16,7 +16,7 @@ main = do
     xmonad $ docks defaultConfig
         { manageHook = manageDocks <+> manageHook defaultConfig
         , startupHook = do
-                spawnHere "xloadimage -onroot -fullscreen ~/Pictures/nixos-onedark-wallpaper.png"
+                spawnHere "xloadimage -onroot -fullscreen ~/Pictures/nixos.png"
                 spawnOn "workspace2" "pulseeffects"
         , layoutHook = avoidStruts  $  layoutHook defaultConfig
         , logHook = dynamicLogWithPP xmobarPP
