@@ -123,7 +123,6 @@ in
   };
 
   # services
-  services.openssh.enable = true;
 
   # firewall
   # networking.firewall.allowedTCPPorts = [
