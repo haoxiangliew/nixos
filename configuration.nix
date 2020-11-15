@@ -49,7 +49,6 @@ in
   time.timeZone = "America/New_York";
 
   # system packages
-  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-unstable"; # rolling release
   environment.systemPackages = with pkgs; [
     firefox-bin
     git
