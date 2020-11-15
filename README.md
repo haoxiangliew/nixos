@@ -6,21 +6,13 @@ Welcome to my NixOS configuration!
 |           |                  |
 |-----------|------------------|
 | Shell:    | fish             |
-|-----------|                  |
 | DM:       | lightdm          |
-|-----------|                  |
 | WM:       | xmonad + xmobar  |
-|-----------|                  |
 | Editor:   | doom emacs / vim |
-|-----------|                  |
 | Term:     | alacritty        |
-|-----------|                  |
 | Launcher: | dmenu            |
-|-----------|                  |
 | Browser:  | firefox          |
-|-----------|                  |
 | GTK:      | one dark         |
-|-----------|                  |
 
 
 ## Installation
