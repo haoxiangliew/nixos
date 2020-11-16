@@ -50,20 +50,29 @@ in
 
   # system packages
   environment.systemPackages = with pkgs; [
+    arc-theme
+    acpilight
+    curl
+    ffmpeg
     firefox-bin
     git
     htop
     gimp
+    gnupg
     neofetch
     alacritty
     vim
+    mpv
     pulseeffects
     pavucontrol
+    parted
     wget
+    fd
     fish
     fzf
     ranger
     ripgrep
+    tlp
     tmux
     tree
     unrar
@@ -74,25 +83,24 @@ in
 
     # languages
     gcc
+    gnumake
     cmake
     python-with-my-packages
     ghc
     nodejs
 
     # desktop
-    xmobar
-    dmenu
-    feh
-    libnotify
-    lxqt.lxqt-notificationd
-    scrot
-    trayer
-    xbrightness
-    xcompmgr
-    xorg.xrandr
-    xorg.xbacklight
-    xscreensaver
-    xsettingsd
+    xmobar                    # bar for xmonad
+    dmenu                     # menu for xmonad
+    lxappearance              # gtk theme settings
+    scrot                     # screenshots
+    xbrightness               # brightness control
+    xcompmgr                  # compositor
+    xorg.xrandr               # cli xrandr extension
+    xorg.xbacklight           # backlight
+    xscreensaver              # screensaver
+    xsettingsd                # desktop settings server
+
   ];
 
   fonts = {
@@ -165,7 +173,7 @@ in
       libinput.enable = true;
       layout = "us";
     };
-
+    tlp.enable = true;
     openssh.enable = true;
   };
 
