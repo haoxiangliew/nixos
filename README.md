@@ -1,5 +1,6 @@
 # nixos
 Welcome to my NixOS configuration!
+Everybody loves reproducible and reliable rolling release!
 
 ![alt text](https://github.com/haoxiangliew/nixos/blob/main/nixos.jpg?raw=true)
 
@@ -14,7 +15,7 @@ Welcome to my NixOS configuration!
 | Browser:  | firefox          |
 | GTK:      | one dark         |
 
-Configuration is rolling release and uses systemd by default
+Configuration is rolling release (run rolling.sh and rebuild nixos) and uses systemd by default
 
 
 ## Installation
