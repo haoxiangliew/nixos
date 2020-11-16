@@ -7,9 +7,10 @@ import XMonad.Actions.SpawnOn
 --import XMonad.Wallpaper
 import Graphics.X11.ExtraTypes.XF86
 import System.IO
+import XMonad.Layout.Grid
 
 main = do
-    --setRandomWallpaper ["$HOME/Pictures/nixos-onedark-wallpaper.png"]
+    --setRandomWallpaper ["$HOME/Pictures/nixos.png"]
 
     xmproc <- spawnPipe "xmobar"
 
@@ -17,8 +18,8 @@ main = do
         { manageHook = manageDocks <+> manageHook defaultConfig
         , startupHook = do
                 spawnHere "xloadimage -onroot -fullscreen ~/Pictures/nixos.png"
-                spawnOn "workspace2" "pulseeffects"
-        , layoutHook = avoidStruts  $  layoutHook defaultConfig
+                -- spawnOn "workspace2" "pulseeffects"
+        , layoutHook = avoidStruts  $ layoutHook defaultConfig ||| Grid
         , logHook = dynamicLogWithPP xmobarPP
                         { ppOutput = hPutStrLn xmproc
                         , ppTitle = xmobarColor "#98c379" "" . shorten 100
