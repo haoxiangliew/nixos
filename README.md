@@ -17,6 +17,8 @@ Everybody loves reproducible and reliable rolling release!
 
 Configuration is rolling release (run rolling.sh and rebuild nixos) and uses systemd by default
 
+My configuration is my opinion on KISS, so warning to anyone who installs this, there's no desktop environment, notifications, and system tray. Most tools in this configuration require the command line / emacs.
+
 
 ## Installation
 1. Boot into `nixos-minimal`
