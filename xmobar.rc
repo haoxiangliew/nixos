@@ -5,16 +5,18 @@ Config { font = "xft:Cascadia Code:size=9:regular:antialias=true"
         , bgColor = "#21252B"
         , fgColor = "#828997"
         , position = TopW L 100 
-        , commands = [ Run Weather "KBCB" ["-t","<tempF>F","-L","18","-H","25","--normal","#98c379","--high","red","--low","lightblue"] 36000
-                        , Run Network "wlp2s0" ["-L","0","-H","32","--normal","#98c379","--high","#e06c75"] 10
+        , commands = [ Run Weather "KBCB" ["-t","<skyCondition>: <tempF>F","-L","50","-H","90","--normal","#98c379","--high","#e06c75","--low","lightblue"] 36000
+                        , Run Network "wlp2s0" ["-L","100000","-H","500000","--normal","#98c379","--high","#e06c75"] 10
                         , Run Cpu ["-L","3","-H","50","--normal","#98c379","--high","#e06c75"] 10
                         , Run Memory ["-t","Mem: <usedratio>%"] 10
                         , Run Swap [] 10
+                        , Run Battery ["-t","AC <acstatus>: <left>% - <timeleft>","-L","20","-H", "90","--low","#e06c75","--high","#98c379"] 10
+                        , Run Volume "default" "Master" ["-t", "Vol: <volume>%"] 10
                         , Run Com "uname" ["-s","-r"] "" 36000
                         , Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
                         , Run StdinReader
                         ]
         , sepChar = "%" 
         , alignSep = "}{"
-        , template = "%StdinReader% }{[ %wlp2s0% ] | %cpu% | %memory% * %swap% | <fc=#d19a66>%date%</fc> | %uname% | %KBCB% "
+        , template = "%StdinReader% }{[ %wlp2s0% ] | %cpu% | %memory% * %swap% | %default:Master% | %battery% | %KBCB% | <fc=#d19a66>%date%</fc> | %uname% "
         }
