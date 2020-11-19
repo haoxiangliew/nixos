@@ -26,6 +26,8 @@ in
   # bootloader
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+  # boot.kernelParams = [ "video=hyperv_fb:1920x1080" ];
 
   # networking
   networking.hostName = "nixos";
@@ -72,6 +74,7 @@ in
     fzf
     ranger
     ripgrep
+    thefuck
     tlp
     tmux
     tree
@@ -92,6 +95,8 @@ in
     # desktop
     xmobar                    # bar for xmonad
     dmenu                     # menu for xmonad
+    networkmanager_dmenu      # network manager
+    j4-dmenu-desktop          # .desktop in dmenu
     lxappearance              # gtk theme settings
     scrot                     # screenshots
     xbrightness               # brightness control
