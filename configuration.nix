@@ -27,7 +27,8 @@ in
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  # boot.kernelParams = [ "video=hyperv_fb:1920x1080" ];
+  boot.kernelParams = [ "acpi_backlight=vendor" ];
+  boot.kernelModules = [ "tp_smapi" "thinkpad_acpi" "acpi_call" ];
 
   # networking
   networking.hostName = "nixos";
@@ -56,7 +57,7 @@ in
     acpilight
     curl
     ffmpeg
-    firefox-bin
+    google-chrome
     git
     htop
     gimp
@@ -74,6 +75,7 @@ in
     fzf
     ranger
     ripgrep
+    syncthing
     thefuck
     tlp
     tmux
@@ -100,8 +102,14 @@ in
     lxappearance              # gtk theme settings
     scrot                     # screenshots
     xbrightness               # brightness control
+    xorg.xorgserver           # X11
+    xorg.xf86inputlibinput    # libinput
+    xorg.xf86videoati         # AMD driver
+    physlock                  # lockscreen
+    xautolock                 # lock daemon
     xcompmgr                  # compositor
     xorg.xrandr               # cli xrandr extension
+    arandr                    # xrandr settings
     xorg.xbacklight           # backlight
     xscreensaver              # screensaver
     xsettingsd                # desktop settings server
@@ -109,7 +117,8 @@ in
   ];
 
   fonts = {
-    fontDir.enable = true;
+    # change to fontDir.enable after changing to rolling
+    enableFontDir = true;
     enableGhostscriptFonts = true;
     fonts = with pkgs; [
       corefonts
@@ -148,6 +157,8 @@ in
   hardware = {
     pulseaudio.enable = true;
     acpilight.enable = true;
+    opengl.enable = true;
+    opengl.driSupport = true;
   };
 
   # X11
@@ -176,10 +187,30 @@ in
       displayManager.defaultSession = "none+xmonad";
       desktopManager.xterm.enable = false;
       libinput.enable = true;
+      libinput.accelProfile = "flat";
+      config = ''
+        Section "InputClass"
+          Identifier "mouse accel"
+          Driver "libinput"
+          MatchIsPointer "on"
+          Option "AccelProfile" "flat"
+          Option "AccelSpeed" "0"
+        EndSection
+      '';
       layout = "us";
+    };
+    physlock = {
+      enable = true;
+      allowAnyUser = true;
     };
     tlp.enable = true;
     openssh.enable = true;
+    syncthing = {
+      enable = true;
+      user = "haoxiangliew";
+      dataDir = "/home/haoxiangliew/haoxiangliew";
+      configDir = "/home/haoxiangliew/.config/syncthing";
+    };
   };
 
   # users
