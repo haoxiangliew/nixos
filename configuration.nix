@@ -204,9 +204,12 @@ in {
     };
     enableRedistributableFirmware = true;
     acpilight.enable = true;
-    opengl.enable = true;
-    opengl.driSupport = true;
-    opengl.driSupport32Bit = true;
+    opengl = {
+      enable = true;
+      driSupport = true;
+      driSupport32Bit = true;
+      extraPackages = with pkgs; [ mesa vaapiVdpau libvdpau-va-gl ];
+    };
   };
 
   # X11
@@ -236,19 +239,19 @@ in {
         ];
       };
 
-      # xautolock = {
-      #   enable = true;
-      #   killtime = 20;
-      #   killer = "${pkgs.systemd}/bin/systemctl suspend";
-      #   time = 15;
-      #   locker = "${config.security.wrapperDir}/physlock -m -s -d";
-      #   nowlocker = "${config.security.wrapperDir}/physlock -m -s -d";
-      #   enableNotifier = true;
-      #   notify = 10;
-      #   notifier =
-      #     ''${pkgs.libnotify}/bin/notify-send "Locking in 10 seconds"'';
-      #   extraOptions = [ "-detectsleep" ];
-      # };
+      xautolock = {
+        enable = true;
+        killtime = 20;
+        killer = "/run/current-system/systemd/bin/systemctl suspend";
+        time = 15;
+        locker = "${config.security.wrapperDir}/physlock -dms";
+        nowlocker = "${config.security.wrapperDir}/physlock -dms";
+        enableNotifier = true;
+        notify = 10;
+        notifier =
+          ''${pkgs.libnotify}/bin/notify-send "Locking in 10 seconds"'';
+        extraOptions = [ "-detectsleep" ];
+      };
       displayManager.defaultSession = "none+xmonad";
       desktopManager.xterm.enable = false;
       libinput.enable = true;
@@ -274,13 +277,13 @@ in {
       roundRobinUpstreams = false;
       upstreamServers = ''
         - address_data: 45.90.28.0
-          tls_auth_name: "nixos-####.dns1.nextdns.io"
+          tls_auth_name: "nixos-######.dns1.nextdns.io"
         - address_data: 2a07:a8c0::0
-          tls_auth_name: "nixos-####.dns1.nextdns.io"
+          tls_auth_name: "nixos-######.dns1.nextdns.io"
         - address_data: 45.90.30.0
-          tls_auth_name: "nixos-####.dns2.nextdns.io"
+          tls_auth_name: "nixos-######.dns2.nextdns.io"
         - address_data: 2a07:a8c1::0
-          tls_auth_name: "nixos-####.dns2.nextdns.io"'';
+          tls_auth_name: "nixos-######.dns2.nextdns.io"'';
     };
     tlp = {
       enable = true;
@@ -318,6 +321,18 @@ in {
     };
   };
 
+  security.polkit.enable = true;
+  security.polkit.extraConfig = ''
+    polkit.addRule(function(action, subject) {
+       if (action.id == "org.freedesktop.login1.suspend" ||
+           action.id == "org.freedesktop.login1.suspend-multiple-sessions" ||
+           action.id == "org.freedesktop.login1.set-wall-message")
+       {
+         return polkit.Result.YES;
+       }
+    });
+  '';
+
   powerManagement.enable = true;
 
   virtualisation.virtualbox.host.enable = true;
@@ -330,7 +345,6 @@ in {
     isNormalUser = true;
     shell = pkgs.fish;
     extraGroups = [
-      "users"
       "wheel"
       "video"
       "audio"
