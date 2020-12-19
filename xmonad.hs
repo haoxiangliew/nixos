@@ -21,14 +21,13 @@ main = do
     xmonad $ docks $ ewmh defaultConfig
         { manageHook = manageDocks <+> (isFullscreen --> doFullFloat) <+> (className =? "mpv" --> doFloat) <+> manageHook defaultConfig
         , startupHook = do
-                spawn "picom -b"
+                spawn "picom -b --experimental-backends"
                 spawnHere "feh --bg-scale ~/Pictures/nixos.png"
                 -- spawnOn "workspace2" "pulseeffects"
                 spawn "pulseeffects --gapplication-service"
                 spawn "numlockx"
                 spawn "emacs --daemon"
                 spawn "ibus-daemon"
-                spawn "xautolock -detectsleep -time 15 -locker \"physlock -m -s -d\" -nowlocker \"physlock -m -s -d\" -killtime 20 -killer \"systemctl suspend\""
         , layoutHook = avoidStruts  $ layoutHook defaultConfig ||| Grid
         , logHook = dynamicLogWithPP xmobarPP
                         { ppOutput = hPutStrLn xmproc
