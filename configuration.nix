@@ -111,7 +111,6 @@ in {
     p7zip
     feh
     vim
-    virtualbox
     usbutils
     pciutils
 
