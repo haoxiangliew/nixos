@@ -90,6 +90,7 @@ in {
     mpv
     openssl
     stubby
+    dnsmasq
     numlockx
     pulseeffects
     pavucontrol
@@ -274,15 +275,27 @@ in {
     stubby = {
       enable = true;
       roundRobinUpstreams = false;
+      listenAddresses = [ "127.0.0.1@53000" "0::1@53000" ];
       upstreamServers = ''
         - address_data: 45.90.28.0
-          tls_auth_name: "nixos-######.dns1.nextdns.io"
+          tls_auth_name: "nixos-5e65b4.dns1.nextdns.io"
         - address_data: 2a07:a8c0::0
-          tls_auth_name: "nixos-######.dns1.nextdns.io"
+          tls_auth_name: "nixos-5e65b4.dns1.nextdns.io"
         - address_data: 45.90.30.0
-          tls_auth_name: "nixos-######.dns2.nextdns.io"
+          tls_auth_name: "nixos-5e65b4.dns2.nextdns.io"
         - address_data: 2a07:a8c1::0
-          tls_auth_name: "nixos-######.dns2.nextdns.io"'';
+          tls_auth_name: "nixos-5e65b4.dns2.nextdns.io"
+      '';
+    };
+    dnsmasq = {
+      enable = true;
+      extraConfig = ''
+        no-resolv
+        proxy-dnssec
+        server=::1#53000
+        server=127.0.0.1#53000
+        listen-address=::1,127.0.0.1
+      '';
     };
     tlp = {
       enable = true;
