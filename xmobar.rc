@@ -20,5 +20,5 @@ Config { font = "xft:Cascadia Code:size=9:regular:antialias=true"
                         ]
         , sepChar = "%" 
         , alignSep = "}{"
-        , template = "%StdinReader% }{[ <action=`networkmanager_dmenu`>%wlp4s0% %enp2s0%</action> ] | <action=`alacritty -e htop`>%cpu%</action> | <action=`alacritty -e htop`>%memory%</action> | <action=`pavucontrol`>%default:Master%</action> | %bright% | %battery% | %KSJC% | <fc=#d19a66>%date%</fc> | %uname% "
+        , template = "%StdinReader% }{[ <action=`networkmanager_dmenu`>%wlp4s0% %enp2s0%</action> ] | <action=`alacritty -e htop`>%cpu%</action> | <action=`alacritty -e htop`>%memory%</action> | <action=`pavucontrol`>%default:Master%</action> | %bright% | %battery% | %KSJC% | <action=`emacsclient -c -e '(org-agenda)'`><fc=#d19a66>%date%</fc></action> | %uname% "
         }
