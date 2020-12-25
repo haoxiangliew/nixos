@@ -30,6 +30,8 @@ in {
   boot.kernel.sysctl."net.ipv4.tcp_congestion_control" = "bbr";
 
   boot.extraModulePackages = with config.boot.kernelPackages; [ acpi_call ];
+  boot.supportedFilesystems = [ "ntfs" ];
+  boot.plymouth.enable = true;
 
   # networking
   networking.hostName = "nixos";
@@ -90,7 +92,6 @@ in {
     mpv
     openssl
     stubby
-    dnsmasq
     numlockx
     pulseeffects
     pavucontrol
@@ -170,7 +171,7 @@ in {
   programs.dconf.enable = true;
   programs.light.enable = true;
   programs.vim.defaultEditor = true;
-
+  programs.fish.enable = true;
   programs.mtr.enable = true;
   programs.gnupg.agent = {
     enable = true;
@@ -253,6 +254,21 @@ in {
         extraOptions = [ "-detectsleep" ];
       };
       displayManager.defaultSession = "none+xmonad";
+      displayManager.lightdm = {
+        enable = true;
+        background = pkgs.nixos-artwork.wallpapers.dracula.gnomeFilePath;
+      };
+      displayManager.lightdm.greeters.gtk = {
+        enable = true;
+        clock-format = "%H:%M:%S";
+        theme = {
+          name = "Arc-Dark";
+          package = pkgs.arc-theme;
+        };
+        extraConfig = ''
+          position=200,start 50%,center
+        '';
+      };
       desktopManager.xterm.enable = false;
       libinput.enable = true;
       libinput.disableWhileTyping = true;
@@ -275,7 +291,6 @@ in {
     stubby = {
       enable = true;
       roundRobinUpstreams = false;
-      listenAddresses = [ "127.0.0.1@53000" "0::1@53000" ];
       upstreamServers = ''
         - address_data: 45.90.28.0
           tls_auth_name: "nixos-######.dns1.nextdns.io"
@@ -285,16 +300,6 @@ in {
           tls_auth_name: "nixos-######.dns2.nextdns.io"
         - address_data: 2a07:a8c1::0
           tls_auth_name: "nixos-######.dns2.nextdns.io"
-      '';
-    };
-    dnsmasq = {
-      enable = true;
-      extraConfig = ''
-        no-resolv
-        proxy-dnssec
-        server=::1#53000
-        server=127.0.0.1#53000
-        listen-address=::1,127.0.0.1
       '';
     };
     tlp = {
