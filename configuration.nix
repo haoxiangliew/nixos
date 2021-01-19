@@ -2,17 +2,7 @@
 
 { config, pkgs, ... }:
 
-# python
-with pkgs;
-let
-  my-python-packages = python-packages:
-    with python-packages;
-    [
-      # python packages
-    ];
-  python-with-my-packages = python3.withPackages my-python-packages;
-
-in {
+{
   # imports
   imports = [ ./hardware-configuration.nix ./cachix.nix ];
 
@@ -22,12 +12,13 @@ in {
   # bootloader
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelPackages = pkgs.linuxPackages_zen;
+  boot.kernelPackages = pkgs.linuxPackages_testing;
   boot.kernelParams = [ "iommu=soft" "acpi_backlight=video" ];
-  boot.kernelModules = [ "thinkpad_acpi" "tcp_bbr" "acpi_call" ];
+  boot.kernelModules = [ "thinkpad_acpi" "tcp_bbr" "acpi_call" "kvm_amd" ];
   boot.kernel.sysctl."net.ipv4.tcp_fastopen" = "3";
   boot.kernel.sysctl."net.core.default_qdisc" = "fq";
   boot.kernel.sysctl."net.ipv4.tcp_congestion_control" = "bbr";
+  boot.initrd.kernelModules = [ "amdgpu" ];
 
   boot.extraModulePackages = with config.boot.kernelPackages; [ acpi_call ];
   boot.supportedFilesystems = [ "ntfs" ];
@@ -62,11 +53,13 @@ in {
     keyMap = "us";
   };
 
-  time.timeZone = "America/Los_Angeles";
+  time.timeZone = "America/New_York";
+  time.hardwareClockInLocalTime = true;
 
   # system packages
   environment.systemPackages = with pkgs; [
     (aspellWithDicts (dicts: with dicts; [ en en-computers en-science ]))
+    acpid
     microcodeAmd
     arc-theme
     acpilight
@@ -80,9 +73,9 @@ in {
     libreoffice-fresh
     hunspell
     hunspellDicts.en_US
+    jmtpfs
     gimp
     gnupg
-    libva
     libva-utils
     vdpauinfo
     lm_sensors
@@ -115,12 +108,15 @@ in {
     vim
     usbutils
     pciutils
+    virt-manager
+    gst_all_1.gstreamer
+    gst_all_1.gst-vaapi
 
     # languages
     gcc
     gnumake
     cmake
-    python-with-my-packages
+    python3
     ghc
     nodejs
 
@@ -139,13 +135,17 @@ in {
     xorg.xorgserver # X11
     xorg.xf86inputlibinput # libinput
     xorg.xf86videoati # AMD driver
-    physlock # lockscreen
+    xorg.xmessage # messages popup
+    physlock # locker
     xautolock # lock daemon
     picom # compositor
     xorg.xrandr # cli xrandr extension
     arandr # xrandr settings
     xorg.xbacklight # backlight
     xsettingsd # desktop settings server
+    kdeApplications.kdeconnect-kde
+    xdg_utils
+    geoclue2
 
   ];
 
@@ -168,6 +168,7 @@ in {
     };
   };
 
+  programs.adb.enable = true;
   programs.dconf.enable = true;
   programs.light.enable = true;
   programs.vim.defaultEditor = true;
@@ -183,6 +184,14 @@ in {
   # firewall
   networking.firewall.allowedTCPPorts = [ 80 443 22000 3000 ];
   networking.firewall.allowedUDPPorts = [ 21027 32410 32412 32413 32414 ];
+  networking.firewall.allowedTCPPortRanges = [{
+    from = 1714;
+    to = 1764;
+  }];
+  networking.firewall.allowedUDPPortRanges = [{
+    from = 1714;
+    to = 1764;
+  }];
   networking.firewall.enable = true;
 
   # sound
@@ -209,7 +218,20 @@ in {
       enable = true;
       driSupport = true;
       driSupport32Bit = true;
-      extraPackages = with pkgs; [ mesa vaapiVdpau libvdpau-va-gl ];
+      extraPackages = with pkgs; [
+        intel-media-driver
+        vaapiIntel
+        vaapiVdpau
+        libvdpau-va-gl
+        libva
+        mesa
+        rocm-opencl-icd
+        rocm-opencl-runtime
+      ];
+    };
+    logitech.wireless = {
+      enable = true;
+      enableGraphical = true;
     };
   };
 
@@ -286,6 +308,7 @@ in {
       '';
       layout = "us";
     };
+    acpid = { enable = true; };
     blueman.enable = true;
     # dns resolver
     stubby = {
@@ -323,6 +346,10 @@ in {
     avahi.enable = true;
     avahi.publish.userServices = true;
     avahi.nssmdns = true;
+    picom = {
+      enable = true;
+      experimentalBackends = true;
+    };
     printing.enable = true;
     printing.drivers = with pkgs; [
       gutenprint
@@ -350,9 +377,13 @@ in {
     });
   '';
 
+  location.provider = "geoclue2";
+
   powerManagement.enable = true;
 
-  virtualisation.virtualbox.host.enable = true;
+  virtualisation.libvirtd.enable = true;
+
+  xdg.portal.enable = true;
 
   # users
   # don't forget to run passwd <username>
@@ -369,7 +400,8 @@ in {
       "disk"
       "networkmanager"
       "bluetooth"
-      "vboxusers"
+      "adbusers"
+      "libvirtd"
     ];
   };
 }
