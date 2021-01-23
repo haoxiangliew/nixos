@@ -4,10 +4,16 @@
 
 {
   # imports
-  imports = [ ./hardware-configuration.nix ./cachix.nix ];
+  imports = [ ./hardware-configuration.nix ];
 
   # nixpkgs
   nixpkgs.config = { allowUnfree = true; };
+  nixpkgs.config.packageOverrides = pkgs: {
+    nur = import (builtins.fetchTarball
+      "https://github.com/nix-community/NUR/archive/master.tar.gz") {
+        inherit pkgs;
+      };
+  };
 
   # bootloader
   boot.loader.systemd-boot.enable = true;
@@ -59,6 +65,9 @@
   # system packages
   environment.systemPackages = with pkgs; [
     (aspellWithDicts (dicts: with dicts; [ en en-computers en-science ]))
+    alsaLib
+    alsaUtils
+    alsaTools
     acpid
     microcodeAmd
     arc-theme
@@ -98,7 +107,6 @@
     ripgrep
     syncthing
     thefuck
-    tlp
     tmux
     tree
     unrar
@@ -128,7 +136,7 @@
     j4-dmenu-desktop # .desktop in dmenu
     lxappearance # gtk theme settings
     libnotify # notifications
-    notify-osd # notification daemon
+    dunst # notification daemon
     maim # screenshots
     xclip # cli clipboard manager
     xbrightness # brightness control
@@ -138,20 +146,22 @@
     xorg.xmessage # messages popup
     physlock # locker
     xautolock # lock daemon
-    picom # compositor
+    nur.repos.reedrw.picom-next-ibhagwan # compositor
     xorg.xrandr # cli xrandr extension
     arandr # xrandr settings
+    autorandr
     xorg.xbacklight # backlight
     xsettingsd # desktop settings server
-    kdeApplications.kdeconnect-kde
+    udiskie
+    gnome3.networkmanagerapplet
     xdg_utils
     geoclue2
 
   ];
 
   fonts = {
-    # change to fontDir.enable after changing to rolling
-    fontDir.enable = true;
+    # change to fontDir.enable after changing to rolling (fonts.enableFontDir)
+    enableFontDir = true;
     enableGhostscriptFonts = true;
     fonts = with pkgs; [
       corefonts
@@ -289,6 +299,7 @@
         };
         extraConfig = ''
           position=200,start 50%,center
+          greeter-hide-users=false
         '';
       };
       desktopManager.xterm.enable = false;
@@ -328,11 +339,10 @@
     tlp = {
       enable = true;
       settings = {
-        CPU_SCALING_GOVERNOR_ON_AC = "performance";
-        CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
         USB_AUTOSUSPEND = 0;
       };
     };
+    udisks2.enable = true;
     fstrim.enable = true;
     fwupd.enable = true;
     logind.extraConfig = ''
@@ -346,10 +356,6 @@
     avahi.enable = true;
     avahi.publish.userServices = true;
     avahi.nssmdns = true;
-    picom = {
-      enable = true;
-      experimentalBackends = true;
-    };
     printing.enable = true;
     printing.drivers = with pkgs; [
       gutenprint

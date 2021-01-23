@@ -5,20 +5,19 @@ Config { font = "xft:Cascadia Code:size=9:regular:antialias=true"
         , bgColor = "#21252B"
         , fgColor = "#828997"
         , position = TopW L 100 
-        , commands = [ Run Weather "KSJC" ["-t","<skyCondition>: <tempF>F","-L","50","-H","90","--normal","#98c379","--high","#e06c75","--low","lightblue"] 18000
-                        , Run Network "wlp4s0" ["-L","1000000","-H","50000000","--normal","#98c379","--high","#e06c75"] 10
-                        , Run Network "enp2s0" ["-L","1000000","-H","50000000","--normal","#98c379","--high","#e06c75"] 10
-                        , Run Cpu ["-L","3","-H","50","--normal","#98c379","--high","#e06c75"] 10
+        , commands = [ Run Weather "KBCB" ["-t","<skyCondition> <weather>: <tempF>F","-L","50","-H","90","--normal","#98c379","--high","#e06c75","--low","lightblue"] 18000
+                        , Run DynNetwork ["-t","<dev>: <rx>|<tx>","-S","True","-L","1000000","-H","50000000","--normal","#98c379","--high","#e06c75"] 10
+                        , Run MultiCpu ["-L","3","-H","50","--normal","#98c379","--high","#e06c75"] 10
                         , Run Memory ["-t","Mem: <usedratio>%"] 10
                         , Run Swap [] 10
                         , Run Battery ["-t","AC <acstatus>: <left>% - <timeleft>","-L","20","-H", "90","--low","#e06c75","--high","#98c379"] 10
                         , Run Brightness ["-t","Brt: <percent>%","--","-D","amdgpu_bl0"] 1
-                        , Run Volume "default" "Master" ["-t","Vol: <volume>% <status>","--","-C","#98c379","-c","#e06c75"] 1
+                        , Run Volume "default" "Master" ["-t","<status> <volume>%","--","-C","#98c379","-c","#e06c75","-O","Vol:","-o","Off:"] 1
                         , Run Com "uname" ["-s","-r"] "" 36000
                         , Run Date "%a %b %_d %Y %H:%M:%S" "date" 1
                         , Run StdinReader
                         ]
         , sepChar = "%" 
         , alignSep = "}{"
-        , template = "%StdinReader% }{[ <action=`networkmanager_dmenu`>%wlp4s0% %enp2s0%</action> ] | <action=`alacritty -e htop`>%cpu%</action> | <action=`alacritty -e htop`>%memory%</action> | <action=`pavucontrol`>%default:Master%</action> | %bright% | %battery% | %KSJC% | <action=`emacsclient -c -e '(org-agenda)'`><fc=#d19a66>%date%</fc></action> | %uname% "
+        , template = "%StdinReader% }{[ <action=`networkmanager_dmenu`>%dynnetwork%</action> ] | <action=`alacritty -e htop`>%multicpu%</action> | <action=`alacritty -e htop`>%memory%</action> | <action=`pavucontrol`>%default:Master%</action> | %bright% | %battery% | %KBCB% | <action=`emacsclient -c -e '(org-agenda)'`><fc=#d19a66>%date%</fc></action> | %uname% "
         }
