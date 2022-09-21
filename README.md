@@ -1,4 +1,4 @@
-- [Installation](#orgca135ea)
+- [Installation](#orgc6dc0ba)
 
 Welcome to my NixOS configuration!
 
@@ -10,23 +10,23 @@ Welcome to my NixOS configuration!
 | Term         | kitty                                                             |
 | Theme        | dracula                                                           |
 
-Most of the [dotfiles](https://git.sr.ht/~haoxiangliew/nixos) found in other configurations are managed by home-manager in this nixos configuration, except for emacs
+Most of the [dotfiles](https://git.sr.ht/~haoxiangliew/nixos/tree/master/item/dotfiles) found in other configurations are managed by home-manager in this nixos configuration, except for emacs
 
 Configuration is daily-driven and maintained on nixos-unstable
 
 
-<a id="orgca135ea"></a>
+<a id="orgc6dc0ba"></a>
 
 # Installation
 
-1.  Boot into the latest [nixos-unstable](https://channels.nixos.org/nixos-unstable/latest-nixos-minimal-x86_64-linux.iso)
-2.  To simply configure the wifi with wpa-supplicant
+-   Boot into the latest [nixos-unstable](https://channels.nixos.org/nixos-unstable/latest-nixos-minimal-x86_64-linux.iso)
+-   To simply configure the wifi with wpa-supplicant
 
 ```sh
 wpa_supplicant -B -i interface -c <(wpa_passphrase 'SSID' 'key')
 ```
 
-1.  Set partitions (we use parted here)
+-   Set partitions (we use parted here)
 
 ```sh
 parted /dev/sda  -- unit MiB
@@ -43,7 +43,7 @@ cryptsetup --verify-passphrase -v luksFormat /dev/sda2
 cryptsetup open /dev/sda2 enc
 ```
 
-1.  Format partitions
+-   Format partitions
 
 ```sh
 mkfs.vfat -n boot /dev/sda1
@@ -56,7 +56,7 @@ mkfs.vfat -n boot /dev/sda1
 mkfs.btrfs /dev/mapper/enc
 ```
 
-1.  Mount partitions
+-   Mount partitions
 
 ```sh
 mount /dev/sda2 /mnt
@@ -76,7 +76,7 @@ mkdir /mnt/boot
 mount /dev/sda1 /mnt/boot
 ```
 
-1.  Generate and edit the default `configuration.nix`
+-   Generate and edit the default `configuration.nix`
 
 ```sh
 nixos-generate-config --root /mnt
@@ -105,12 +105,12 @@ fileSystems."/" =
   };
 ```
 
-1.  Install NixOS and reboot
+-   Install NixOS and reboot
 
     ```sh
     nixos-install
 
     reboot
     ```
-2.  Login as `root`, `git clone` this repository, `passwd` your username, and `nixos-rebuild switch`
-3.  Configure as you like
+-   Login as `root`, `git clone` this repository, `passwd` your username, and `nixos-rebuild switch`
+-   Configure as you like

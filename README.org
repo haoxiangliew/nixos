@@ -11,17 +11,17 @@ Welcome to my NixOS configuration!
 | Term         | kitty                    |
 | Theme        | dracula                  |
 
-Most of the [[https://git.sr.ht/~haoxiangliew/nixos][dotfiles]] found in other configurations are managed by home-manager in this nixos configuration, except for emacs
+Most of the [[https://git.sr.ht/~haoxiangliew/nixos/tree/master/item/dotfiles][dotfiles]] found in other configurations are managed by home-manager in this nixos configuration, except for emacs
 
 Configuration is daily-driven and maintained on nixos-unstable
 
 ** Installation
-1. Boot into the latest [[https://channels.nixos.org/nixos-unstable/latest-nixos-minimal-x86_64-linux.iso][nixos-unstable]]
-2. To simply configure the wifi with wpa-supplicant
+- Boot into the latest [[https://channels.nixos.org/nixos-unstable/latest-nixos-minimal-x86_64-linux.iso][nixos-unstable]]
+- To simply configure the wifi with wpa-supplicant
 #+BEGIN_SRC sh
 wpa_supplicant -B -i interface -c <(wpa_passphrase 'SSID' 'key')
 #+END_SRC
-3. Set partitions (we use parted here)
+- Set partitions (we use parted here)
 #+BEGIN_SRC sh
 parted /dev/sda  -- unit MiB
 parted /dev/sda  -- mklabel gpt
@@ -36,7 +36,7 @@ parted /dev/sda  -- set 1 esp on
 cryptsetup --verify-passphrase -v luksFormat /dev/sda2
 cryptsetup open /dev/sda2 enc
 #+END_SRC
-4. Format partitions
+- Format partitions
 #+BEGIN_SRC sh
 mkfs.vfat -n boot /dev/sda1
 mkfs.ext4 -L primary /dev/sda2
@@ -47,7 +47,7 @@ mkswap -L swap /dev/sda3
 mkfs.vfat -n boot /dev/sda1
 mkfs.btrfs /dev/mapper/enc
 #+END_SRC
-5. Mount partitions
+- Mount partitions
 #+BEGIN_SRC sh
 mount /dev/sda2 /mnt
 mkdir /mnt/boot
@@ -65,7 +65,7 @@ mount -o subvol=root,compress=zstd,noatime /dev/mapper/enc /mnt
 mkdir /mnt/boot
 mount /dev/sda1 /mnt/boot
 #+END_SRC
-6. Generate and edit the default ~configuration.nix~
+- Generate and edit the default ~configuration.nix~
 #+BEGIN_SRC sh
 nixos-generate-config --root /mnt
 
@@ -89,11 +89,11 @@ fileSystems."/" =
     options = [ "subvol=root" "compress=zstd" "noatime" ]; # changes on this line
   };
   #+END_SRC
-7. Install NixOS and reboot
+- Install NixOS and reboot
    #+BEGIN_SRC sh
 nixos-install
 
 reboot
 #+END_SRC
-8. Login as ~root~, ~git clone~ this repository, ~passwd~ your username, and ~nixos-rebuild switch~
-9. Configure as you like
+- Login as ~root~, ~git clone~ this repository, ~passwd~ your username, and ~nixos-rebuild switch~
+- Configure as you like
