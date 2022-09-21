@@ -1,0 +1,192 @@
+[settings]
+screenchange-reload = true
+
+[colors]
+background = #1e2029
+background-alt = #282a36
+current-line = #44475a
+foreground = #f8f8f2
+comment = #6272a4
+cyan = #8be9fd
+green = #50fa7b
+orange = #ffb86c
+pink = #ff79c6
+purple = #bd93f9
+red = #ff5555
+yellow = #f1fa8c
+
+[bar/main]
+monitor = ${env:MONITOR:}
+
+width = 99%
+height = 30
+offset-x = 10
+offset-y = 10
+radius = 10
+
+override-redirect = true
+wm-restack = i3
+scroll-up = "#i3.prev"
+scroll-down = "#i3.next"
+
+padding-left = 1
+padding-right = 2
+module-margin-left = 2
+module-margin-right = 1
+
+font-0 = "Monospace:size=10.5;3"
+font-1 = "FontAwesome:size=10;3"
+font-2 = "Noto Color Emoji:size=10:scale=10;3"
+font-3 = "Source Han Sans:size=10;1"
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+
+modules-left = i3 xwindow playerctl
+# modules-center = xwindow
+modules-right = battery date time caffeine
+
+enable-ipc = true
+
+tray-position = center
+
+[bar/secondary]
+monitor = ${env:MONITOR:}
+
+width = 99%
+height = 30
+offset-x = 10
+offset-y = 10
+radius = 10
+
+override-redirect = true
+wm-restack = i3
+scroll-up = "#i3.prev"
+scroll-down = "#i3.next"
+
+padding-left = 1
+padding-right = 2
+module-margin-left = 2
+module-margin-right = 1
+
+font-0 = "Monospace:size=10.5;3"
+font-1 = "FontAwesome:size=10;3"
+font-2 = "Noto Color Emoji:size=10:scale=10;3"
+font-3 = "Source Han Sans:size=10;1"
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+
+modules-left = i3 xwindow
+# modules-center = xwindow
+modules-right = battery date time
+
+enable-ipc = true
+
+[bar/vertical]
+monitor = ${env:MONITOR:}
+
+width = 98%
+height = 30
+offset-x = 10
+offset-y = 10
+radius = 10
+
+override-redirect = true
+wm-restack = i3
+scroll-up = "#i3.prev"
+scroll-down = "#i3.next"
+
+padding-left = 1
+padding-right = 2
+module-margin-left = 2
+module-margin-right = 1
+
+font-0 = "Monospace:size=10.5;3"
+font-1 = "FontAwesome:size=10;3"
+font-2 = "Noto Color Emoji:size=10:scale=10;3"
+font-3 = "Source Han Sans:size=10;1"
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+
+modules-left = i3 xwindow
+# modules-center = xwindow
+modules-right = battery date time
+
+enable-ipc = true
+
+[module/i3]
+type = internal/i3
+pin-workspaces = true
+wrapping-scroll = false
+
+label-focused-foreground = ${colors.purple}
+label-unfocused-foreground = ${colors.comment}
+label-urgent-foreground = ${colors.red}
+
+[module/xwindow]
+type = internal/xwindow
+format = <label>
+label = %title:0:25:...%
+
+[module/battery]
+type = internal/battery
+battery = BAT0
+adapter = AC
+time-format = %H:%M
+label-charging = %percentage%% - %time%
+label-discharging = %percentage%% - %time%
+label-low = %percentage%% - %time%
+format-charging = <animation-charging> <label-charging>
+format-discharging = <ramp-capacity> <label-discharging>
+format-full = <ramp-capacity> <label-full>
+format-low = <ramp-capacity> <animation-low> <label-low>
+
+animation-charging-0 = 
+animation-charging-1 = 
+animation-charging-2 = 
+animation-charging-3 = 
+animation-charging-4 = 
+animation-charging-framerate = 750
+ramp-capacity-0 = 
+ramp-capacity-1 = 
+ramp-capacity-2 = 
+ramp-capacity-3 = 
+ramp-capacity-4 = 
+animation-low-0 = 
+animation-low-1 = 
+animation-low-framerate = 200
+
+[module/date]
+type = internal/date
+interval = 1
+date = %a, %b %e %Y
+format =  <label>
+label = %date%
+
+[module/time]
+type = internal/date
+interval = 1
+time = %H:%M:%S
+time-alt = %I:%M:%S %p
+format =  <label>
+label = %time%
+
+[module/playerctl]
+type = custom/script
+tail = true
+interval = 1
+format =  <label>
+label = %output:0:25:...%
+exec = playerctl metadata --format "{{ title }} - {{ artist }}"
+click-left = playerctl play-pause
+double-click-left = playerctl next
+click-right = playerctl previous
+
+[module/caffeine]
+type = custom/ipc
+hook-0 = echo ''
+hook-1 = echo ''
+click-left = ~/.config/polybar/caffeine.sh
+initial = 1

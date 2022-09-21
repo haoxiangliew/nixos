@@ -1,0 +1,99 @@
+#+TITLE: nixos
+#+AUTHOR: Hao Xiang Liew
+
+Welcome to my NixOS configuration!
+
+|              |                          |
+|--------------+--------------------------|
+| Shell        | fish                     |
+| Environments | lightdm + i3-gaps, gnome |
+| Editors      | [[https://git.sr.ht/~haoxiangliew/.emacs.d][emacs]], vscode, neovim    |
+| Term         | kitty                    |
+| Theme        | dracula                  |
+
+Most of the [[https://git.sr.ht/~haoxiangliew/nixos][dotfiles]] found in other configurations are managed by home-manager in this nixos configuration, except for emacs
+
+Configuration is daily-driven and maintained on nixos-unstable
+
+** Installation
+1. Boot into the latest [[https://channels.nixos.org/nixos-unstable/latest-nixos-minimal-x86_64-linux.iso][nixos-unstable]]
+2. To simply configure the wifi with wpa-supplicant
+#+BEGIN_SRC sh
+wpa_supplicant -B -i interface -c <(wpa_passphrase 'SSID' 'key')
+#+END_SRC
+3. Set partitions (we use parted here)
+#+BEGIN_SRC sh
+parted /dev/sda  -- unit MiB
+parted /dev/sda  -- mklabel gpt
+parted /dev/sda1 -- mkpart ESP fat32 1MiB 512MiB
+parted /dev/sda2 -- mkpart primary ext4 512MiB -8GiB # (if u want swap)
+parted /dev/sda3 -- mkpart swap linux-swap -8GiB 100%
+parted /dev/sda  -- set 1 esp on
+
+# with btrfs & luks
+
+# create partitions with parted
+cryptsetup --verify-passphrase -v luksFormat /dev/sda2
+cryptsetup open /dev/sda2 enc
+#+END_SRC
+4. Format partitions
+#+BEGIN_SRC sh
+mkfs.vfat -n boot /dev/sda1
+mkfs.ext4 -L primary /dev/sda2
+mkswap -L swap /dev/sda3
+
+# with btrfs & luks
+
+mkfs.vfat -n boot /dev/sda1
+mkfs.btrfs /dev/mapper/enc
+#+END_SRC
+5. Mount partitions
+#+BEGIN_SRC sh
+mount /dev/sda2 /mnt
+mkdir /mnt/boot
+mount /dev/sda1 /mnt/boot
+swapon /dev/sda3
+
+# with btrfs & luks
+
+mount -t btrfs /dev/mapper/enc /mnt
+btrfs subvolume create /mnt/root
+umount /mnt
+
+mount -o subvol=root,compress=zstd,noatime /dev/mapper/enc /mnt
+
+mkdir /mnt/boot
+mount /dev/sda1 /mnt/boot
+#+END_SRC
+6. Generate and edit the default ~configuration.nix~
+#+BEGIN_SRC sh
+nixos-generate-config --root /mnt
+
+vim /mnt/etc/nixos/configuration.nix
+#+END_SRC
+#+BEGIN_SRC nix
+environment.systemPackages = with pkgs; [
+  ...
+  git
+];
+#+END_SRC
+#+BEGIN_SRC sh
+# with btrfs & luks
+
+vim /mnt/etc/nixos/configuration.nix
+#+END_SRC
+#+BEGIN_SRC nix
+fileSystems."/" =
+  { device = "/dev/disk/by-uuid/<uuid>";
+    fsType = "btrfs";
+    options = [ "subvol=root" "compress=zstd" "noatime" ]; # changes on this line
+  };
+  #+END_SRC
+7. Install NixOS and reboot
+   #+BEGIN_SRC sh
+nixos-install
+
+reboot
+#+END_SRC
+8. Login as ~root~, ~git clone~ this repository, ~passwd~ your username, and ~nixos-rebuild switch~
+9. Configure as you like
