@@ -15,7 +15,18 @@ let
     url =
       "https://github.com/NixOS/nixpkgs/archive/73994921df2b89021c1cbded66e8f057a41568c1.tar.gz";
   }) { config = config.nixpkgs.config; };
-
+  emacsPinnedPkgs = import (builtins.fetchTarball {
+    url =
+      "https://github.com/nixos/nixpkgs/archive/f677051b8dc0b5e2a9348941c99eea8c4b0ff28f.tar.gz";
+  }) {
+    config = config.nixpkgs.config;
+    overlays = [
+      (import (builtins.fetchTarball {
+        url =
+          "https://github.com/nix-community/emacs-overlay/archive/8ff1524472abef7c86c9e9c221d8969911074b4a.tar.gz";
+      }))
+    ];
+  };
 in {
   imports = [ (import "${home-manager}/nixos") ./environments/i3-home.nix ];
 
@@ -68,13 +79,13 @@ in {
       lieerOverlay = (self: super: {
         lieer = super.lieer.overrideAttrs (_: {
           src = builtins.fetchTarball
-            "https://github.com/gauteh/lieer/archive/master.tar.gz";
+            "https://github.com/gauteh/lieer/archive/11c792fbf416aedb0466f64973e29e1f4aed4916.tar.gz";
         });
       });
       lutrisOverlay = (self: super: {
         lutris = super.lutris.overrideAttrs (oldAttrs: {
           extraPkgs = (oldAttrs.extraPkgs or [ ]) ++ [ pkgs.xorg.libXtst ];
-          propagatedBuildInputs = (oldAttrs.propatedBuildInputs or [ ])
+          propagatedBuildInputs = (oldAttrs.propagatedBuildInputs or [ ])
             ++ [ pkgs.python3Packages.pypresence ];
         });
       });
@@ -145,13 +156,13 @@ in {
         };
       });
       packagesOverlay = (final: prev: {
+        marksman = prev.callPackage ./packages/marksman { };
         wechat-uos = prev.callPackage ./packages/wechat-uos { };
         quartus-prime-lite = prev.callPackage ./packages/quartus-prime { };
       });
     in [
       discordOverlay
       draculaThemeOverlay
-      emacsOverlay
       lieerOverlay
       lutrisOverlay
       masterPdfOverlay
@@ -214,12 +225,13 @@ in {
       gtypist
       inkscape
       libreoffice-fresh
-      masterPkgs.lieer
+      lieer
       masterpdfeditor
-      masterPkgs.notmuch
+      notmuch
       obs-studio
       octaveFull
       qmk
+      rbw
       rclone
       scrcpy
       speedtest-cli
@@ -231,6 +243,7 @@ in {
       zoom-us
 
       # games
+      bsdgames
       lutris
 
       # social
@@ -256,9 +269,9 @@ in {
       shfmt
       # c / c++
       avrdude
-      catch2_3
-      clang
-      clang-tools
+      catch2
+      clang_14
+      clang-tools_14
       cmakeFix.cmakeWithGui
       gdb
       gnumake
@@ -269,6 +282,9 @@ in {
       nodePackages.vscode-css-languageserver-bin
       # git
       gitAndTools.delta
+      # go
+      go
+      gopls
       # html
       nodePackages.vscode-html-languageserver-bin
       # java
@@ -277,6 +293,8 @@ in {
       pandoc
       texlab
       texlive.combined.scheme-full
+      # markdown
+      marksman
       # mips
       mars-mips
       qtspim
@@ -292,8 +310,14 @@ in {
       black
       pythonWithMyPackages
       nodePackages.pyright
+      # rust
+      cargo
+      rustc
+      rust-analyzer
       # verilog
       svls
+      # yaml
+      nodePackages.yaml-language-server
     ];
 
     programs = {
@@ -312,7 +336,6 @@ in {
             "network.dns.use_https_rr_as_altsvc" = true;
             "network.security.esni.enabled" = true;
             "security.enterprise_roots.enabled" = true;
-            "widget.gtk.native-context-menus" = true;
           };
         in {
           default = {
@@ -329,7 +352,7 @@ in {
       };
       emacs = {
         enable = true;
-        package = pkgs.emacsPgtkNativeComp;
+        package = emacsPinnedPkgs.emacsPgtkNativeComp;
         extraPackages = (epkgs: [ epkgs.vterm ]);
       };
       vscode = {

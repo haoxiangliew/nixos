@@ -9,52 +9,50 @@ let
         owner = "spicetify";
         repo = "spicetify-themes";
         rev = "master";
-        sha256 = "sha256-OI0CiZE9GKaXVa5I8kCXlrfjX8izynKi5sJxPQK0Zd8=";
+        sha256 = "sha256-Q/LBS+bjt2WP/s43LE8hDjYHxPVorT/RA71esPraLOM=";
       }
-  }/Dribbblish";
+    }/Dribbblish";
 
-  configFile = (formats.ini { }).generate "config-xpui.ini"
-    {
-      Setting = {
-        current_theme = "Dribbblish";
-        color_scheme = "dracula";
-        overwrite_assets = booleanToString true;
-        check_spicetify_upgrade = booleanToString false;
-        prefs_path = "PREFS_PATH";
-        spotify_path = "SPOTIFY_PATH";
-        inject_css = booleanToString true;
-        replace_colors = booleanToString true;
-        spotify_launch_flags = listToString [ ];
-      };
-
-      Preprocesses = {
-        disable_ui_logging = booleanToString true;
-        remove_rtl_rule = booleanToString true;
-        expose_apis = booleanToString true;
-        disable_upgrade_check = booleanToString true;
-        disable_sentry = booleanToString true;
-      };
-
-      AdditionalOptions = {
-        extensions = listToString [ "dribbblish.js" ];
-        custom_apps = listToString [ ];
-        sidebar_config = booleanToString true;
-        home_config = booleanToString true;
-        experimental_features = booleanToString true;
-      };
-
-      Patch = {
-        "xpui.js_find_8008" = ",(\w+=)32,";
-        "xpui.js_repl_8008" = ",\${1}56,";
-      };
-
-      Backup = {
-        version = "";
-        "with" = "";
-      };
+  configFile = (formats.ini { }).generate "config-xpui.ini" {
+    Setting = {
+      current_theme = "Dribbblish";
+      color_scheme = "dracula";
+      overwrite_assets = booleanToString true;
+      check_spicetify_upgrade = booleanToString false;
+      prefs_path = "PREFS_PATH";
+      spotify_path = "SPOTIFY_PATH";
+      inject_css = booleanToString true;
+      replace_colors = booleanToString true;
+      spotify_launch_flags = listToString [ ];
     };
-in
-spotify-unwrapped.overrideAttrs (oldAttrs: {
+
+    Preprocesses = {
+      disable_ui_logging = booleanToString true;
+      remove_rtl_rule = booleanToString true;
+      expose_apis = booleanToString true;
+      disable_upgrade_check = booleanToString true;
+      disable_sentry = booleanToString true;
+    };
+
+    AdditionalOptions = {
+      extensions = listToString [ "dribbblish.js" ];
+      custom_apps = listToString [ ];
+      sidebar_config = booleanToString true;
+      home_config = booleanToString true;
+      experimental_features = booleanToString true;
+    };
+
+    Patch = {
+      "xpui.js_find_8008" = ",(w+=)32,";
+      "xpui.js_repl_8008" = ",\${1}56,";
+    };
+
+    Backup = {
+      version = "";
+      "with" = "";
+    };
+  };
+in spotify-unwrapped.overrideAttrs (oldAttrs: {
   nativeBuildInputs = (oldAttrs.nativeBuildInputs or [ ]) ++ [ spicetify-cli ];
 
   # ln -s ${dribbblish}/dribbblish.js $spicetifyDir/Extensions/dribbblish.js

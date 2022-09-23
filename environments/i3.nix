@@ -2,23 +2,20 @@
 
 {
   nixpkgs = {
-    overlays =
-      let
-        picomOverlay = (self: super: {
-          picom = super.picom.overrideAttrs (_: {
-            src = builtins.fetchTarball
-              "https://github.com/dccsillag/picom/archive/implement-window-animations.tar.gz";
-          });
+    overlays = let
+      picomOverlay = (self: super: {
+        picom = super.picom.overrideAttrs (_: {
+          src = builtins.fetchTarball
+            "https://github.com/dccsillag/picom/archive/implement-window-animations.tar.gz";
         });
-      in
-      [ picomOverlay ];
+      });
+    in [ picomOverlay ];
   };
 
   environment = {
-    variables = {
-      QT_STYLE_OVERRIDE = "kvantum";
-    };
+    variables = { QT_STYLE_OVERRIDE = "kvantum"; };
     systemPackages = with pkgs; [
+      pinentry-gtk2
       xdragon
       xorg.xdpyinfo
       xorg.xwininfo
@@ -151,9 +148,5 @@
     };
   };
 
-  xdg = {
-    portal = {
-      extraPortals = with pkgs; [ xdg-desktop-portal-gtk ];
-    };
-  };
+  xdg = { portal = { extraPortals = with pkgs; [ xdg-desktop-portal-gtk ]; }; };
 }

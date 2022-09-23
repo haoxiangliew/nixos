@@ -135,10 +135,16 @@
         url =
           "https://github.com/nix-community/neovim-nightly-overlay/archive/master.tar.gz";
       }));
+      myCAOverlay = (final: prev: {
+        my-ca-certs = prev.callPackage ./packages/hxliew-ca-certs { };
+      });
       pragmataProOverlay = (final: prev: {
         pragmataPro = prev.callPackage ./packages/pragmataPro { };
       });
-    in [ pulseeffectsOverlay pragmataProOverlay ];
+      win10FontsOverlay = (final: prev: {
+        win10fonts = prev.callPackage ./packages/windows-10-fonts { };
+      });
+    in [ pulseeffectsOverlay myCAOverlay pragmataProOverlay win10FontsOverlay ];
   };
 
   environment = {
@@ -187,7 +193,6 @@
     enableGhostscriptFonts = true;
     fonts = with pkgs; [
       cm_unicode
-      corefonts
       dejavu_fonts
       font-awesome_4
       joypixels
@@ -196,12 +201,11 @@
       source-han-sans
       source-han-serif
       ubuntu_font_family
-      vistafonts
+      win10fonts
     ];
     fontconfig = {
       enable = true;
       cache32Bit = true;
-      useEmbeddedBitmaps = true;
       defaultFonts = {
         serif = [ "CMU Serif" "Source Han Serif" ];
         emoji = [ "JoyPixels" ];
@@ -497,9 +501,7 @@
     pki = {
       certificateFiles = [
         "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
-        "/home/haoxiangliew/haoxiangliew/hxSSH/server_rootCA.crt"
-        "/home/haoxiangliew/haoxiangliew/hxSSH/NextDNS.cer"
-        "/home/haoxiangliew/haoxiangliew/hxSSH/relay.pem"
+        "${pkgs.my-ca-certs}/etc/ssl/certs/hxliew-ca-bundle.crt"
       ];
     };
     rtkit.enable = true;

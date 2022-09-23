@@ -28,7 +28,7 @@ echo "Updated environments"
 cp -r /etc/nixos/packages ./
 echo "Updated packages"
 
-../haoxiangliew/./commit.sh
+~/haoxiangliew/./commit.sh
 
 echo
 echo "All done!"
