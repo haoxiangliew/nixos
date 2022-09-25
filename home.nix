@@ -159,6 +159,7 @@ in {
         marksman = prev.callPackage ./packages/marksman { };
         wechat-uos = prev.callPackage ./packages/wechat-uos { };
         quartus-prime-lite = prev.callPackage ./packages/quartus-prime { };
+        hhkb-gnu = prev.callPackage ./packages/happy-hacking-gnu { };
       });
     in [
       discordOverlay
@@ -178,7 +179,7 @@ in {
 
     home = { stateVersion = config.system.nixos.release; };
 
-    nixpkgs = { config.allowUnfree = true; };
+    nixpkgs = { config = { allowUnfree = true; }; };
 
     gtk = {
       enable = true;
@@ -223,6 +224,7 @@ in {
       firebird-emu
       gimp
       gtypist
+      # hhkb-gnu
       inkscape
       libreoffice-fresh
       lieer
@@ -323,7 +325,7 @@ in {
     programs = {
       chromium = {
         enable = false;
-        package = pkgs.google-chrome;
+        package = pkgs.google-chrome-dev;
       };
       firefox = {
         enable = true;
@@ -368,6 +370,9 @@ in {
 
     xdg = {
       configFile = {
+        "nixpkgs/config.nix".text = ''
+          { allowUnfree = true; }
+        '';
         "captive-browser.toml".source =
           ./dotfiles/captive-browser/captive-browser.toml;
         "kitty/kitty.conf".source = ./dotfiles/kitty/kitty.conf;

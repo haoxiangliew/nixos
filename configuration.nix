@@ -346,6 +346,9 @@
         # increase trackpoint drift_time from 5 to 25
         SUBSYSTEM=="input", ATTR{name}=="TPPS/2 IBM TrackPoint", ATTR{device/drift_time}="25"
 
+        # HHKB Professional Hybrid
+        KERNEL=="hidraw*", ATTRS{idVendor}=="04fe", TAG+="uaccess"
+
         # Serial Port Rules
         KERNEL=="ttyUSB[0-9]*", TAG+="udev-acl", TAG+="uaccess", OWNER="$1"
         KERNEL=="ttyACM[0-9]*", TAG+="udev-acl", TAG+="uaccess", OWNER="$1"
