@@ -324,8 +324,8 @@ in {
 
     programs = {
       chromium = {
-        enable = false;
-        package = pkgs.google-chrome-dev;
+        enable = true;
+        package = pkgs.google-chrome;
       };
       firefox = {
         enable = true;
@@ -375,7 +375,6 @@ in {
         '';
         "captive-browser.toml".source =
           ./dotfiles/captive-browser/captive-browser.toml;
-        "kitty/kitty.conf".source = ./dotfiles/kitty/kitty.conf;
         "mpv/input.conf".source = ./dotfiles/mpv/input.conf;
         "mpv/mpv.conf".source = ./dotfiles/mpv/mpv.conf;
         "ranger/rc.conf".source = ./dotfiles/ranger/rc.conf;
