@@ -185,6 +185,7 @@
       nixfmt
       nodePackages.bash-language-server
       rnix-lsp
+      shfmt
     ];
   };
 
@@ -207,7 +208,7 @@
       enable = true;
       cache32Bit = true;
       defaultFonts = {
-        serif = [ "CMU Serif" "Source Han Serif" ];
+        serif = [ "Liberation Serif" "Source Han Serif" ];
         emoji = [ "JoyPixels" ];
         sansSerif = [ "Ubuntu" "Source Han Sans" ];
         monospace = [ "PragmataPro Mono Liga" "Source Han Mono" ];
@@ -241,7 +242,6 @@
       withRuby = true;
       withPython3 = true;
       withNodeJs = true;
-      defaultEditor = true;
       viAlias = true;
       vimAlias = true;
     };

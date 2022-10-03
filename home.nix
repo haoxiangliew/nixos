@@ -17,13 +17,13 @@ let
   }) { config = config.nixpkgs.config; };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/f677051b8dc0b5e2a9348941c99eea8c4b0ff28f.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/10ecda252ce1b3b1d6403caeadbcc8f30d5ab796.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/8ff1524472abef7c86c9e9c221d8969911074b4a.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/99f607199684071fef8e8a411d4e5d862cd5647a.tar.gz";
       }))
     ];
   };
@@ -50,7 +50,7 @@ in {
       openasar = builtins.fetchurl {
         url =
           "https://github.com/GooseMod/OpenAsar/releases/download/nightly/app.asar";
-        sha256 = "0qplzbvzjszxnw9fgl3klzp9ja1qj1wpd5f5jkxwaaxv6d3db0pi";
+        sha256 = "173wc5q3wqbx5p2qf5yvhgbwpds1v9v266285hzjv39r7zkb531k";
       };
       discordOverlay = (self: super: {
         discord = super.discord.overrideAttrs (oldAttrs: {
@@ -75,6 +75,12 @@ in {
             cp -a gnome-shell/v40/* $out/share/themes/Dracula/gnome-shell
           '';
         });
+      });
+      googleChromeOverlay = (self: super: {
+        google-chrome-dev = super.google-chrome-dev.override {
+          commandLineArgs =
+            "--use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --enable-accelerated-video-decode --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder --disable-features=UseChromeOSDirectVideoDecoder";
+        };
       });
       lieerOverlay = (self: super: {
         lieer = super.lieer.overrideAttrs (_: {
@@ -114,6 +120,18 @@ in {
           '';
         });
       });
+      messengerOverlay = (self: super: {
+        messenger = super.makeDesktopItem {
+          name = "Messenger";
+          desktopName = "Messenger";
+          exec = ''
+            ${google-chrome-dev}/bin/google-chrome-unstable --app="https://facebook.com/messages"'';
+          terminal = false;
+          type = "Application";
+          icon = "messengerfordesktop";
+          comment = "Facebook Messenger";
+        };
+      });
       pythonPackages = python-packages:
         with python-packages; [
           aioconsole
@@ -147,7 +165,7 @@ in {
           name = "VIA";
           desktopName = "VIA";
           exec = ''
-            ${google-chrome}/bin/google-chrome-stable --app="https://usevia.app" --use-gl=desktop --force-dark-mode --enable-accelerated-video-decode --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder --disable-features=UseChromeOSDirectVideoDecoder'';
+            ${google-chrome-dev}/bin/google-chrome-unstable --app="https://usevia.app"'';
           terminal = false;
           type = "Application";
           icon = "via";
@@ -155,23 +173,44 @@ in {
           categories = [ "Development" ];
         };
       });
+      xournalppNightlyOverlay = (self: super: {
+        xournalpp = super.xournalpp.overrideAttrs (oldAttrs: {
+          src = builtins.fetchTarball
+            "https://github.com/xournalpp/xournalpp/archive/refs/tags/nightly.tar.gz";
+          buildInputs = (oldAttrs.buildInputs or [ ]) ++ [ pkgs.alsa-lib ];
+        });
+      });
       packagesOverlay = (final: prev: {
         marksman = prev.callPackage ./packages/marksman { };
         wechat-uos = prev.callPackage ./packages/wechat-uos { };
+        wine-wechat = prev.callPackage ./packages/wine-wechat { };
         quartus-prime-lite = prev.callPackage ./packages/quartus-prime { };
         hhkb-gnu = prev.callPackage ./packages/happy-hacking-gnu { };
       });
     in [
       discordOverlay
       draculaThemeOverlay
+      googleChromeOverlay
       lieerOverlay
       lutrisOverlay
       masterPdfOverlay
+      messengerOverlay
       nightlyOverlay
       pythonOverlay
       spicetifyOverlay
       viaAppOverlay
+      xournalppNightlyOverlay
       packagesOverlay
+    ];
+  };
+
+  environment.variables.EDITOR = "emacs -Q -nw -l ~/.emacs.d/editor-init.el";
+
+  programs.chromium = {
+    enable = true;
+    extensions = [
+      "dcpihecpambacapedldabdbpakmachpb;https://raw.githubusercontent.com/iamadamdev/bypass-paywalls-chrome/master/src/updates/updates.xml"
+      "ilcacnomdmddpohoakmgcboiehclpkmj;https://raw.githubusercontent.com/FastForwardTeam/releases/main/update/update.xml"
     ];
   };
 
@@ -188,8 +227,8 @@ in {
         package = pkgs.ubuntu_font_family;
       };
       cursorTheme = {
-        name = "Capitaine Cursors";
-        package = pkgs.capitaine-cursors;
+        name = "Dracula-cursors";
+        package = pkgs.dracula-theme;
         size = 8;
       };
       theme = {
@@ -200,14 +239,20 @@ in {
         name = "Papirus-Dark";
         package = pkgs.papirus-icon-theme;
       };
+      gtk2 = {
+        extraConfig = ''
+          gtk-key-theme-name = "Emacs"
+        '';
+      };
+      gtk3 = { extraConfig = { gtk-key-theme-name = "Emacs"; }; };
     };
 
     home.file.".icons/default/cursors".source =
-      "${pkgs.capitaine-cursors}/share/icons/capitaine-cursors/cursors";
+      "${pkgs.dracula-theme}/share/icons/Dracula-cursors/cursors";
 
     home.pointerCursor = {
-      name = "Capitaine Cursors";
-      package = pkgs.capitaine-cursors;
+      name = "Dracula-cursors";
+      package = pkgs.dracula-theme;
       size = 8;
       x11.enable = true;
       gtk.enable = true;
@@ -251,10 +296,12 @@ in {
       # social
       discord
       element-desktop
+      messenger
       signal-desktop
       wechat-uos
 
       # devtools
+      criu
       fd
       fzf
       insomnia
@@ -325,10 +372,10 @@ in {
     programs = {
       chromium = {
         enable = true;
-        package = pkgs.google-chrome;
+        package = pkgs.google-chrome-dev;
       };
       firefox = {
-        enable = true;
+        enable = false;
         package = pkgs.latest.firefox-nightly-bin;
         profiles = let
           defaultSettings = {
@@ -418,7 +465,7 @@ in {
             "All-in-one cross-platform voice and text chat for gamers";
           icon = "discord";
           exec =
-            "Discord --enable-accelerated-mjpeg-decode --enable-accelerated-video --ignore-gpu-blacklist --enable-native-gpu-memory-buffers --enable-gpu-rasterization";
+            "Discord --no-sandbox --ignore-gpu-blocklist --disable-features=UseOzonePlatform --enable-features=VaapiVideoDecoder --use-gl=desktop --enable-gpu-rasterization --enable-zero-copy";
           categories = [ "Network" "InstantMessaging" ];
           mimeType = [ "x-scheme-handler/discord" ];
         };

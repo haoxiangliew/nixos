@@ -11,11 +11,7 @@
     extraModprobeConfig = "";
   };
 
-  environment = {
-    systemPackages = with pkgs; [
-      radeontop
-    ];
-  };
+  environment = { systemPackages = with pkgs; [ radeontop ]; };
 
   hardware = {
     cpu.amd.updateMicrocode = true;
@@ -42,19 +38,14 @@
   services = {
     xserver = {
       videoDrivers = [ "amdgpu" ];
-      # deviceSection = ''
-      #   Option "EnablePageFlip" "off"
-      #   Option "TearFree" "false"
-      # '';
       deviceSection = ''
-        Option "TearFree" "true"
+        Option "EnablePageFlip" "off"
+        Option "TearFree" "false"
       '';
     };
     thinkfan = {
       enable = true;
-      extraArgs = [
-        "-b-8"
-      ];
+      extraArgs = [ "-b-8" ];
     };
   };
 }

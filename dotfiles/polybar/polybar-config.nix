@@ -100,7 +100,7 @@ in {
 
           modules-left = i3 xwindow playerctl
           # modules-center = xwindow
-          modules-right = battery date time caffeine
+          modules-right = battery date time keyboard-toggle caffeine
 
           enable-ipc = true
 
@@ -239,6 +239,13 @@ in {
           click-left = playerctl play-pause
           double-click-left = playerctl next
           click-right = playerctl previous
+
+          [module/keyboard-toggle]
+          type = custom/ipc
+          hook-0 = echo ''
+          hook-1 = echo ''
+          click-left = ~/.config/polybar/keyboard-toggle.sh
+          initial = 1
 
           [module/caffeine]
           type = custom/ipc

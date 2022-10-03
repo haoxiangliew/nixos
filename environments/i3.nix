@@ -3,13 +3,19 @@
 {
   nixpkgs = {
     overlays = let
+      bluemanOverlay = (self: super: {
+        blueman = super.blueman.overrideAttrs (_: {
+          src = builtins.fetchTarball
+            "https://github.com/blueman-project/blueman/archive/main.tar.gz";
+        });
+      });
       picomOverlay = (self: super: {
         picom = super.picom.overrideAttrs (_: {
           src = builtins.fetchTarball
             "https://github.com/dccsillag/picom/archive/implement-window-animations.tar.gz";
         });
       });
-    in [ picomOverlay ];
+    in [ bluemanOverlay picomOverlay ];
   };
 
   environment = {

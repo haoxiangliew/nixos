@@ -1,27 +1,20 @@
 { stdenv
 
-  # Update WeChat
-  # https://github.com/microsoft/winget-pkgs/tree/master/manifests/t/Tencent/WeChat
-, version ? "3.7.6.29"
-, sha256 ? "147C4C1270CC3D159116AAB3B35130ED62C48EFBFF2D2369B3874EF34CDF57BB"
+# Update WeChat
+# https://github.com/microsoft/winget-pkgs/tree/master/manifests/t/Tencent/WeChat
+, version ? "3.7.6.44"
+, sha256 ? "134646155A7D878D86DE2333276E8FED68804928117609D31D44D2468B85418C"
 
-, fetchurl
-, pkgs
-, lib
-, p7zip
-, wine
-, winetricks
-, writeShellScript
-, ...
-}:
+, fetchurl, pkgs, lib, p7zip, wine, winetricks, writeShellScript, ... }:
 
 let
   wineGecko = stdenv.mkDerivation rec {
     pname = "wine-gecko";
-    version = "2.47.3";
+    version = "2.47.2";
     src = fetchurl {
-      url = "http://dl.winehq.org/wine/wine-gecko/${version}/wine-gecko-${version}-x86.tar.xz";
-      sha256 = "1csx2c1zkjdk1qcd54crh34dkc1rn354q16gfykshh34vpriilq8";
+      url =
+        "http://dl.winehq.org/wine/wine-gecko/${version}/wine-gecko-${version}-x86.tar.xz";
+      sha256 = "157akz7kqg6aja2a5rq096h3v2h39sxkwkj1xnzb1chh47m4dawg";
     };
     dontUnpack = true;
     installPhase = ''
@@ -31,9 +24,7 @@ let
   };
 
   wechatWine = wine.overrideAttrs (old: {
-    patches = (old.patches or [ ]) ++ [
-      ./wine-wechat.patch
-    ];
+    patches = (old.patches or [ ]) ++ [ ./wine-wechat.patch ];
 
     postInstall = (old.postInstall or "") + ''
       rm -rf $out/share/wine/gecko
@@ -48,7 +39,7 @@ let
     inherit version;
 
     src = fetchurl {
-      url = "https://webcdn.m.qq.com/spcmgr/download/WeChatSetup_${version}.exe";
+      url = "https://webcdn.m.qq.com/spcmgr/download/WeChat${version}.exe";
       inherit sha256;
     };
 
@@ -104,8 +95,7 @@ let
     ${wechatWine}/bin/wine winecfg.exe
     ${wechatWine}/bin/wineserver -k
   '';
-in
-stdenv.mkDerivation {
+in stdenv.mkDerivation {
   pname = "wine-wechat";
   inherit version;
   phases = [ "installPhase" ];

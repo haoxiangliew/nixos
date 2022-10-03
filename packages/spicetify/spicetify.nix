@@ -70,9 +70,9 @@ in spotify-unwrapped.overrideAttrs (oldAttrs: {
     cp -f ${configFile} $spicetifyDir/config-xpui.ini
 
     substituteInPlace $spicetifyDir/Themes/Dribbblish/color.ini \
-      --replace "44475a" "282a36" \
-      --replace "6272a4" "1e2029" \
-      --replace "ffb86c" "bd93f9"
+      --replace "44475a" "22212C" \
+      --replace "6272a4" "17161D" \
+      --replace "ffb86c" "9580FF"
 
     substituteInPlace $spicetifyDir/config-xpui.ini \
       --replace "PREFS_PATH" "$out/prefs" \

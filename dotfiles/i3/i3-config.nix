@@ -68,7 +68,7 @@ in {
           set $exec exec --no-startup-id
 
           ### startup
-          exec_always --no-startup-id "autorandr --change && feh --bg-fill ~/haoxiangliew/Wallpapers/lycoris-recoil.jpg"
+          exec_always --no-startup-id "autorandr --change && feh --bg-fill ~/haoxiangliew/Wallpapers/lycoris-recoil-2.png"
           exec_always --no-startup-id "~/.config/i3/tablet.sh"
 
           $exec "exec /run/current-system/sw/libexec/polkit-gnome-authentication-agent-1"
@@ -144,12 +144,12 @@ in {
           bindsym $mod+c $exec "code --ignore-gpu-blacklist --enable-gpu-rasterization --enable-native-gpu-memory-buffers"
 
           # chrome
-          # bindsym $mod+b $exec "google-chrome-stable --use-gl=desktop --force-dark-mode --enable-accelerated-video-decode --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder --disable-features=UseChromeOSDirectVideoDecoder"
-          # bindsym $mod+n $exec "google-chrome-stable --incognito --use-gl=desktop --force-dark-mode --enable-accelerated-video-decode --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder --disable-features=UseChromeOSDirectVideoDecoder"
+          bindsym $mod+b $exec "google-chrome-unstable"
+          bindsym $mod+n $exec "google-chrome-unstable --incognito"
 
           # firefox
-          bindsym $mod+b $exec "firefox"
-          bindsym $mod+n $exec "firefox --private-window"
+          # bindsym $mod+b $exec "firefox"
+          # bindsym $mod+n $exec "firefox --private-window"
 
 
           # flameshot

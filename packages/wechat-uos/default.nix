@@ -1,11 +1,4 @@
-{ stdenv
-, fetchurl
-, writeShellScript
-, steam
-, lib
-, scrot
-, ...
-} @ args:
+{ stdenv, fetchurl, writeShellScript, steam, lib, scrot, ... }@args:
 
 ################################################################################
 # Mostly based on wechat-uos package from AUR:
@@ -30,7 +23,8 @@ let
     pname = "wechat-uos-resource";
     inherit version;
     src = fetchurl {
-      url = "https://home-store-packages.uniontech.com/appstore/pool/appstore/c/com.tencent.weixin/com.tencent.weixin_${version}_amd64.deb";
+      url =
+        "https://home-store-packages.uniontech.com/appstore/pool/appstore/c/com.tencent.weixin/com.tencent.weixin_${version}_amd64.deb";
       sha256 = "04s2xy9c1sj3393mz9c5bs58h77fwj4brpw18bsggxsas7wjdgjp";
     };
 
@@ -66,8 +60,7 @@ let
     ${steam-run}/bin/steam-run \
       ${resource}/opt/apps/com.tencent.weixin/files/weixin/weixin
   '';
-in
-stdenv.mkDerivation {
+in stdenv.mkDerivation {
   pname = "wechat-uos-bin";
   inherit version;
   phases = [ "installPhase" ];

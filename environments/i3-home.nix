@@ -28,6 +28,8 @@ in {
         # "i3/config".source = ../dotfiles/i3/config;
         "i3/tablet.sh".source = ../dotfiles/i3/tablet.sh;
         # "polybar/config".source = ../dotfiles/polybar/config;
+        "polybar/keyboard-toggle.sh".source =
+          ../dotfiles/polybar/keyboard-toggle.sh;
         "polybar/caffeine.sh".source = ../dotfiles/polybar/caffeine.sh;
         "polybar/polybar.sh".source = ../dotfiles/polybar/polybar.sh;
       };

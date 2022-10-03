@@ -6,6 +6,8 @@ alias q "exit"
 alias l "ls -lh"
 alias ll "ls -lah"
 
+alias emcs "emacs -Q -nw -l ~/.emacs.d/editor-init.el"
+
 # thefuck
 function fuck -d "Correct your previous console command"
   set -l fucked_up_command $history[1]
