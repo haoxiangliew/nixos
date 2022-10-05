@@ -450,6 +450,33 @@ in {
             };
           };
         };
+        emcs = {
+          name = "Emacs (Simple)";
+          genericName = "Text Editor";
+          comment = "Edit text in a barebones environment";
+          icon = "Emacs";
+          exec = "emacs -Q -l /home/haoxiangliew/.emacs.d/editor-init.el";
+          startupNotify = true;
+          settings = { StartupWMClass = "Emacs"; };
+          categories = [ "Utility" "Development" "TextEditor" ];
+          mimeType = [
+            "text/english"
+            "text/plain"
+            "text/x-makefile"
+            "text/x-c++hdr"
+            "text/x-c++src"
+            "text/x-chdr"
+            "text/x-csrc"
+            "text/x-java"
+            "text/x-moc"
+            "text/x-pascal"
+            "text/x-tcl"
+            "text/x-tex"
+            "application/x-shellscript"
+            "text/x-c"
+            "text/x-c++"
+          ];
+        };
         davinci-resolve = {
           name = "DaVinci Resolve";
           genericName = "DaVinci Resolve";
