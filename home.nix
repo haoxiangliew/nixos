@@ -239,12 +239,12 @@ in {
         name = "Papirus-Dark";
         package = pkgs.papirus-icon-theme;
       };
-      gtk2 = {
-        extraConfig = ''
-          gtk-key-theme-name = "Emacs"
-        '';
-      };
-      gtk3 = { extraConfig = { gtk-key-theme-name = "Emacs"; }; };
+      # gtk2 = {
+      #   extraConfig = ''
+      #     gtk-key-theme-name = "Emacs"
+      #   '';
+      # };
+      # gtk3 = { extraConfig = { gtk-key-theme-name = "Emacs"; }; };
     };
 
     home.file.".icons/default/cursors".source =
