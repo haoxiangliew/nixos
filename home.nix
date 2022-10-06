@@ -17,13 +17,13 @@ let
   }) { config = config.nixpkgs.config; };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/10ecda252ce1b3b1d6403caeadbcc8f30d5ab796.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/fd54651f5ffb4a36e8463e0c327a78442b26cbe7.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/99f607199684071fef8e8a411d4e5d862cd5647a.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/4d79c6e096b671c371f75bc99d367a464474f55d.tar.gz";
       }))
     ];
   };
@@ -50,7 +50,7 @@ in {
       openasar = builtins.fetchurl {
         url =
           "https://github.com/GooseMod/OpenAsar/releases/download/nightly/app.asar";
-        sha256 = "173wc5q3wqbx5p2qf5yvhgbwpds1v9v266285hzjv39r7zkb531k";
+        sha256 = "0mkvmy9fhqmj7z3lfrm38a5nf62s251da9957sgfj9nw23ydqmlp";
       };
       discordOverlay = (self: super: {
         discord = super.discord.overrideAttrs (oldAttrs: {
@@ -204,7 +204,15 @@ in {
     ];
   };
 
-  environment.variables.EDITOR = "emacs -Q -nw -l ~/.emacs.d/editor-init.el";
+  environment = {
+    variables = {
+      EDITOR = "emacs -Q -nw -l /home/haoxiangliew/.emacs.d/editor-init.el";
+    };
+    shellAliases = {
+      emcs = "emacs -Q -nw -l /home/haoxiangliew/.emacs.d/editor-init.el";
+      emcsg = "emacs -Q -l /home/haoxiangliew/.emacs.d/editor-init.el";
+    };
+  };
 
   programs.chromium = {
     enable = true;
@@ -364,7 +372,7 @@ in {
       rustc
       rust-analyzer
       # verilog
-      svls
+      verible
       # yaml
       nodePackages.yaml-language-server
     ];
