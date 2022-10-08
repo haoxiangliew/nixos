@@ -2,23 +2,18 @@ image: nixos/unstable
 packages:
   - nixos.git
 secrets:
-  - 830f5de1-eca9-4be4-918d-5c16d93ece94
-  - 05f07bd4-5bfc-4277-afa5-7cc65c9194d2
-  - 99d85fc1-77fe-4b29-b621-ad0670e2237f
+  - cc8ebb81-d377-441a-bab6-08e95f4b8ea5
 sources:
   - https://git.sr.ht/~haoxiangliew/nixos
 tasks:
-  - configure-ssh: |
-      export SSH_PASSPHRASE="$(cat ~/secrets/ssh_passphrase)"
-      export SSH_KNOWN_HOSTS="$(cat ~/secrets/ssh_known_hosts)"
-      export SSH_PRIVATE_KEY="$(cat ~/.ssh/id_rsa)"
-      echo 'echo "$SSH_PASSPHRASE"' > ~/.ssh/.print_ssh_password
-      chmod 700 ~/.ssh/.print_ssh_password
-      chmod +x ~/.ssh/.print_ssh_password
-      echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
-      chmod 644 ~/.ssh/known_hosts
-      eval $(ssh-agent -s)
-      echo "$SSH_PRIVATE_KEY" | tr -d '\r' | DISPLAY=":0.0" SSH_ASKPASS=~/.ssh/.print_ssh_password setsid ssh-add - > /dev/null
+  - validate-gh-fingerprint-and-configure-ssh: |
+      tmp_dir=$(mktemp -d -p $HOME)
+      ssh-keyscan -t rsa github.com > $tmp_dir/github_host
+      ssh-keygen -lf $tmp_dir/github_host > $tmp_dir/github_fingerprint
+      grep -R "nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8" $tmp_dir/github_fingerprint
+      cat $tmp_dir/github_host >> ~/.ssh/known_hosts
+      rm -rf $tmp_dir
+      echo -e "Host github.com\n    IdentityFile ~/.ssh/id_rsa\n    IdentitiesOnly yes\n    BatchMode yes\n" >> ~/.ssh/config
   - mirror-to-github: |
       cd ~/nixos
       git remote add github git@github.com:haoxiangliew/nixos.git
