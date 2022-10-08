@@ -17,7 +17,9 @@ tasks:
       rm -rf $tmp_dir
       echo -e "Host github.com\n    IdentityFile ~/.ssh/id_rsa\n    IdentitiesOnly yes\n    BatchMode yes\n" >> ~/.ssh/config
       eval $(ssh-agent -s)
-      echo ~/.ssh/id_rsa | tr -d '\r' | DISPLAY=":0.0" SSH_ASKPASS=~/.ssh/ssh_passphrase setsid ssh-add - > /dev/null
+      echo 'cat ~/.ssh/ssh_passphrase' > ~/.ssh/print_ssh_passphrase
+      chmod +x ~/.ssh/print_ssh_passphrase
+      cat ~/.ssh/id_rsa | tr -d '\r' | DISPLAY=":0.0" SSH_ASKPASS=~/.ssh/ssh_passphrase setsid ssh-add - > /dev/null
   - mirror-to-github: |
       cd ~/nixos
       git remote add github git@github.com:haoxiangliew/nixos.git
