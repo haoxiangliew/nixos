@@ -1,6 +1,6 @@
 image: nixos/unstable
 packages:
-  - git
+  - nixos.git
 secrets:
 - 830f5de1-eca9-4be4-918d-5c16d93ece94
 - e929f7a1-be7c-4e35-8d27-f41d897f0cba
