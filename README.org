@@ -1,6 +1,7 @@
 #+TITLE: nixos
 #+AUTHOR: Hao Xiang Liew
 
+* [[https://git.sr.ht/~haoxiangliew/nixos][nixos]]
 Welcome to my NixOS configuration!
 
 |              |                          |

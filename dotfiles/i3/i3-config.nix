@@ -133,7 +133,7 @@ in {
           bindsym $mod+d $exec "rofi -show drun"
           bindsym $mod+Shift+d $exec "rofi -show run"
           bindsym $mod+Tab $exec "rofi -show window"
-          bindsym $mod+Shift+x $exec "rofi -show p -modi p:\\"rofi-power-menu --no-symbols\\""
+          bindsym $mod+Shift+x $exec "rofi -show p -modi p:\\"rofi-power-menu --no-symbols --choices=shutdown/reboot/suspend/logout/lockscreen\\""
 
           # emacs
           bindsym $mod+z $exec "emacsclient -c"

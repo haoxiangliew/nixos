@@ -1,4 +1,11 @@
-- [Installation](#orgc6dc0ba)
+- [[nixos](https://git.sr.ht/~haoxiangliew/nixos)](#orgad36fc8)
+  - [Installation](#org919ecab)
+
+
+
+<a id="orgad36fc8"></a>
+
+# [nixos](https://git.sr.ht/~haoxiangliew/nixos)
 
 Welcome to my NixOS configuration!
 
@@ -15,9 +22,9 @@ Most of the [dotfiles](https://git.sr.ht/~haoxiangliew/nixos/tree/master/item/do
 Configuration is daily-driven and maintained on nixos-unstable
 
 
-<a id="orgc6dc0ba"></a>
+<a id="org919ecab"></a>
 
-# Installation
+## Installation
 
 -   Boot into the latest [nixos-unstable](https://channels.nixos.org/nixos-unstable/latest-nixos-minimal-x86_64-linux.iso)
 -   To simply configure the wifi with wpa-supplicant

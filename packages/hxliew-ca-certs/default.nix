@@ -8,7 +8,7 @@ in runCommand name rec {
   serverRootCA = requireFile rec {
     name = "server_rootCA.crt";
     url = "file:///home/haoxiangliew/haoxiangliew/hxSSH/server_rootCA.crt";
-    sha256 = "1dxvdi9mzxy9c693gwlc99zyr13v62q8c86zsnjhlsz1hjfmyw7f";
+    sha256 = "19iy1nqj1qb0r5zrijalay3j5j2hbjscahl37j1nrwdqa5f4xpfd";
   };
   nextdnsCA = requireFile rec {
     name = "NextDNS.cer";

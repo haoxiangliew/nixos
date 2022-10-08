@@ -119,8 +119,8 @@
         killtime = 20;
         killer = "/run/current-system/systemd/bin/systemctl suspend";
         time = 15;
-        locker = "/run/current-system/sw/bin/light-locker-command -l";
-        nowlocker = "/run/current-system/sw/bin/light-locker-command -l";
+        locker = "/run/current-system/sw/bin/loginctl lock-session";
+        nowlocker = "/run/current-system/sw/bin/loginctl lock-session";
         enableNotifier = true;
         notify = 10;
         notifier =
