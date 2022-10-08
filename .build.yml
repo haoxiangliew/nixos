@@ -14,5 +14,5 @@ tasks:
       rm -rf $temp_dir
       echo -e "Host github.com\n    IdentityFile ~/.ssh/id_rsa\n    IdentitiesOnly yes\n    BatchMode yes\n" >> ~/.ssh/config
   - mirror-to-github: |
-      cd ~/.emacs.d
-      git push --mirror git@github.com:haoxiangliew/.emacs.d.git
+      cd ~/nixos
+      git push --mirror git@github.com:haoxiangliew/nixos.git
