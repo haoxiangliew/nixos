@@ -15,4 +15,5 @@ tasks:
       echo -e "Host github.com\n    IdentityFile ~/.ssh/id_rsa\n    IdentitiesOnly yes\n    BatchMode yes\n" >> ~/.ssh/config
   - mirror-to-github: |
       cd ~/nixos
-      git push --mirror git@github.com:haoxiangliew/nixos.git
+      git remote add github git@github.com:haoxiangliew/nixos.git
+      git push --mirror github
