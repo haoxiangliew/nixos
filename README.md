@@ -1,9 +1,9 @@
-- [[nixos](https://git.sr.ht/~haoxiangliew/nixos)](#orgad36fc8)
-  - [Installation](#org919ecab)
+- [[nixos](https://git.sr.ht/~haoxiangliew/nixos)](#orgf7a54fb)
+  - [Installation](#org8d45ba5)
 
 
 
-<a id="orgad36fc8"></a>
+<a id="orgf7a54fb"></a>
 
 # [nixos](https://git.sr.ht/~haoxiangliew/nixos)
 
@@ -12,7 +12,7 @@ Welcome to my NixOS configuration!
 |              |                                                                   |
 |------------ |----------------------------------------------------------------- |
 | Shell        | fish                                                              |
-| Environments | lightdm + i3-gaps, gnome                                          |
+| Environments | lightdm + i3-gaps                                                 |
 | Editors      | [emacs](https://git.sr.ht/~haoxiangliew/.emacs.d), vscode, neovim |
 | Term         | kitty                                                             |
 | Theme        | dracula                                                           |
@@ -22,7 +22,7 @@ Most of the [dotfiles](https://git.sr.ht/~haoxiangliew/nixos/tree/master/item/do
 Configuration is daily-driven and maintained on nixos-unstable
 
 
-<a id="org919ecab"></a>
+<a id="org8d45ba5"></a>
 
 ## Installation
 

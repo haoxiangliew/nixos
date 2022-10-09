@@ -7,7 +7,7 @@ Welcome to my NixOS configuration!
 |              |                          |
 |--------------+--------------------------|
 | Shell        | fish                     |
-| Environments | lightdm + i3-gaps, gnome |
+| Environments | lightdm + i3-gaps        |
 | Editors      | [[https://git.sr.ht/~haoxiangliew/.emacs.d][emacs]], vscode, neovim    |
 | Term         | kitty                    |
 | Theme        | dracula                  |
