@@ -13,22 +13,22 @@ let
     };
   cmakeFix = import (builtins.fetchTarball {
     url =
-      "https://github.com/NixOS/nixpkgs/archive/73994921df2b89021c1cbded66e8f057a41568c1.tar.gz";
+      "https://github.com/NixOS/nixpkgs/archive/f634d427b0224a5f531ea5aa10c3960ba6ec5f0f.tar.gz";
   }) { config = config.nixpkgs.config; };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/fd54651f5ffb4a36e8463e0c327a78442b26cbe7.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/83b198a2083774844962c854f811538323f9f7b1.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/4d79c6e096b671c371f75bc99d367a464474f55d.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/154e5cd6920f804827f3161007ea2a2541336e30.tar.gz";
       }))
     ];
   };
 in {
-  imports = [ (import "${home-manager}/nixos") ./environments/i3-home.nix ];
+  imports = [ (import "${home-manager}/nixos") ./environments/gnome-home.nix ];
 
   nix = {
     settings = {
@@ -47,10 +47,11 @@ in {
           "https://github.com/mozilla/nixpkgs-mozilla/archive/${moz-rev}.tar.gz";
       };
       nightlyOverlay = (import "${moz-url}/firefox-overlay.nix");
+      rustOverlay = (import "${moz-url}/rust-overlay.nix");
       openasar = builtins.fetchurl {
         url =
           "https://github.com/GooseMod/OpenAsar/releases/download/nightly/app.asar";
-        sha256 = "0mkvmy9fhqmj7z3lfrm38a5nf62s251da9957sgfj9nw23ydqmlp";
+        sha256 = "0cygr2xihdr5qz24v0gbrax08vr9h8w8cm190v6fkbggjb8x8417";
       };
       discordOverlay = (self: super: {
         discord = super.discord.overrideAttrs (oldAttrs: {
@@ -68,6 +69,8 @@ in {
       }));
       draculaThemeOverlay = (self: super: {
         dracula-theme = super.dracula-theme.overrideAttrs (oldAttrs: {
+          src = builtins.fetchTarball
+            "https://github.com/ran-dall/gtk/archive/master.tar.gz";
           installPhase = (oldAttrs.installPhase or "") + ''
             rm $out/share/themes/Dracula/gnome-shell/gnome-shell.css
             rm $out/share/themes/Dracula/gnome-shell/gnome-shell.scss
@@ -185,20 +188,17 @@ in {
         wechat-uos = prev.callPackage ./packages/wechat-uos { };
         wine-wechat = prev.callPackage ./packages/wine-wechat { };
         quartus-prime-lite = prev.callPackage ./packages/quartus-prime { };
-        hhkb-gnu = prev.callPackage ./packages/happy-hacking-gnu { };
       });
     in [
       discordOverlay
       draculaThemeOverlay
-      googleChromeOverlay
       lieerOverlay
       lutrisOverlay
       masterPdfOverlay
-      messengerOverlay
       nightlyOverlay
       pythonOverlay
+      rustOverlay
       spicetifyOverlay
-      viaAppOverlay
       xournalppNightlyOverlay
       packagesOverlay
     ];
@@ -215,7 +215,7 @@ in {
   };
 
   programs.chromium = {
-    enable = true;
+    enable = false;
     extensions = [
       "dcpihecpambacapedldabdbpakmachpb;https://raw.githubusercontent.com/iamadamdev/bypass-paywalls-chrome/master/src/updates/updates.xml"
       "ilcacnomdmddpohoakmgcboiehclpkmj;https://raw.githubusercontent.com/FastForwardTeam/releases/main/update/update.xml"
@@ -226,13 +226,21 @@ in {
 
     home = { stateVersion = config.system.nixos.release; };
 
-    nixpkgs = { config = { allowUnfree = true; }; };
+    nixpkgs = {
+      config = {
+        allowUnfree = true;
+        firefox = { enableGnomeExtensions = true; };
+      };
+    };
+
+    home.file.".mozilla/native-messaging-hosts/org.gnome.chrome_gnome_shell.json".source =
+      "${pkgs.chrome-gnome-shell}/lib/mozilla/native-messaging-hosts/org.gnome.chrome_gnome_shell.json";
 
     gtk = {
       enable = true;
       font = {
-        name = "Ubuntu";
-        package = pkgs.ubuntu_font_family;
+        name = "Cantarell";
+        package = pkgs.cantarell-fonts;
       };
       cursorTheme = {
         name = "Dracula-cursors";
@@ -247,12 +255,6 @@ in {
         name = "Papirus-Dark";
         package = pkgs.papirus-icon-theme;
       };
-      # gtk2 = {
-      #   extraConfig = ''
-      #     gtk-key-theme-name = "Emacs"
-      #   '';
-      # };
-      # gtk3 = { extraConfig = { gtk-key-theme-name = "Emacs"; }; };
     };
 
     home.file.".icons/default/cursors".source =
@@ -271,7 +273,7 @@ in {
       bitwarden
       bottles
       darktable
-      davinci-resolve
+      # davinci-resolve
       ffmpeg
       ffmpeg-normalize
       firebird-emu
@@ -285,27 +287,24 @@ in {
       notmuch
       obs-studio
       octaveFull
+      plex-mpv-shim
       qmk
       rbw
       rclone
       scrcpy
       speedtest-cli
       spotify-unwrapped
-      via
       xournalpp
       youtube-dl
       zathura
-      zoom-us
+      # zoom-us
 
       # games
       lutris
 
       # social
-      discord
       element-desktop
-      messenger
       signal-desktop
-      wechat-uos
 
       # devtools
       criu
@@ -352,7 +351,6 @@ in {
       # markdown
       marksman
       # mips
-      mars-mips
       qtspim
       # nix
       direnv
@@ -367,9 +365,7 @@ in {
       pythonWithMyPackages
       nodePackages.pyright
       # rust
-      cargo
-      rustc
-      rust-analyzer
+      latest.rustChannels.nightly.rust
       # verilog
       verible
       # yaml
@@ -378,16 +374,15 @@ in {
 
     programs = {
       chromium = {
-        enable = true;
+        enable = false;
         package = pkgs.google-chrome-dev;
       };
       firefox = {
-        enable = false;
+        enable = true;
         package = pkgs.latest.firefox-nightly-bin;
         profiles = let
           defaultSettings = {
             "extensions.pocket.enabled" = false;
-            "general.smoothScroll.msdPhysics.enabled" = true;
             "network.dns.echconfig.enabled" = true;
             "network.dns.use_https_rr_as_altsvc" = true;
             "network.security.esni.enabled" = true;
@@ -431,6 +426,8 @@ in {
           ./dotfiles/captive-browser/captive-browser.toml;
         "mpv/input.conf".source = ./dotfiles/mpv/input.conf;
         "mpv/mpv.conf".source = ./dotfiles/mpv/mpv.conf;
+        "plex-mpv-shim/input.conf".source = ./dotfiles/mpv/input.conf;
+        "plex-mpv-shim/mpv.conf".source = ./dotfiles/mpv/mpv.conf;
         "ranger/rc.conf".source = ./dotfiles/ranger/rc.conf;
       };
       desktopEntries = {
@@ -440,7 +437,7 @@ in {
           comment = "Code Editing. Redefined.";
           icon = "code";
           exec =
-            "code --ignore-gpu-blacklist --enable-gpu-rasterization --enable-native-gpu-memory-buffers %F";
+            "code --ignore-gpu-blacklist --enable-gpu-rasterization --enable-native-gpu-memory-buffers --enable-features=WaylandWindowDecorations --ozone-platform-hint=auto %F";
           startupNotify = true;
           settings = {
             Keywords = "vscode";
@@ -451,7 +448,7 @@ in {
           actions = {
             "new-empty-window" = {
               exec =
-                "code --new-window --ignore-gpu-blacklist --enable-gpu-rasterization --enable-native-gpu-memory-buffers %F";
+                "code --new-window --ignore-gpu-blacklist --enable-gpu-rasterization --enable-native-gpu-memory-buffers --enable-features=WaylandWindowDecorations --ozone-platform-hint=auto %F";
               icon = "code";
               name = "New Empty Window";
             };
@@ -484,25 +481,25 @@ in {
             "text/x-c++"
           ];
         };
-        davinci-resolve = {
-          name = "DaVinci Resolve";
-          genericName = "DaVinci Resolve";
-          comment =
-            "Revolutionary new tools for editing, visual effects, color correction and professional audio post production, all in a single application!";
-          icon = "davinci-resolve";
-          exec = "davinci-resolve";
-          mimeType = [ "application/x-resolveproj" ];
-        };
-        discord = {
-          name = "Discord";
-          genericName =
-            "All-in-one cross-platform voice and text chat for gamers";
-          icon = "discord";
-          exec =
-            "Discord --no-sandbox --ignore-gpu-blocklist --disable-features=UseOzonePlatform --enable-features=VaapiVideoDecoder --use-gl=desktop --enable-gpu-rasterization --enable-zero-copy";
-          categories = [ "Network" "InstantMessaging" ];
-          mimeType = [ "x-scheme-handler/discord" ];
-        };
+        # davinci-resolve = {
+        #   name = "DaVinci Resolve";
+        #   genericName = "DaVinci Resolve";
+        #   comment =
+        #     "Revolutionary new tools for editing, visual effects, color correction and professional audio post production, all in a single application!";
+        #   icon = "davinci-resolve";
+        #   exec = "davinci-resolve";
+        #   mimeType = [ "application/x-resolveproj" ];
+        # };
+        # discord = {
+        #   name = "Discord";
+        #   genericName =
+        #     "All-in-one cross-platform voice and text chat for gamers";
+        #   icon = "discord";
+        #   exec =
+        #     "Discord --no-sandbox --ignore-gpu-blocklist --ozone-platform-hint=auto --enable-features=VaapiVideoDecoder,VaapiVideoEncoder,UseOzonePlatform --enable-gpu-rasterization --enable-zero-copy";
+        #   categories = [ "Network" "InstantMessaging" ];
+        #   mimeType = [ "x-scheme-handler/discord" ];
+        # };
       };
     };
   };

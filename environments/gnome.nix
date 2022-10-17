@@ -1,11 +1,21 @@
 { config, pkgs, lib, ... }:
 
 {
-
   environment = {
-    systemPackages = (with pkgs; [ easyeffects kitty orchis-theme ])
-      ++ (with pkgs.gnome; [ adwaita-icon-theme gnome-tweaks ])
-      ++ (with pkgs.gnomeExtensions; [ appindicator user-themes ]);
+    variables = {
+      MOZ_ENABLE_WAYLAND = "1";
+      QT_QPA_PLATFORMTHEME = "gnome";
+      QT_QPA_PLATFORM = "wayland";
+    };
+    systemPackages = (with pkgs; [
+      easyeffects
+      kitty
+      evtest
+      libinput
+      qt6.qtwayland
+      libsForQt5.qt5.qtwayland
+    ]) ++ (with pkgs.gnome; [ adwaita-icon-theme gnome-tweaks ])
+      ++ (with pkgs.gnomeExtensions; [ appindicator alphabetical-app-grid ]);
     gnome = {
       excludePackages = (with pkgs; [ gnome-photos gnome-tour ])
         ++ (with pkgs.gnome; [
@@ -30,6 +40,18 @@
     };
   };
 
+  programs = {
+    gnupg.agent = {
+      enable = true;
+      enableSSHSupport = true;
+    };
+  };
+
+  qt5 = {
+    enable = true;
+    platformTheme = "gnome";
+  };
+
   sound.enable = false;
 
   hardware.pulseaudio.enable = false;
@@ -45,9 +67,14 @@
       };
       desktopManager = { gnome = { enable = true; }; };
     };
-    dbus = { packages = with pkgs; [ dconf ]; };
+    dbus = {
+      enable = true;
+      packages = with pkgs; [ dconf ];
+    };
+    gnome = { gnome-browser-connector.enable = true; };
     pipewire = {
       enable = true;
+      wireplumber = { enable = true; };
       alsa = {
         enable = true;
         support32Bit = true;

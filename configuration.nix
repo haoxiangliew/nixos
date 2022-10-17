@@ -6,7 +6,7 @@
   imports = [
     ./hardware-configuration.nix
     ./devices/e595.nix
-    ./environments/i3.nix
+    ./environments/gnome.nix
     ./home.nix
   ];
 
@@ -75,7 +75,7 @@
     defaultLocale = "en_US.UTF-8";
     inputMethod = {
       enabled = "ibus";
-      ibus.engines = with pkgs.ibus-engines; [ rime ];
+      ibus.engines = with pkgs.ibus-engines; [ libpinyin ];
     };
   };
 
@@ -125,12 +125,6 @@
       };
     };
     overlays = let
-      pulseeffectsOverlay = (self: super: {
-        pulseeffects-legacy = super.pulseeffects-legacy.overrideAttrs (_: {
-          src = builtins.fetchTarball
-            "https://github.com/wwmm/pulseeffects/archive/pulseaudio-legacy.tar.gz";
-        });
-      });
       neovimOverlay = (import (builtins.fetchTarball {
         url =
           "https://github.com/nix-community/neovim-nightly-overlay/archive/master.tar.gz";
@@ -144,7 +138,7 @@
       win10FontsOverlay = (final: prev: {
         win10fonts = prev.callPackage ./packages/windows-10-fonts { };
       });
-    in [ pulseeffectsOverlay myCAOverlay pragmataProOverlay win10FontsOverlay ];
+    in [ myCAOverlay pragmataProOverlay win10FontsOverlay ];
   };
 
   environment = {
@@ -162,7 +156,6 @@
       hunspell
       hunspellDicts.en_US
       iftop
-      libsForQt5.qtstyleplugin-kvantum
       libsecret
       lm_sensors
       mpv
@@ -182,6 +175,8 @@
       virt-viewer
       wget
       xdg-utils
+      yubikey-manager-qt
+      # devtools
       nixfmt
       nodePackages.bash-language-server
       rnix-lsp
@@ -201,7 +196,6 @@
       source-han-mono
       source-han-sans
       source-han-serif
-      ubuntu_font_family
       win10fonts
     ];
     fontconfig = {
@@ -210,7 +204,7 @@
       defaultFonts = {
         serif = [ "Liberation Serif" "Source Han Serif" ];
         emoji = [ "JoyPixels" ];
-        sansSerif = [ "Ubuntu" "Source Han Sans" ];
+        sansSerif = [ "Cantarell" "Source Han Sans" ];
         monospace = [ "PragmataPro Mono Liga" "Source Han Mono" ];
       };
     };
@@ -483,11 +477,11 @@
     flatpak.enable = true;
     fstrim.enable = true;
     fwupd.enable = true;
-    geoclue2.enable = true;
     openssh.enable = true;
     pcscd.enable = true;
     ratbagd.enable = true;
     upower.enable = true;
+    yubikey-agent.enable = true;
   };
 
   zramSwap.enable = true;
@@ -501,6 +495,12 @@
   security = {
     protectKernelImage = true;
     polkit.enable = true;
+    pam = {
+      yubico = {
+        enable = true;
+        mode = "challenge-response";
+      };
+    };
     pki = {
       certificateFiles = [
         "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"

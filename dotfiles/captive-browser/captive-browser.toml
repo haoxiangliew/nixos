@@ -5,14 +5,14 @@
 # it can run (and be waited for) alongside the default one, and that
 # it maintains no state across runs. To configure this browser open a
 # normal window in it, settings will be preserved.
-browser = """
-    google-chrome-unstable \
-    --user-data-dir="$HOME/.google-chrome-captive" \
-    --proxy-server="socks5://$PROXY" \
-    --host-resolver-rules="MAP * ~NOTFOUND , EXCLUDE localhost" \
-    --no-first-run --new-window --incognito \
-    http://neverssl.com
-"""
+# browser = """
+#     google-chrome-unstable \
+#     --user-data-dir="$HOME/.google-chrome-captive" \
+#     --proxy-server="socks5://$PROXY" \
+#     --host-resolver-rules="MAP * ~NOTFOUND , EXCLUDE localhost" \
+#     --no-first-run --new-window --incognito \
+#     http://neverssl.com
+# """
 
 # Here, we use a separate Firefox instance in Private Browsing mode, so that
 # it can run (and be waited for) alongside the default one, and that it
@@ -24,24 +24,24 @@ browser = """
 # only one that ends with `.captive-browser`. You can check with
 # `firefox --ProfileManager`. This should only be an issue if you've renamed a
 # profile from `captive-browser` previously.
-#
-# browser = """\
-#   firefox \
-#   --CreateProfile \"captive-browser\" \
-#   && printf \"user_pref%s;\\n\" \
-#     \"(\\\"network.proxy.type\\\", 1)\" \
-#     \"(\\\"network.proxy.socks_remote_dns\\\", true)\" \
-#     \"(\\\"network.proxy.socks_version\\\", 5)\" \
-#     \"(\\\"network.proxy.socks\\\", \\\"${PROXY%:*}\\\")\" \
-#     \"(\\\"network.proxy.socks_port\\\", ${PROXY##*:})\" \
-#     \"(\\\"network.proxy.no_proxies_on\\\", \\\"localhost, 127.0.0.1\\\")\" \
-#     \"(\\\"dom.security.https_only_mode\\\", false)\" \
-#   >> \"$(printf \"%s\\n\" \"$HOME\"/.mozilla/firefox/*.captive-browser/)\"prefs.js \
-#   && firefox \
-#   -P \"captive-browser\" \
-#   --no-remote --private-window \
-#   \"http://detectportal.firefox.com/success.txt\"\
-# """
+
+browser = """\
+  firefox \
+  --CreateProfile \"captive-browser\" \
+  && printf \"user_pref%s;\\n\" \
+    \"(\\\"network.proxy.type\\\", 1)\" \
+    \"(\\\"network.proxy.socks_remote_dns\\\", true)\" \
+    \"(\\\"network.proxy.socks_version\\\", 5)\" \
+    \"(\\\"network.proxy.socks\\\", \\\"${PROXY%:*}\\\")\" \
+    \"(\\\"network.proxy.socks_port\\\", ${PROXY##*:})\" \
+    \"(\\\"network.proxy.no_proxies_on\\\", \\\"localhost, 127.0.0.1\\\")\" \
+    \"(\\\"dom.security.https_only_mode\\\", false)\" \
+  >> \"$(printf \"%s\\n\" \"$HOME\"/.mozilla/firefox/*.captive-browser/)\"prefs.js \
+  && firefox \
+  -P \"captive-browser\" \
+  --no-remote --private-window \
+  \"http://detectportal.firefox.com/success.txt\"\
+"""
 
 # dhcp-dns is the shell (/bin/sh) command executed to obtain the DHCP
 # DNS server address. The first match of an IPv4 regex is used.

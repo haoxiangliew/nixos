@@ -15,11 +15,16 @@
             "https://github.com/dccsillag/picom/archive/implement-window-animations.tar.gz";
         });
       });
-    in [ bluemanOverlay picomOverlay ];
+      pulseeffectsOverlay = (self: super: {
+        pulseeffects-legacy = super.pulseeffects-legacy.overrideAttrs (_: {
+          src = builtins.fetchTarball
+            "https://github.com/wwmm/pulseeffects/archive/pulseaudio-legacy.tar.gz";
+        });
+      });
+    in [ bluemanOverlay picomOverlay pulseeffectsOverlay ];
   };
 
   environment = {
-    variables = { QT_STYLE_OVERRIDE = "kvantum"; };
     systemPackages = with pkgs; [
       pinentry-gtk2
       xdragon
@@ -139,6 +144,7 @@
       };
     };
     blueman.enable = true;
+    geoclue2.enable = true;
     tzupdate.enable = true;
     udisks2.enable = true;
     unclutter-xfixes.enable = true;
