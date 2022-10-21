@@ -142,7 +142,7 @@
   };
 
   environment = {
-    variables = { GTK_USE_PORTAL = "1"; };
+    # variables = { GTK_USE_PORTAL = "1"; }; # NixOS/nixpkgs/issues/156830
     pathsToLink = [ "/libexec" ];
     systemPackages = with pkgs; [
       (aspellWithDicts (dicts: with dicts; [ en en-computers en-science ]))
@@ -517,7 +517,7 @@
     spiceUSBRedirection.enable = true;
   };
 
-  xdg = { portal = { enable = true; }; };
+  xdg.portal.enable = true;
 
   users = {
     users.haoxiangliew = {

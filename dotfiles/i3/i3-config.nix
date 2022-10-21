@@ -75,20 +75,15 @@ in {
           $exec "light-locker"
           $exec "numlockx"
           $exec "picom -b --experimental-backends"
-          $exec "pulseeffects --gapplication-service"
+          # $exec "pulseeffects --gapplication-service"
+          $exec "easyeffects --gapplication-service"
           $exec "kitty emacs --daemon"
           $exec "flameshot"
-          $exec "ibus-daemon -d -r"
+          $exec "ibus-daemon -dr"
           $exec "nm-applet"
           $exec "blueman-applet"
           $exec "solaar -w hide"
           $exec "udiskie -t"
-          $exec "rclone --vfs-cache-mode writes mount Mega: ~/Mega/"
-          # $exec "Discord --enable-accelerated-mjpeg-decode --enable-accelerated-video --ignore-gpu-blacklist --enable-native-gpu-memory-buffers --enable-gpu-rasterization"
-          # $exec "wechat-uos"
-
-          # assign [class="discord"] $ws4
-          # assign [class="weixin"] $ws4
 
           ### appearance
 

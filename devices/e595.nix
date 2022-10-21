@@ -43,9 +43,5 @@
         Option "TearFree" "false"
       '';
     };
-    thinkfan = {
-      enable = true;
-      extraArgs = [ "-b-8" ];
-    };
   };
 }

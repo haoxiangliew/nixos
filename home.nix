@@ -11,19 +11,15 @@ let
     "https://github.com/nixos/nixpkgs/archive/master.tar.gz") {
       config = config.nixpkgs.config;
     };
-  cmakeFix = import (builtins.fetchTarball {
-    url =
-      "https://github.com/NixOS/nixpkgs/archive/f634d427b0224a5f531ea5aa10c3960ba6ec5f0f.tar.gz";
-  }) { config = config.nixpkgs.config; };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/83b198a2083774844962c854f811538323f9f7b1.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/104e8082de1b20f9d0e1f05b1028795ed0e0e4bc.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/154e5cd6920f804827f3161007ea2a2541336e30.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/858214991200eccc2f0a4f929f4baa0ffd8281c6.tar.gz";
       }))
     ];
   };
@@ -207,11 +203,15 @@ in {
   environment = {
     variables = {
       EDITOR = "emacs -Q -nw -l /home/haoxiangliew/.emacs.d/editor-init.el";
+      NIX_CC = "/does-not-exists"; # NixOS/nixpkgs/issues/194929
+      FZF_DEFAULT_COMMAND = "fd --type file --follow --color=always";
+      FZF_DEFAULT_OPTS = "--ansi";
     };
     shellAliases = {
       emcs = "emacs -Q -nw -l /home/haoxiangliew/.emacs.d/editor-init.el";
       emcsg = "emacs -Q -l /home/haoxiangliew/.emacs.d/editor-init.el";
     };
+    systemPackages = with pkgs; [ masterPkgs.unar ];
   };
 
   programs.chromium = {
@@ -224,12 +224,12 @@ in {
 
   home-manager.users.haoxiangliew = {
 
-    home = { stateVersion = config.system.nixos.release; };
+    home.stateVersion = config.system.nixos.release;
 
     nixpkgs = {
       config = {
         allowUnfree = true;
-        firefox = { enableGnomeExtensions = true; };
+        firefox.enableGnomeExtensions = true;
       };
     };
 
@@ -279,7 +279,6 @@ in {
       firebird-emu
       gimp
       gtypist
-      # hhkb-gnu
       inkscape
       libreoffice-fresh
       lieer
@@ -327,7 +326,7 @@ in {
       catch2
       clang_14
       clang-tools_14
-      cmakeFix.cmakeWithGui
+      cmakeWithGui
       gdb
       gnumake
       ninja
@@ -354,7 +353,9 @@ in {
       qtspim
       # nix
       direnv
+      hydra-check
       nixpkgs-fmt
+      nix-tree
       # nodejs
       nodejs
       nodejs-16_x

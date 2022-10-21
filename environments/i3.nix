@@ -3,12 +3,6 @@
 {
   nixpkgs = {
     overlays = let
-      bluemanOverlay = (self: super: {
-        blueman = super.blueman.overrideAttrs (_: {
-          src = builtins.fetchTarball
-            "https://github.com/blueman-project/blueman/archive/main.tar.gz";
-        });
-      });
       picomOverlay = (self: super: {
         picom = super.picom.overrideAttrs (_: {
           src = builtins.fetchTarball
@@ -21,7 +15,7 @@
             "https://github.com/wwmm/pulseeffects/archive/pulseaudio-legacy.tar.gz";
         });
       });
-    in [ bluemanOverlay picomOverlay pulseeffectsOverlay ];
+    in [ picomOverlay pulseeffectsOverlay ];
   };
 
   environment = {
@@ -33,6 +27,10 @@
       xorg.xwininfo
       xclip
     ];
+    etc = {
+      "wireplumber/bluetooth.lua.d/51-bluez-config.lua".text =
+        "	bluez_monitor.properties = {\n		[\"bluez5.enable-sbc-xq\"] = true,\n		[\"bluez5.enable-msbc\"] = true,\n		[\"bluez5.enable-hw-volume\"] = true,\n		[\"bluez5.headset-roles\"] = \"[ hsp_hs hsp_ag hfp_hf hfp_ag ]\"\n	}\n";
+    };
   };
 
   programs = {
@@ -43,18 +41,26 @@
     };
   };
 
-  sound.enable = true;
+  qt5 = {
+    enable = true;
+    platformTheme = "gtk";
+    style = "adwaita-dark";
+  };
+
+  # sound.enable = true;
+  sound.enable = false;
 
   hardware = {
-    pulseaudio = {
-      enable = true;
-      support32Bit = true;
-      package = pkgs.pulseaudioFull;
-      daemon.config = {
-        default-fragments = 2;
-        default-fragment-size-msec = 5;
-      };
-    };
+    pulseaudio.enable = false;
+    # pulseaudio = {
+    #   enable = true;
+    #   support32Bit = true;
+    #   package = pkgs.pulseaudioFull;
+    #   daemon.config = {
+    #     default-fragments = 2;
+    #     default-fragment-size-msec = 5;
+    #   };
+    # };
     acpilight.enable = true;
   };
 
@@ -70,9 +76,6 @@
             autorandr
             dunst
             flameshot
-            gnome.adwaita-icon-theme
-            gnome.nautilus
-            gnome.sushi
             kitty
             libnotify
             lightlocker
@@ -83,7 +86,8 @@
             playerctl
             polkit_gnome
             polybarFull
-            pulseeffects-legacy
+            # pulseeffects-legacy
+            easyeffects
             rofi
             rofi-power-menu
             udiskie
@@ -132,6 +136,16 @@
           ''${pkgs.libnotify}/bin/notify-send "Locking in 10 seconds"'';
         extraOptions = [ "-detectsleep" ];
       };
+    };
+    pipewire = {
+      enable = true;
+      wireplumber.enable = true;
+      alsa = {
+        enable = true;
+        support32Bit = true;
+      };
+      pulse.enable = true;
+      jack.enable = true;
     };
     tlp = {
       enable = true;

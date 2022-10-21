@@ -69,7 +69,8 @@ in {
           sync_to_monitor       no
 
           # window margins
-          window_margin_width   10
+          window_margin_width    10
+          wayland_titlebar_color ${dracula-pro.background-light}
 
           # disable audio bell
           enable_audio_bell     no

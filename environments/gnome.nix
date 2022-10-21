@@ -3,17 +3,22 @@
 {
   environment = {
     variables = {
+      NIXOS_OZONE_WL = "1";
       MOZ_ENABLE_WAYLAND = "1";
       QT_QPA_PLATFORMTHEME = "gnome";
       QT_QPA_PLATFORM = "wayland";
     };
     systemPackages = (with pkgs; [
+      drawing
       easyeffects
-      kitty
       evtest
+      glib
+      gnome-obfuscate
+      kitty
       libinput
-      qt6.qtwayland
       libsForQt5.qt5.qtwayland
+      pinentry-gnome
+      qt6.qtwayland
     ]) ++ (with pkgs.gnome; [ adwaita-icon-theme gnome-tweaks ])
       ++ (with pkgs.gnomeExtensions; [ appindicator alphabetical-app-grid ]);
     gnome = {
@@ -47,10 +52,7 @@
     };
   };
 
-  qt5 = {
-    enable = true;
-    platformTheme = "gnome";
-  };
+  qt5.style = "adwaita-dark";
 
   sound.enable = false;
 
@@ -65,22 +67,22 @@
           wayland = true;
         };
       };
-      desktopManager = { gnome = { enable = true; }; };
+      desktopManager.gnome.enable = true;
     };
     dbus = {
       enable = true;
-      packages = with pkgs; [ dconf ];
+      packages = with pkgs; [ dconf gcr ];
     };
-    gnome = { gnome-browser-connector.enable = true; };
+    gnome.gnome-browser-connector.enable = true;
     pipewire = {
       enable = true;
-      wireplumber = { enable = true; };
+      wireplumber.enable = true;
       alsa = {
         enable = true;
         support32Bit = true;
       };
-      pulse = { enable = true; };
-      jack = { enable = true; };
+      pulse.enable = true;
+      jack.enable = true;
     };
     udev = { packages = with pkgs.gnome; [ gnome-settings-daemon ]; };
   };
