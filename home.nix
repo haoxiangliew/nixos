@@ -13,13 +13,13 @@ let
     };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/104e8082de1b20f9d0e1f05b1028795ed0e0e4bc.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/b7d8c687782c8f9a1d425a7e486eb989654f6468.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/858214991200eccc2f0a4f929f4baa0ffd8281c6.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/3d7c61b6dc5fc9d7c5e4a74e575c582aa567d547.tar.gz";
       }))
     ];
   };
