@@ -5,6 +5,10 @@ let
 
   home-manager = builtins.fetchTarball
     "https://github.com/nix-community/home-manager/archive/master.tar.gz";
+  dracula-qt = builtins.fetchurl {
+    url = "https://raw.githubusercontent.com/dracula/qt5/master/Dracula.conf";
+    sha256 = "06bhak8ix01gpa2p43bf3hzw74375zgdhbjjzr8qj91qddycpvdb";
+  };
 
 in {
   imports = [ (import "${home-manager}/nixos") ../dotfiles/kitty/kitty.nix ];
@@ -12,6 +16,7 @@ in {
   home-manager.users.haoxiangliew = {
     xdg = {
       configFile = {
+        "qt5ct/colors/Dracula.conf".source = "${dracula-qt}";
         "autostart/easyeffects-service.desktop".text = ''
           [Desktop Entry]
           Name=EasyEffects
@@ -21,6 +26,17 @@ in {
           StartupNotify=false
           Terminal=false
           Type=Application
+        '';
+        "autostart/galaxy-buds-client.desktop".text = ''
+          [Desktop Entry]
+          Name=GalaxyBudsClient
+          Comment=Unofficial Galaxy Buds Manager for Windows and Linux
+          Exec=GalaxyBudsClient
+          Icon=GalaxyBudsClient
+          GenericName=Galaxy Buds Client
+          StartupNotify=true
+          Type=Application
+          Categories=Settings
         '';
         "autostart/plex-mpv-shim.desktop".text = ''
           [Desktop Entry]

@@ -5,21 +5,21 @@
     variables = {
       NIXOS_OZONE_WL = "1";
       MOZ_ENABLE_WAYLAND = "1";
-      QT_QPA_PLATFORMTHEME = "gnome";
+      # QT_QPA_PLATFORMTHEME = "gnome";
       QT_QPA_PLATFORM = "wayland";
     };
     systemPackages = (with pkgs; [
-      drawing
       easyeffects
       evtest
       glib
       gnome-obfuscate
+      helvum
       kitty
       libinput
       libsForQt5.qt5.qtwayland
       pinentry-gnome
       qt6.qtwayland
-    ]) ++ (with pkgs.gnome; [ adwaita-icon-theme gnome-tweaks ])
+    ]) ++ (with pkgs.gnome; [ adwaita-icon-theme dconf-editor gnome-tweaks ])
       ++ (with pkgs.gnomeExtensions; [ appindicator alphabetical-app-grid ]);
     gnome = {
       excludePackages = (with pkgs; [ gnome-photos gnome-tour ])
@@ -52,7 +52,7 @@
     };
   };
 
-  qt5.style = "adwaita-dark";
+  qt5.platformTheme = "qt5ct";
 
   sound.enable = false;
 
@@ -84,6 +84,6 @@
       pulse.enable = true;
       jack.enable = true;
     };
-    udev = { packages = with pkgs.gnome; [ gnome-settings-daemon ]; };
+    udev.packages = with pkgs.gnome; [ gnome-settings-daemon ];
   };
 }

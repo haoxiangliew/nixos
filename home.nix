@@ -13,13 +13,13 @@ let
     };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/b7d8c687782c8f9a1d425a7e486eb989654f6468.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/f994293d1eb8812f032e8919e10a594567cf6ef7.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/06a3e6d7d9d40eb7351f2e70fda9b5f1461c56d0.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/52b4a58403f9103951631db70bcb740c8ca42a8d.tar.gz";
       }))
     ];
   };
@@ -49,6 +49,21 @@ in {
           "https://github.com/GooseMod/OpenAsar/releases/download/nightly/app.asar";
         sha256 = "0cygr2xihdr5qz24v0gbrax08vr9h8w8cm190v6fkbggjb8x8417";
       };
+      waylandIndexJs = builtins.fetchurl {
+        url =
+          "https://gist.githubusercontent.com/Vendicated/5e5eee64348ee936349367fe7cedd8c3/raw/7b88d801112e58b7545406b8d46c12760c0d8faa/index.js";
+        sha256 = "0avgvzawbf1gn0d7qyyrv2020ic6cvyh3728w9vq2644zhnw8j3v";
+      };
+      waylandPackageJson = builtins.fetchurl {
+        url =
+          "https://gist.githubusercontent.com/Vendicated/5e5eee64348ee936349367fe7cedd8c3/raw/7b88d801112e58b7545406b8d46c12760c0d8faa/package.json";
+        sha256 = "08nhw2345navfa9nxzfkrikq5ha4n6c7n52xzp0j6ccjgy3akmz0";
+      };
+      waylandPreloadJs = builtins.fetchurl {
+        url =
+          "https://gist.githubusercontent.com/Vendicated/5e5eee64348ee936349367fe7cedd8c3/raw/7b88d801112e58b7545406b8d46c12760c0d8faa/preload.js";
+        sha256 = "0iqc9q1kl0rgnp9c93j2k0176w6clr186mqcm02wfa7pq1bz7bfz";
+      };
       discordOverlay = (self: super: {
         discord = super.discord.overrideAttrs (oldAttrs: {
           src = builtins.fetchTarball
@@ -56,6 +71,20 @@ in {
           installPhase = (oldAttrs.installPhase or "") + ''
             echo "Replacing app.asar with OpenAsar..."
             cp -r ${openasar} $out/opt/Discord/resources/app.asar
+          '';
+        });
+        discord-canary = super.discord-canary.overrideAttrs (oldAttrs: {
+          src = builtins.fetchTarball
+            "https://discord.com/api/download/canary?platform=linux&format=tar.gz";
+          installPhase = (oldAttrs.installPhase or "") + ''
+            echo "Replacing app.asar with OpenAsar..."
+            cp -r ${openasar} $out/opt/DiscordCanary/resources/app.asar
+            echo "Applying fixes for Wayland..."
+            mv $out/opt/DiscordCanary/resources/app.asar $out/opt/DiscordCanary/resources/_app.asar
+            mkdir $out/opt/DiscordCanary/resources/app.asar
+            cp -r ${waylandIndexJs} $out/opt/DiscordCanary/resources/app.asar/index.js
+            cp -r ${waylandPreloadJs} $out/opt/DiscordCanary/resources/app.asar/preload.js
+            cp -r ${waylandPackageJson} $out/opt/DiscordCanary/resources/app.asar/package.json
           '';
         });
       });
@@ -241,6 +270,7 @@ in {
       font = {
         name = "Cantarell";
         package = pkgs.cantarell-fonts;
+        size = 10;
       };
       cursorTheme = {
         name = "Dracula-cursors";
@@ -273,14 +303,15 @@ in {
       bitwarden
       bottles
       darktable
-      # davinci-resolve
       ffmpeg
       ffmpeg-normalize
       firebird-emu
+      galaxy-buds-client
       gimp
       gtypist
       inkscape
       libreoffice-fresh
+      libsForQt5.kdenlive
       lieer
       masterpdfeditor
       notmuch
@@ -294,9 +325,8 @@ in {
       speedtest-cli
       spotify-unwrapped
       xournalpp
-      youtube-dl
+      yt-dlp
       zathura
-      # zoom-us
 
       # games
       lutris
@@ -317,7 +347,7 @@ in {
       # ide
       arduino
       ghidra
-      # kicad
+      kicad
       quartus-prime-lite
       # bash
       shfmt
@@ -384,6 +414,8 @@ in {
         profiles = let
           defaultSettings = {
             "extensions.pocket.enabled" = false;
+            "gfx.webrender.all" = true;
+            "gfx.webrender.compositor.force-enabled" = true;
             "network.dns.echconfig.enabled" = true;
             "network.dns.use_https_rr_as_altsvc" = true;
             "network.security.esni.enabled" = true;
@@ -393,11 +425,6 @@ in {
           default = {
             id = 0;
             path = "0.default";
-            settings = defaultSettings;
-          };
-          captive-browser = {
-            id = 1;
-            path = "1.captive-browser";
             settings = defaultSettings;
           };
         };
@@ -423,8 +450,6 @@ in {
         "nixpkgs/config.nix".text = ''
           { allowUnfree = true; }
         '';
-        "captive-browser.toml".source =
-          ./dotfiles/captive-browser/captive-browser.toml;
         "mpv/input.conf".source = ./dotfiles/mpv/input.conf;
         "mpv/mpv.conf".source = ./dotfiles/mpv/mpv.conf;
         "plex-mpv-shim/input.conf".source = ./dotfiles/mpv/input.conf;
@@ -482,15 +507,6 @@ in {
             "text/x-c++"
           ];
         };
-        # davinci-resolve = {
-        #   name = "DaVinci Resolve";
-        #   genericName = "DaVinci Resolve";
-        #   comment =
-        #     "Revolutionary new tools for editing, visual effects, color correction and professional audio post production, all in a single application!";
-        #   icon = "davinci-resolve";
-        #   exec = "davinci-resolve";
-        #   mimeType = [ "application/x-resolveproj" ];
-        # };
         # discord = {
         #   name = "Discord";
         #   genericName =

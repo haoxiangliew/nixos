@@ -20,6 +20,11 @@
       };
       efi.canTouchEfiVariables = true;
     };
+    initrd.systemd.enable = true;
+    plymouth = {
+      enable = true;
+      font = "${pkgs.cantarell-fonts}/share/fonts/cantarell/Cantarell-VF.otf";
+    };
     supportedFilesystems = [ "btrfs" "ntfs" ];
     cleanTmpDir = true;
     kernel.sysctl = {
@@ -75,7 +80,7 @@
     defaultLocale = "en_US.UTF-8";
     inputMethod = {
       enabled = "ibus";
-      ibus.engines = with pkgs.ibus-engines; [ libpinyin ];
+      ibus.engines = with pkgs.ibus-engines; [ rime ];
     };
   };
 
@@ -148,7 +153,6 @@
       (aspellWithDicts (dicts: with dicts; [ en en-computers en-science ]))
       appimage-run
       aspell
-      captive-browser
       efitools
       feh
       git
@@ -191,8 +195,8 @@
       cm_unicode
       dejavu_fonts
       font-awesome_4
+      jetbrains-mono
       joypixels
-      pragmataPro
       source-han-mono
       source-han-sans
       source-han-serif
@@ -205,7 +209,7 @@
         serif = [ "Liberation Serif" "Source Han Serif" ];
         emoji = [ "JoyPixels" ];
         sansSerif = [ "Cantarell" "Source Han Sans" ];
-        monospace = [ "PragmataPro Mono Liga" "Source Han Mono" ];
+        monospace = [ "JetBrains Mono" "Source Han Mono" ];
       };
     };
   };
@@ -240,6 +244,10 @@
       vimAlias = true;
     };
     adb.enable = true;
+    captive-browser = {
+      enable = true;
+      interface = "wlp4s0";
+    };
     dconf.enable = true;
     mtr.enable = true;
   };
@@ -261,7 +269,6 @@
       enable = true;
       enableGraphical = true;
     };
-    # opentabletdriver.enable = true;
     sensor.iio.enable = true;
   };
 
@@ -337,8 +344,8 @@
         via
       ];
       extraRules = ''
-        # increase trackpoint drift_time from 5 to 25
-        SUBSYSTEM=="input", ATTR{name}=="TPPS/2 IBM TrackPoint", ATTR{device/drift_time}="25"
+        # make the trackpoint much more usable
+        ACTION=="add", SUBSYSTEM=="input", ATTR{name}=="TPPS/2 IBM TrackPoint", ATTR{device/drift_time}="25"
 
         # HHKB Professional Hybrid
         KERNEL=="hidraw*", ATTRS{idVendor}=="04fe", TAG+="uaccess"
