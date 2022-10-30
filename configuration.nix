@@ -339,7 +339,6 @@
         android-udev-rules
         chrysalis
         logitech-udev-rules
-        platformio
         qmk-udev-rules
         via
       ];

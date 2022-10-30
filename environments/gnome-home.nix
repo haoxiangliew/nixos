@@ -34,7 +34,8 @@ in {
           Exec=GalaxyBudsClient
           Icon=GalaxyBudsClient
           GenericName=Galaxy Buds Client
-          StartupNotify=true
+          StartupNotify=false
+          Terminal=false
           Type=Application
           Categories=Settings
         '';

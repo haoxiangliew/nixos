@@ -13,13 +13,13 @@ let
     };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/f994293d1eb8812f032e8919e10a594567cf6ef7.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/448a599c49978c2794401bfc3a2e1fba1a8663be.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/52b4a58403f9103951631db70bcb740c8ca42a8d.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/feea89fbc310afc87dff52ae0a1bc4afabfcbd43.tar.gz";
       }))
     ];
   };
@@ -179,6 +179,7 @@ in {
           version = "2.9.9";
           src = builtins.fetchTarball
             "https://github.com/spicetify/spicetify-cli/archive/refs/tags/v2.9.9.tar.gz";
+          vendorSha256 = "sha256-zYIbtcDM9iYSRHagvI9D284Y7w0ZxG4Ba1p4jqmQyng=";
           postInstall = (old.postInstall or "") + ''
             cp -r ${spicetify-src}/css-map.json $out/bin/css-map.json
           '';
@@ -223,7 +224,7 @@ in {
       nightlyOverlay
       pythonOverlay
       rustOverlay
-      spicetifyOverlay
+      # spicetifyOverlay
       xournalppNightlyOverlay
       packagesOverlay
     ];
@@ -323,7 +324,8 @@ in {
       rclone
       scrcpy
       speedtest-cli
-      spotify-unwrapped
+      # spotify-unwrapped
+      spotify
       xournalpp
       yt-dlp
       zathura
@@ -374,8 +376,8 @@ in {
       # java
       jdk
       # latex
+      lua53Packages.digestif
       pandoc
-      texlab
       texlive.combined.scheme-full
       # markdown
       marksman
