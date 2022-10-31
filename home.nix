@@ -13,13 +13,13 @@ let
     };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/448a599c49978c2794401bfc3a2e1fba1a8663be.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/fdebb81f45a1ba2c4afca5fd9f526e1653ad0949.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/feea89fbc310afc87dff52ae0a1bc4afabfcbd43.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/dd6b9bbc728b9eb1c53738cf64d067384dfa269a.tar.gz";
       }))
     ];
   };
@@ -280,7 +280,7 @@ in {
       };
       theme = {
         name = "Dracula";
-        package = pkgs.dracula-theme;
+	package = pkgs.dracula-theme;
       };
       iconTheme = {
         name = "Papirus-Dark";
