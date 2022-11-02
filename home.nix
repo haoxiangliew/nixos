@@ -13,13 +13,13 @@ let
     };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/fdebb81f45a1ba2c4afca5fd9f526e1653ad0949.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/d40fea9aeb8840fea0d377baa4b38e39b9582458.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/dd6b9bbc728b9eb1c53738cf64d067384dfa269a.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/f8e2ddd5bc27b1d5be1a63f27fdde58dc5a1297f.tar.gz";
       }))
     ];
   };
@@ -280,7 +280,7 @@ in {
       };
       theme = {
         name = "Dracula";
-	package = pkgs.dracula-theme;
+        package = pkgs.dracula-theme;
       };
       iconTheme = {
         name = "Papirus-Dark";
@@ -418,6 +418,7 @@ in {
             "extensions.pocket.enabled" = false;
             "gfx.webrender.all" = true;
             "gfx.webrender.compositor.force-enabled" = true;
+            "gfx.webrender.precache-shaders" = true;
             "network.dns.echconfig.enabled" = true;
             "network.dns.use_https_rr_as_altsvc" = true;
             "network.security.esni.enabled" = true;

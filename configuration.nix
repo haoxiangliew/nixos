@@ -26,7 +26,8 @@
       font = "${pkgs.cantarell-fonts}/share/fonts/cantarell/Cantarell-VF.otf";
     };
     supportedFilesystems = [ "btrfs" "ntfs" ];
-    cleanTmpDir = true;
+    tmpOnTmpfs = lib.mkDefault true;
+    cleanTmpDir = lib.mkDefault (!config.boot.tmpOnTmpfs);
     kernel.sysctl = {
       # Disable sysreq
       "kernel.sysreq" = "0";

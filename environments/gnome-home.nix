@@ -10,12 +10,14 @@ let
     sha256 = "06bhak8ix01gpa2p43bf3hzw74375zgdhbjjzr8qj91qddycpvdb";
   };
 
-in {
-  imports = [ (import "${home-manager}/nixos") ../dotfiles/kitty/kitty.nix ];
+in
+{
+  imports = [ (import "${home-manager}/nixos") ];
 
   home-manager.users.haoxiangliew = {
     xdg = {
       configFile = {
+        "kitty/kitty.conf".source = ../dotfiles/kitty/kitty.conf;
         "qt5ct/colors/Dracula.conf".source = "${dracula-qt}";
         "autostart/easyeffects-service.desktop".text = ''
           [Desktop Entry]

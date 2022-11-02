@@ -75,63 +75,63 @@ in {
           # disable audio bell
           enable_audio_bell     no
 
-          # Dracula Pro
-          foreground            ${dracula-pro.foreground}
-          background            ${dracula-pro.background}
-          selection_foreground  ${dracula-pro.ansi.bright.white_15}
-          selection_background  ${dracula-pro.selection}
+          # # Dracula Pro
+          # foreground            ${dracula-pro.foreground}
+          # background            ${dracula-pro.background}
+          # selection_foreground  ${dracula-pro.ansi.bright.white_15}
+          # selection_background  ${dracula-pro.selection}
 
-          url_color ${dracula-pro.cyan}
+          # url_color ${dracula-pro.cyan}
 
-          # black
-          color0  ${dracula-pro.ansi.black_0}
-          color8  ${dracula-pro.ansi.bright.black_8}
+          # # black
+          # color0  ${dracula-pro.ansi.black_0}
+          # color8  ${dracula-pro.ansi.bright.black_8}
 
-          # red
-          color1  ${dracula-pro.ansi.red_1}
-          color9  ${dracula-pro.ansi.bright.red_9}
+          # # red
+          # color1  ${dracula-pro.ansi.red_1}
+          # color9  ${dracula-pro.ansi.bright.red_9}
 
-          # green
-          color2  ${dracula-pro.ansi.green_2}
-          color10 ${dracula-pro.ansi.bright.green_10}
+          # # green
+          # color2  ${dracula-pro.ansi.green_2}
+          # color10 ${dracula-pro.ansi.bright.green_10}
 
-          # yellow
-          color3  ${dracula-pro.ansi.yellow_3}
-          color11 ${dracula-pro.ansi.bright.yellow_11}
+          # # yellow
+          # color3  ${dracula-pro.ansi.yellow_3}
+          # color11 ${dracula-pro.ansi.bright.yellow_11}
 
-          # blue
-          color4  ${dracula-pro.ansi.blue_4}
-          color12 ${dracula-pro.ansi.bright.blue_12}
+          # # blue
+          # color4  ${dracula-pro.ansi.blue_4}
+          # color12 ${dracula-pro.ansi.bright.blue_12}
 
-          # magenta
-          color5  ${dracula-pro.ansi.purple_5}
-          color13 ${dracula-pro.ansi.bright.purple_13}
+          # # magenta
+          # color5  ${dracula-pro.ansi.purple_5}
+          # color13 ${dracula-pro.ansi.bright.purple_13}
 
-          # cyan
-          color6  ${dracula-pro.ansi.cyan_6}
-          color14 ${dracula-pro.ansi.bright.cyan_14}
+          # # cyan
+          # color6  ${dracula-pro.ansi.cyan_6}
+          # color14 ${dracula-pro.ansi.bright.cyan_14}
 
-          # white
-          color7  ${dracula-pro.ansi.white_7}
-          color15 ${dracula-pro.ansi.bright.white_15}
+          # # white
+          # color7  ${dracula-pro.ansi.white_7}
+          # color15 ${dracula-pro.ansi.bright.white_15}
 
-          # Cursor colors
-          cursor            ${dracula-pro.foreground}
-          cursor_text_color background
+          # # Cursor colors
+          # cursor            ${dracula-pro.foreground}
+          # cursor_text_color background
 
-          # Tab bar colors
-          active_tab_foreground   ${dracula-pro.background}
-          active_tab_background   ${dracula-pro.foreground}
-          inactive_tab_foreground ${dracula-pro.background}
-          inactive_tab_background ${dracula-pro.comment}
+          # # Tab bar colors
+          # active_tab_foreground   ${dracula-pro.background}
+          # active_tab_background   ${dracula-pro.foreground}
+          # inactive_tab_foreground ${dracula-pro.background}
+          # inactive_tab_background ${dracula-pro.comment}
 
-          # Marks
-          mark1_foreground ${dracula-pro.background}
-          mark1_background ${dracula-pro.red}
+          # # Marks
+          # mark1_foreground ${dracula-pro.background}
+          # mark1_background ${dracula-pro.red}
 
-          # Splits/Windows
-          active_border_color ${dracula-pro.foreground}
-          inactive_border_color ${dracula-pro.comment}
+          # # Splits/Windows
+          # active_border_color ${dracula-pro.foreground}
+          # inactive_border_color ${dracula-pro.comment}
         '';
       };
     };

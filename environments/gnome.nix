@@ -19,7 +19,7 @@
       libsForQt5.qt5.qtwayland
       pinentry-gnome
       qt6.qtwayland
-    ]) ++ (with pkgs.gnome; [ adwaita-icon-theme dconf-editor gnome-tweaks ])
+    ]) ++ (with pkgs.gnome; [ adwaita-icon-theme dconf-editor gnome-tweaks gnome-power-manager ])
       ++ (with pkgs.gnomeExtensions; [ appindicator alphabetical-app-grid ]);
     gnome = {
       excludePackages = (with pkgs; [ gnome-photos gnome-tour ])
