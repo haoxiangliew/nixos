@@ -13,13 +13,13 @@ let
     };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/d40fea9aeb8840fea0d377baa4b38e39b9582458.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/3bacde6273b09a21a8ccfba15586fb165078fb62.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/f8e2ddd5bc27b1d5be1a63f27fdde58dc5a1297f.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/a864e84bd842d00d686e040f552e2fa7030351a0.tar.gz";
       }))
     ];
   };
@@ -49,21 +49,6 @@ in {
           "https://github.com/GooseMod/OpenAsar/releases/download/nightly/app.asar";
         sha256 = "0cygr2xihdr5qz24v0gbrax08vr9h8w8cm190v6fkbggjb8x8417";
       };
-      waylandIndexJs = builtins.fetchurl {
-        url =
-          "https://gist.githubusercontent.com/Vendicated/5e5eee64348ee936349367fe7cedd8c3/raw/7b88d801112e58b7545406b8d46c12760c0d8faa/index.js";
-        sha256 = "0avgvzawbf1gn0d7qyyrv2020ic6cvyh3728w9vq2644zhnw8j3v";
-      };
-      waylandPackageJson = builtins.fetchurl {
-        url =
-          "https://gist.githubusercontent.com/Vendicated/5e5eee64348ee936349367fe7cedd8c3/raw/7b88d801112e58b7545406b8d46c12760c0d8faa/package.json";
-        sha256 = "08nhw2345navfa9nxzfkrikq5ha4n6c7n52xzp0j6ccjgy3akmz0";
-      };
-      waylandPreloadJs = builtins.fetchurl {
-        url =
-          "https://gist.githubusercontent.com/Vendicated/5e5eee64348ee936349367fe7cedd8c3/raw/7b88d801112e58b7545406b8d46c12760c0d8faa/preload.js";
-        sha256 = "0iqc9q1kl0rgnp9c93j2k0176w6clr186mqcm02wfa7pq1bz7bfz";
-      };
       discordOverlay = (self: super: {
         discord = super.discord.overrideAttrs (oldAttrs: {
           src = builtins.fetchTarball
@@ -71,20 +56,6 @@ in {
           installPhase = (oldAttrs.installPhase or "") + ''
             echo "Replacing app.asar with OpenAsar..."
             cp -r ${openasar} $out/opt/Discord/resources/app.asar
-          '';
-        });
-        discord-canary = super.discord-canary.overrideAttrs (oldAttrs: {
-          src = builtins.fetchTarball
-            "https://discord.com/api/download/canary?platform=linux&format=tar.gz";
-          installPhase = (oldAttrs.installPhase or "") + ''
-            echo "Replacing app.asar with OpenAsar..."
-            cp -r ${openasar} $out/opt/DiscordCanary/resources/app.asar
-            echo "Applying fixes for Wayland..."
-            mv $out/opt/DiscordCanary/resources/app.asar $out/opt/DiscordCanary/resources/_app.asar
-            mkdir $out/opt/DiscordCanary/resources/app.asar
-            cp -r ${waylandIndexJs} $out/opt/DiscordCanary/resources/app.asar/index.js
-            cp -r ${waylandPreloadJs} $out/opt/DiscordCanary/resources/app.asar/preload.js
-            cp -r ${waylandPackageJson} $out/opt/DiscordCanary/resources/app.asar/package.json
           '';
         });
       });
@@ -218,6 +189,7 @@ in {
     in [
       discordOverlay
       draculaThemeOverlay
+      googleChromeOverlay
       lieerOverlay
       lutrisOverlay
       masterPdfOverlay
@@ -241,11 +213,10 @@ in {
       emcs = "emacs -Q -nw -l /home/haoxiangliew/.emacs.d/editor-init.el";
       emcsg = "emacs -Q -l /home/haoxiangliew/.emacs.d/editor-init.el";
     };
-    systemPackages = with pkgs; [ masterPkgs.unar ];
   };
 
   programs.chromium = {
-    enable = false;
+    enable = true;
     extensions = [
       "dcpihecpambacapedldabdbpakmachpb;https://raw.githubusercontent.com/iamadamdev/bypass-paywalls-chrome/master/src/updates/updates.xml"
       "ilcacnomdmddpohoakmgcboiehclpkmj;https://raw.githubusercontent.com/FastForwardTeam/releases/main/update/update.xml"
@@ -407,7 +378,7 @@ in {
 
     programs = {
       chromium = {
-        enable = false;
+        enable = true;
         package = pkgs.google-chrome-dev;
       };
       firefox = {

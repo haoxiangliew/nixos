@@ -10,8 +10,7 @@ let
     sha256 = "06bhak8ix01gpa2p43bf3hzw74375zgdhbjjzr8qj91qddycpvdb";
   };
 
-in
-{
+in {
   imports = [ (import "${home-manager}/nixos") ];
 
   home-manager.users.haoxiangliew = {
@@ -29,18 +28,18 @@ in
           Terminal=false
           Type=Application
         '';
-        "autostart/galaxy-buds-client.desktop".text = ''
-          [Desktop Entry]
-          Name=GalaxyBudsClient
-          Comment=Unofficial Galaxy Buds Manager for Windows and Linux
-          Exec=GalaxyBudsClient
-          Icon=GalaxyBudsClient
-          GenericName=Galaxy Buds Client
-          StartupNotify=false
-          Terminal=false
-          Type=Application
-          Categories=Settings
-        '';
+        # "autostart/galaxy-buds-client.desktop".text = ''
+        #   [Desktop Entry]
+        #   Name=GalaxyBudsClient
+        #   Comment=Unofficial Galaxy Buds Manager for Windows and Linux
+        #   Exec=GalaxyBudsClient
+        #   Icon=GalaxyBudsClient
+        #   GenericName=Galaxy Buds Client
+        #   StartupNotify=false
+        #   Terminal=false
+        #   Type=Application
+        #   Categories=Settings
+        # '';
         "autostart/plex-mpv-shim.desktop".text = ''
           [Desktop Entry]
           Name=plex-mpv-shim

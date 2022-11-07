@@ -321,10 +321,10 @@
       enable = true;
       dnssec = "false";
       extraConfig = ''
-        DNS=45.90.28.0#.dns1.nextdns.io
-        DNS=2a07:a8c0::#.dns1.nextdns.io
-        DNS=45.90.30.0#.dns2.nextdns.io
-        DNS=2a07:a8c1::#.dns2.nextdns.io
+        DNS=45.90.28.0#nixos-.dns1.nextdns.io
+        DNS=2a07:a8c0::#nixos-.dns1.nextdns.io
+        DNS=45.90.30.0#nixos-.dns2.nextdns.io
+        DNS=2a07:a8c1::#nixos-.dns2.nextdns.io
         DNSOverTLS=yes
       '';
     };
