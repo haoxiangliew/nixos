@@ -1,4 +1,5 @@
-{ stdenv, fetchurl, writeShellScript, steam, lib, scrot, ... }@args:
+{ stdenv, fetchurl, writeShellScript, steam, openssl_1_1, lib, scrot, ...
+}@args:
 
 ################################################################################
 # Mostly based on wechat-uos package from AUR:
@@ -6,7 +7,7 @@
 ################################################################################
 
 let
-  version = "2.1.4";
+  version = "2.1.5";
 
   license = stdenv.mkDerivation rec {
     pname = "wechat-uos-license";
@@ -25,7 +26,7 @@ let
     src = fetchurl {
       url =
         "https://home-store-packages.uniontech.com/appstore/pool/appstore/c/com.tencent.weixin/com.tencent.weixin_${version}_amd64.deb";
-      sha256 = "04s2xy9c1sj3393mz9c5bs58h77fwj4brpw18bsggxsas7wjdgjp";
+      sha256 = "1091nbf7avp3i45yh8qpsg5chlh17yf4cdgq4z6d8p0gxb1pnlxx";
     };
 
     unpackPhase = ''
@@ -47,7 +48,7 @@ let
   };
 
   steam-run = (steam.override {
-    extraPkgs = p: [ license resource ];
+    extraPkgs = p: [ openssl_1_1 license resource ];
     runtimeOnly = true;
   }).run;
 

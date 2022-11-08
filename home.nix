@@ -19,7 +19,7 @@ let
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/a864e84bd842d00d686e040f552e2fa7030351a0.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/f04cb6f6724ba4568a7f6dae0863e507477667b7.tar.gz";
       }))
     ];
   };
@@ -42,7 +42,7 @@ in {
         url =
           "https://github.com/mozilla/nixpkgs-mozilla/archive/${moz-rev}.tar.gz";
       };
-      nightlyOverlay = (import "${moz-url}/firefox-overlay.nix");
+      firefoxOverlay = (import "${moz-url}/firefox-overlay.nix");
       rustOverlay = (import "${moz-url}/rust-overlay.nix");
       openasar = builtins.fetchurl {
         url =
@@ -76,10 +76,11 @@ in {
         });
       });
       googleChromeOverlay = (self: super: {
-        google-chrome-dev = super.google-chrome-dev.override {
+        google-chrome-dev = super.google-chrome-dev.overrideAttrs (old: {
+          deps = (old.deps or [ ]) ++ [ pkgs.gtk4 ];
           commandLineArgs =
-            "--use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --enable-accelerated-video-decode --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder --disable-features=UseChromeOSDirectVideoDecoder";
-        };
+            "--use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-accelerated-video-decode --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder --disable-features=UseChromeOSDirectVideoDecoder";
+        });
       });
       lieerOverlay = (self: super: {
         lieer = super.lieer.overrideAttrs (_: {
@@ -189,11 +190,11 @@ in {
     in [
       discordOverlay
       draculaThemeOverlay
-      googleChromeOverlay
+      # googleChromeOverlay
       lieerOverlay
       lutrisOverlay
       masterPdfOverlay
-      nightlyOverlay
+      firefoxOverlay
       pythonOverlay
       rustOverlay
       # spicetifyOverlay
@@ -216,7 +217,7 @@ in {
   };
 
   programs.chromium = {
-    enable = true;
+    enable = false;
     extensions = [
       "dcpihecpambacapedldabdbpakmachpb;https://raw.githubusercontent.com/iamadamdev/bypass-paywalls-chrome/master/src/updates/updates.xml"
       "ilcacnomdmddpohoakmgcboiehclpkmj;https://raw.githubusercontent.com/FastForwardTeam/releases/main/update/update.xml"
@@ -307,6 +308,7 @@ in {
       # social
       element-desktop
       signal-desktop
+      wechat-uos
 
       # devtools
       criu
@@ -378,18 +380,19 @@ in {
 
     programs = {
       chromium = {
-        enable = true;
+        enable = false;
         package = pkgs.google-chrome-dev;
       };
       firefox = {
         enable = true;
-        package = pkgs.latest.firefox-nightly-bin;
+        package = pkgs.latest.firefox-bin;
         profiles = let
           defaultSettings = {
             "extensions.pocket.enabled" = false;
             "gfx.webrender.all" = true;
             "gfx.webrender.compositor.force-enabled" = true;
             "gfx.webrender.precache-shaders" = true;
+            "media.ffmpeg.vaapi.enabled" = true;
             "network.dns.echconfig.enabled" = true;
             "network.dns.use_https_rr_as_altsvc" = true;
             "network.security.esni.enabled" = true;
