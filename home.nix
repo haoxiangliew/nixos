@@ -13,13 +13,13 @@ let
     };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/3bacde6273b09a21a8ccfba15586fb165078fb62.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/61a8a98e6d557e6dd7ed0cdb54c3a3e3bbc5e25c.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/f04cb6f6724ba4568a7f6dae0863e507477667b7.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/dd60ef06981fec354663054e608bbfcd7f8f1cff.tar.gz";
       }))
     ];
   };
@@ -44,6 +44,14 @@ in {
       };
       firefoxOverlay = (import "${moz-url}/firefox-overlay.nix");
       rustOverlay = (import "${moz-url}/rust-overlay.nix");
+      armcordVersion = "3.1.0";
+      armcordOverlay = (self: super: {
+        armcord = super.armcord.overrideAttrs (oldAttrs: {
+          src = builtins.fetchurl
+            "https://github.com/ArmCord/ArmCord/releases/download/v${armcordVersion}/ArmCord_${armcordVersion}_amd64.deb";
+          sha256 = "1yp9f9lwsmymw0l9vm9f0d9xp7cia00hpcmkbdhj15ihdkfzd92z";
+        });
+      });
       openasar = builtins.fetchurl {
         url =
           "https://github.com/GooseMod/OpenAsar/releases/download/nightly/app.asar";
@@ -63,6 +71,10 @@ in {
         url =
           "https://github.com/nix-community/emacs-overlay/archive/master.tar.gz";
       }));
+      neovimOverlay = (import (builtins.fetchTarball {
+        url =
+          "https://github.com/nix-community/neovim-nightly-overlay/archive/master.tar.gz";
+      }));
       draculaThemeOverlay = (self: super: {
         dracula-theme = super.dracula-theme.overrideAttrs (oldAttrs: {
           src = builtins.fetchTarball
@@ -73,13 +85,6 @@ in {
             rm $out/share/themes/Dracula/gnome-shell/_common.scss
             cp -a gnome-shell/v40/* $out/share/themes/Dracula/gnome-shell
           '';
-        });
-      });
-      googleChromeOverlay = (self: super: {
-        google-chrome-dev = super.google-chrome-dev.overrideAttrs (old: {
-          deps = (old.deps or [ ]) ++ [ pkgs.gtk4 ];
-          commandLineArgs =
-            "--use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-accelerated-video-decode --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder --disable-features=UseChromeOSDirectVideoDecoder";
         });
       });
       lieerOverlay = (self: super: {
@@ -120,18 +125,6 @@ in {
           '';
         });
       });
-      messengerOverlay = (self: super: {
-        messenger = super.makeDesktopItem {
-          name = "Messenger";
-          desktopName = "Messenger";
-          exec = ''
-            ${google-chrome-dev}/bin/google-chrome-unstable --app="https://facebook.com/messages"'';
-          terminal = false;
-          type = "Application";
-          icon = "messengerfordesktop";
-          comment = "Facebook Messenger";
-        };
-      });
       pythonPackages = python-packages:
         with python-packages; [
           aioconsole
@@ -166,7 +159,7 @@ in {
           name = "VIA";
           desktopName = "VIA";
           exec = ''
-            ${google-chrome-dev}/bin/google-chrome-unstable --app="https://usevia.app"'';
+            ${google-chrome}/bin/google-chrome-stable -incognito --app="https://usevia.app"'';
           terminal = false;
           type = "Application";
           icon = "via";
@@ -188,16 +181,17 @@ in {
         quartus-prime-lite = prev.callPackage ./packages/quartus-prime { };
       });
     in [
+      armcordOverlay
       discordOverlay
       draculaThemeOverlay
-      # googleChromeOverlay
       lieerOverlay
       lutrisOverlay
       masterPdfOverlay
+      neovimOverlay
       firefoxOverlay
       pythonOverlay
       rustOverlay
-      # spicetifyOverlay
+      viaAppOverlay
       xournalppNightlyOverlay
       packagesOverlay
     ];
@@ -206,18 +200,19 @@ in {
   environment = {
     variables = {
       EDITOR = "emacs -Q -nw -l /home/haoxiangliew/.emacs.d/editor-init.el";
-      NIX_CC = "/does-not-exists"; # NixOS/nixpkgs/issues/194929
       FZF_DEFAULT_COMMAND = "fd --type file --follow --color=always";
       FZF_DEFAULT_OPTS = "--ansi";
     };
     shellAliases = {
       emcs = "emacs -Q -nw -l /home/haoxiangliew/.emacs.d/editor-init.el";
       emcsg = "emacs -Q -l /home/haoxiangliew/.emacs.d/editor-init.el";
+      google-chrome-stable =
+        "google-chrome-stable --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-accelerated-video-decode --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder";
     };
   };
 
   programs.chromium = {
-    enable = false;
+    enable = true;
     extensions = [
       "dcpihecpambacapedldabdbpakmachpb;https://raw.githubusercontent.com/iamadamdev/bypass-paywalls-chrome/master/src/updates/updates.xml"
       "ilcacnomdmddpohoakmgcboiehclpkmj;https://raw.githubusercontent.com/FastForwardTeam/releases/main/update/update.xml"
@@ -298,17 +293,21 @@ in {
       speedtest-cli
       # spotify-unwrapped
       spotify
+      ventoy-bin-full
+      via
+      vial
       xournalpp
       yt-dlp
       zathura
+      zoom-us
 
       # games
       lutris
 
       # social
+      armcord
       element-desktop
       signal-desktop
-      wechat-uos
 
       # devtools
       criu
@@ -323,6 +322,7 @@ in {
       arduino
       ghidra
       kicad
+      neovide
       quartus-prime-lite
       # bash
       shfmt
@@ -352,6 +352,9 @@ in {
       lua53Packages.digestif
       pandoc
       texlive.combined.scheme-full
+      # lua
+      luaPackages.lua-lsp
+      stylua
       # markdown
       marksman
       # mips
@@ -362,7 +365,7 @@ in {
       nixpkgs-fmt
       nix-tree
       # nodejs
-      nodejs
+      # nodejs
       nodejs-16_x
       # pascal
       fpc
@@ -380,8 +383,8 @@ in {
 
     programs = {
       chromium = {
-        enable = false;
-        package = pkgs.google-chrome-dev;
+        enable = true;
+        package = pkgs.google-chrome;
       };
       firefox = {
         enable = true;
@@ -408,8 +411,18 @@ in {
       };
       emacs = {
         enable = true;
-        package = emacsPinnedPkgs.emacsPgtkNativeComp;
+        package = emacsPinnedPkgs.emacsGit;
         extraPackages = (epkgs: [ epkgs.vterm ]);
+      };
+      neovim = {
+        enable = true;
+        package = pkgs.neovim-nightly;
+        viAlias = true;
+        vimAlias = true;
+        vimdiffAlias = true;
+        withNodeJs = true;
+        withPython3 = true;
+        withRuby = true;
       };
       vscode = {
         enable = true;
@@ -434,30 +447,7 @@ in {
         "ranger/rc.conf".source = ./dotfiles/ranger/rc.conf;
       };
       desktopEntries = {
-        code = {
-          name = "Visual Studio Code";
-          genericName = "Text Editor";
-          comment = "Code Editing. Redefined.";
-          icon = "code";
-          exec =
-            "code --ignore-gpu-blacklist --enable-gpu-rasterization --enable-native-gpu-memory-buffers --enable-features=WaylandWindowDecorations --ozone-platform-hint=auto %F";
-          startupNotify = true;
-          settings = {
-            Keywords = "vscode";
-            StartupWMClass = "Code";
-          };
-          categories = [ "Utility" "TextEditor" "Development" "IDE" ];
-          mimeType = [ "text/plain" "inode/directory" ];
-          actions = {
-            "new-empty-window" = {
-              exec =
-                "code --new-window --ignore-gpu-blacklist --enable-gpu-rasterization --enable-native-gpu-memory-buffers --enable-features=WaylandWindowDecorations --ozone-platform-hint=auto %F";
-              icon = "code";
-              name = "New Empty Window";
-            };
-          };
-        };
-        emcs = {
+        emcsg = {
           name = "Emacs (Simple)";
           genericName = "Text Editor";
           comment = "Edit text in a barebones environment";
@@ -466,34 +456,46 @@ in {
           startupNotify = true;
           settings = { StartupWMClass = "Emacs"; };
           categories = [ "Utility" "Development" "TextEditor" ];
-          mimeType = [
-            "text/english"
-            "text/plain"
-            "text/x-makefile"
-            "text/x-c++hdr"
-            "text/x-c++src"
-            "text/x-chdr"
-            "text/x-csrc"
-            "text/x-java"
-            "text/x-moc"
-            "text/x-pascal"
-            "text/x-tcl"
-            "text/x-tex"
-            "application/x-shellscript"
-            "text/x-c"
-            "text/x-c++"
-          ];
         };
-        # discord = {
-        #   name = "Discord";
-        #   genericName =
-        #     "All-in-one cross-platform voice and text chat for gamers";
-        #   icon = "discord";
-        #   exec =
-        #     "Discord --no-sandbox --ignore-gpu-blocklist --ozone-platform-hint=auto --enable-features=VaapiVideoDecoder,VaapiVideoEncoder,UseOzonePlatform --enable-gpu-rasterization --enable-zero-copy";
-        #   categories = [ "Network" "InstantMessaging" ];
-        #   mimeType = [ "x-scheme-handler/discord" ];
-        # };
+        google-chrome = {
+          name = "Google Chrome";
+          genericName = "Web Browser";
+          comment = "Access the Internet";
+          exec =
+            "google-chrome-stable --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-accelerated-video-decode --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder";
+          startupNotify = true;
+          terminal = false;
+          icon = "google-chrome";
+          categories = [ "Network" "WebBrowser" ];
+          mimeType = [
+            "application/pdf"
+            "application/rdf+xml"
+            "application/rss+xml"
+            "application/xhtml+xml"
+            "application/xhtml_xml"
+            "application/xml"
+            "image/gif"
+            "image/jpeg"
+            "image/png"
+            "image/webp"
+            "text/html"
+            "text/xml"
+            "x-scheme-handler/http"
+            "x-scheme-handler/https"
+          ];
+          actions = {
+            new-window = {
+              name = "New Window";
+              exec =
+                "google-chrome-stable --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-accelerated-video-decode --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder";
+            };
+            new-incognito-window = {
+              name = "New Incognito Window";
+              exec =
+                "google-chrome-stable --incognito --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-accelerated-video-decode --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder";
+            };
+          };
+        };
       };
     };
   };

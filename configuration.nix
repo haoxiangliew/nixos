@@ -131,10 +131,6 @@
       };
     };
     overlays = let
-      neovimOverlay = (import (builtins.fetchTarball {
-        url =
-          "https://github.com/nix-community/neovim-nightly-overlay/archive/master.tar.gz";
-      }));
       myCAOverlay = (final: prev: {
         my-ca-certs = prev.callPackage ./packages/hxliew-ca-certs { };
       });
@@ -236,14 +232,6 @@
         };
       };
     };
-    neovim = {
-      enable = true;
-      withRuby = true;
-      withPython3 = true;
-      withNodeJs = true;
-      viAlias = true;
-      vimAlias = true;
-    };
     adb.enable = true;
     captive-browser = {
       enable = true;
@@ -342,6 +330,7 @@
         logitech-udev-rules
         qmk-udev-rules
         via
+        vial
       ];
       extraRules = ''
         # make the trackpoint much more usable

@@ -3,10 +3,9 @@
 {
   environment = {
     variables = {
-      NIXOS_OZONE_WL = "1";
-      MOZ_ENABLE_WAYLAND = "1";
-      # QT_QPA_PLATFORMTHEME = "gnome";
-      QT_QPA_PLATFORM = "wayland";
+      # NIXOS_OZONE_WL = "1";
+      # MOZ_ENABLE_WAYLAND = "1";
+      # QT_QPA_PLATFORM = "wayland";
     };
     systemPackages = (with pkgs; [
       easyeffects
@@ -19,8 +18,12 @@
       libsForQt5.qt5.qtwayland
       pinentry-gnome
       qt6.qtwayland
-    ]) ++ (with pkgs.gnome; [ adwaita-icon-theme dconf-editor gnome-tweaks gnome-power-manager ])
-      ++ (with pkgs.gnomeExtensions; [ appindicator alphabetical-app-grid ]);
+    ]) ++ (with pkgs.gnome; [
+      adwaita-icon-theme
+      dconf-editor
+      gnome-tweaks
+      gnome-power-manager
+    ]) ++ (with pkgs.gnomeExtensions; [ appindicator alphabetical-app-grid ]);
     gnome = {
       excludePackages = (with pkgs; [ gnome-photos gnome-tour ])
         ++ (with pkgs.gnome; [
@@ -62,6 +65,7 @@
     xserver = {
       enable = true;
       displayManager = {
+        defaultSession = "gnome-xorg";
         gdm = {
           enable = true;
           wayland = true;

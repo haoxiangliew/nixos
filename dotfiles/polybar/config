@@ -190,3 +190,10 @@ hook-0 = echo ''
 hook-1 = echo ''
 click-left = ~/.config/polybar/caffeine.sh
 initial = 1
+
+[module/keyboard-toggle]
+type = custom/ipc
+hook-0 = echo ''
+hook-1 = echo ''
+click-left = ~/.config/polybar/keyboard-toggle.sh
+initial = 1

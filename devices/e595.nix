@@ -22,8 +22,8 @@
         libvdpau
         libvdpau-va-gl
         mesa
-        rocm-opencl-icd
-        rocm-opencl-runtime
+        # rocm-opencl-icd
+        # rocm-opencl-runtime # NixOS/nixpkgs/issues/203949
         vaapiVdpau
       ];
       extraPackages32 = with pkgs.driversi686Linux; [
@@ -39,8 +39,7 @@
     xserver = {
       videoDrivers = [ "amdgpu" ];
       deviceSection = ''
-        Option "EnablePageFlip" "off"
-        Option "TearFree" "false"
+        Option "TearFree" "true"
       '';
     };
   };

@@ -15,7 +15,7 @@
             "https://github.com/wwmm/pulseeffects/archive/pulseaudio-legacy.tar.gz";
         });
       });
-    in [ picomOverlay pulseeffectsOverlay ];
+    in [ ];
   };
 
   environment = {
@@ -41,11 +41,7 @@
     };
   };
 
-  qt5 = {
-    enable = true;
-    platformTheme = "gtk";
-    style = "adwaita-dark";
-  };
+  qt5.platformTheme = "qt5ct";
 
   # sound.enable = true;
   sound.enable = false;
@@ -75,6 +71,7 @@
             arandr
             autorandr
             dunst
+            easyeffects
             flameshot
             kitty
             libnotify

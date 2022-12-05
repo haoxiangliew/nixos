@@ -16,6 +16,7 @@ in {
   home-manager.users.haoxiangliew = {
     xdg = {
       configFile = {
+        "keyboard-toggle.sh".source = ../dotfiles/polybar/keyboard-toggle.sh;
         "kitty/kitty.conf".source = ../dotfiles/kitty/kitty.conf;
         "qt5ct/colors/Dracula.conf".source = "${dracula-qt}";
         "autostart/easyeffects-service.desktop".text = ''
