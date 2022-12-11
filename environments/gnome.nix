@@ -3,9 +3,9 @@
 {
   environment = {
     variables = {
-      # NIXOS_OZONE_WL = "1";
-      # MOZ_ENABLE_WAYLAND = "1";
-      # QT_QPA_PLATFORM = "wayland";
+      NIXOS_OZONE_WL = "1";
+      MOZ_ENABLE_WAYLAND = "1";
+      QT_QPA_PLATFORM = "wayland";
     };
     systemPackages = (with pkgs; [
       easyeffects
@@ -65,7 +65,8 @@
     xserver = {
       enable = true;
       displayManager = {
-        defaultSession = "gnome-xorg";
+        # defaultSession = "gnome-xorg";
+        defaultSession = "gnome";
         gdm = {
           enable = true;
           wayland = true;

@@ -19,6 +19,16 @@ in {
         "keyboard-toggle.sh".source = ../dotfiles/polybar/keyboard-toggle.sh;
         "kitty/kitty.conf".source = ../dotfiles/kitty/kitty.conf;
         "qt5ct/colors/Dracula.conf".source = "${dracula-qt}";
+        "autostart/armcord.desktop".text = ''
+          [Desktop Entry]
+          Name=ArmCord
+          Comment=ArmCord is a custom client designed to enhance your Discord experience while keeping everything lightweight.
+          Exec=armcord
+          Icon=armcord
+          Terminal=false
+          Type=Application
+          Categories=Network
+        '';
         "autostart/easyeffects-service.desktop".text = ''
           [Desktop Entry]
           Name=EasyEffects

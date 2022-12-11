@@ -137,10 +137,7 @@
       pragmataProOverlay = (final: prev: {
         pragmataPro = prev.callPackage ./packages/pragmataPro { };
       });
-      win10FontsOverlay = (final: prev: {
-        win10fonts = prev.callPackage ./packages/windows-10-fonts { };
-      });
-    in [ myCAOverlay pragmataProOverlay win10FontsOverlay ];
+    in [ myCAOverlay ];
   };
 
   environment = {
@@ -159,6 +156,7 @@
       iftop
       libsecret
       lm_sensors
+      mesa-demos
       mpv
       ncdu
       neofetch
@@ -189,24 +187,37 @@
     fontDir.enable = true;
     enableGhostscriptFonts = true;
     fonts = with pkgs; [
+      cantarell-fonts
+      cascadia-code
       cm_unicode
-      dejavu_fonts
+      corefonts
+      emacs-all-the-icons-fonts
       font-awesome_4
-      jetbrains-mono
       joypixels
-      source-han-mono
-      source-han-sans
-      source-han-serif
-      win10fonts
+      noto-fonts
+      noto-fonts-extra
+      noto-fonts-emoji
+      noto-fonts-cjk-sans
+      noto-fonts-cjk-serif
+      noto-fonts-emoji-blob-bin
+      vistafonts
+      vistafonts-chs
+      vistafonts-cht
     ];
     fontconfig = {
       enable = true;
       cache32Bit = true;
       defaultFonts = {
-        serif = [ "Liberation Serif" "Source Han Serif" ];
-        emoji = [ "JoyPixels" ];
-        sansSerif = [ "Cantarell" "Source Han Sans" ];
-        monospace = [ "JetBrains Mono" "Source Han Mono" ];
+        serif =
+          [ "Liberation Serif" "Noto Serif" "Noto Serif SC" "Noto Serif TC" ];
+        emoji = [ "JoyPixels" "Noto Emoji" "Noto Color Emoji" ];
+        sansSerif = [ "Cantarell" "Noto Sans" "Noto Sans SC" "Noto Sans TC" ];
+        monospace = [
+          "Cascadia Code"
+          "Noto Sans Mono"
+          "Noto Sans Mono CJK SC"
+          "Noto Sans Mono CJK TC"
+        ];
       };
     };
   };

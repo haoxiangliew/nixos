@@ -15,6 +15,11 @@ in runCommand name rec {
     url = "file:///home/haoxiangliew/haoxiangliew/hxSSH/NextDNS.cer";
     sha256 = "0zl3x0jbixy8dq110rx1v35ywkgv7klbf37y3a5w8szzh6mvcpya";
   };
+  syncthingCA = requireFile rec {
+    name = "nixos-syncthing.crt";
+    url = "file:///home/haoxiangliew/haoxiangliew/hxSSH/nixos-syncthing.crt";
+    sha256 = "12cw3vql6ylgmg8c7knw67ka0rd1ydvbv85g9w70yi5l9ppi6d3j";
+  };
 
   buildInputs = [ buildcatrust ];
 } ''
@@ -22,7 +27,7 @@ in runCommand name rec {
   mkdir -p $install_path
 
   buildcatrust \
-    --ca_bundle_input $serverRootCA $nextdnsCA \
+    --ca_bundle_input $serverRootCA $nextdnsCA $syncthingCA \
     --ca_bundle_output hxliew-ca-bundle.crt
 
   install -D -t "$install_path" hxliew-ca-bundle.crt

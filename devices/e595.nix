@@ -35,12 +35,5 @@
     };
   };
 
-  services = {
-    xserver = {
-      videoDrivers = [ "amdgpu" ];
-      deviceSection = ''
-        Option "TearFree" "true"
-      '';
-    };
-  };
+  services = { xserver = { videoDrivers = [ "amdgpu" ]; }; };
 }

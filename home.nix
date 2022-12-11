@@ -13,13 +13,13 @@ let
     };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/61a8a98e6d557e6dd7ed0cdb54c3a3e3bbc5e25c.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/2dea0f4c2d6e4603f54b2c56c22367e77869490c.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/dd60ef06981fec354663054e608bbfcd7f8f1cff.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/6e51884abe30b5c57ad248b1a8196929dfbbe029.tar.gz";
       }))
     ];
   };
@@ -44,12 +44,13 @@ in {
       };
       firefoxOverlay = (import "${moz-url}/firefox-overlay.nix");
       rustOverlay = (import "${moz-url}/rust-overlay.nix");
-      armcordVersion = "3.1.0";
+      armcordVersion = "3.1.1";
       armcordOverlay = (self: super: {
         armcord = super.armcord.overrideAttrs (oldAttrs: {
+          version = "${armcordVersion}";
           src = builtins.fetchurl
             "https://github.com/ArmCord/ArmCord/releases/download/v${armcordVersion}/ArmCord_${armcordVersion}_amd64.deb";
-          sha256 = "1yp9f9lwsmymw0l9vm9f0d9xp7cia00hpcmkbdhj15ihdkfzd92z";
+          sha256 = "0m7hdaplghvfjsxa4k5cfhnpr333i4y9g8kh9v41hy7yjnwixi2n";
         });
       });
       openasar = builtins.fetchurl {
@@ -206,16 +207,17 @@ in {
     shellAliases = {
       emcs = "emacs -Q -nw -l /home/haoxiangliew/.emacs.d/editor-init.el";
       emcsg = "emacs -Q -l /home/haoxiangliew/.emacs.d/editor-init.el";
-      google-chrome-stable =
-        "google-chrome-stable --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-accelerated-video-decode --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder";
+      # google-chrome-stable =
+      #   "google-chrome-stable --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder";
     };
   };
 
   programs.chromium = {
     enable = true;
     extensions = [
-      "dcpihecpambacapedldabdbpakmachpb;https://raw.githubusercontent.com/iamadamdev/bypass-paywalls-chrome/master/src/updates/updates.xml"
-      "ilcacnomdmddpohoakmgcboiehclpkmj;https://raw.githubusercontent.com/FastForwardTeam/releases/main/update/update.xml"
+      "cjpalhdlnbpafiamejdnhcphjbkeiagm" # ublock-origin
+      "dcpihecpambacapedldabdbpakmachpb;https://raw.githubusercontent.com/iamadamdev/bypass-paywalls-chrome/master/src/updates/updates.xml" # bypass-paywalls
+      "ilcacnomdmddpohoakmgcboiehclpkmj;https://raw.githubusercontent.com/FastForwardTeam/releases/main/update/update.xml" # fastforward
     ];
   };
 
@@ -227,6 +229,7 @@ in {
       config = {
         allowUnfree = true;
         firefox.enableGnomeExtensions = true;
+        chromium.enableWideVine = true;
       };
     };
 
@@ -388,12 +391,11 @@ in {
       };
       firefox = {
         enable = true;
-        package = pkgs.latest.firefox-bin;
+        package = pkgs.latest.firefox-nightly-bin;
         profiles = let
           defaultSettings = {
             "extensions.pocket.enabled" = false;
             "gfx.webrender.all" = true;
-            "gfx.webrender.compositor.force-enabled" = true;
             "gfx.webrender.precache-shaders" = true;
             "media.ffmpeg.vaapi.enabled" = true;
             "network.dns.echconfig.enabled" = true;
@@ -411,7 +413,7 @@ in {
       };
       emacs = {
         enable = true;
-        package = emacsPinnedPkgs.emacsGit;
+        package = emacsPinnedPkgs.emacsPgtk;
         extraPackages = (epkgs: [ epkgs.vterm ]);
       };
       neovim = {
@@ -462,7 +464,7 @@ in {
           genericName = "Web Browser";
           comment = "Access the Internet";
           exec =
-            "google-chrome-stable --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-accelerated-video-decode --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder";
+            "google-chrome-stable --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder";
           startupNotify = true;
           terminal = false;
           icon = "google-chrome";
@@ -487,12 +489,12 @@ in {
             new-window = {
               name = "New Window";
               exec =
-                "google-chrome-stable --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-accelerated-video-decode --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder";
+                "google-chrome-stable --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder";
             };
             new-incognito-window = {
               name = "New Incognito Window";
               exec =
-                "google-chrome-stable --incognito --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-accelerated-video-decode --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder";
+                "google-chrome-stable --incognito --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder";
             };
           };
         };
