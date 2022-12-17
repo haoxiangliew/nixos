@@ -1,9 +1,9 @@
-- [[nixos](https://git.sr.ht/~haoxiangliew/nixos)](#orgf7a54fb)
-  - [Installation](#org8d45ba5)
+- [[nixos](https://git.sr.ht/~haoxiangliew/nixos)](#org17227c7)
+  - [Installation](#org2a31539)
 
 
 
-<a id="orgf7a54fb"></a>
+<a id="org17227c7"></a>
 
 # [nixos](https://git.sr.ht/~haoxiangliew/nixos)
 
@@ -12,7 +12,7 @@ Welcome to my NixOS configuration!
 |              |                                                                   |
 |------------ |----------------------------------------------------------------- |
 | Shell        | fish                                                              |
-| Environments | lightdm + i3-gaps                                                 |
+| Environments | gnome-wayland / lightdm + i3-gaps                                 |
 | Editors      | [emacs](https://git.sr.ht/~haoxiangliew/.emacs.d), vscode, neovim |
 | Term         | kitty                                                             |
 | Theme        | dracula                                                           |
@@ -22,7 +22,7 @@ Most of the [dotfiles](https://git.sr.ht/~haoxiangliew/nixos/tree/master/item/do
 Configuration is daily-driven and maintained on nixos-unstable
 
 
-<a id="org8d45ba5"></a>
+<a id="org2a31539"></a>
 
 ## Installation
 
@@ -113,10 +113,10 @@ fileSystems."/" =
 ```
 
 -   Install NixOS and reboot
-
+    
     ```sh
     nixos-install
-
+    
     reboot
     ```
 -   Login as `root`, `git clone` this repository, `passwd` your username, and `nixos-rebuild switch`
