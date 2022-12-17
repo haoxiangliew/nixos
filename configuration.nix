@@ -20,11 +20,11 @@
       };
       efi.canTouchEfiVariables = true;
     };
-    initrd.systemd.enable = true;
-    plymouth = {
-      enable = true;
-      font = "${pkgs.cantarell-fonts}/share/fonts/cantarell/Cantarell-VF.otf";
-    };
+    # initrd.systemd.enable = true;
+    # plymouth = {
+    #   enable = true;
+    #   font = "${pkgs.cantarell-fonts}/share/fonts/cantarell/Cantarell-VF.otf";
+    # };
     supportedFilesystems = [ "btrfs" "ntfs" ];
     tmpOnTmpfs = lib.mkDefault true;
     cleanTmpDir = lib.mkDefault (!config.boot.tmpOnTmpfs);
@@ -147,6 +147,7 @@
       (aspellWithDicts (dicts: with dicts; [ en en-computers en-science ]))
       appimage-run
       aspell
+      efibootmgr
       efitools
       feh
       git
@@ -480,7 +481,7 @@
       '';
     };
     btrfs.autoScrub.enable = true;
-    earlyoom.enable = true;
+    # earlyoom.enable = true; # causes crashes with gnome-shell-wr
     flatpak.enable = true;
     fstrim.enable = true;
     fwupd.enable = true;
@@ -502,12 +503,12 @@
   security = {
     protectKernelImage = true;
     polkit.enable = true;
-    pam = {
-      yubico = {
-        enable = true;
-        mode = "challenge-response";
-      };
-    };
+    # pam = {
+    #   yubico = {
+    #     enable = true;
+    #     mode = "challenge-response";
+    #   };
+    # };
     pki = {
       certificateFiles = [
         "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"

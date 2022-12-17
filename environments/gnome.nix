@@ -23,7 +23,7 @@
       dconf-editor
       gnome-tweaks
       gnome-power-manager
-    ]) ++ (with pkgs.gnomeExtensions; [ appindicator alphabetical-app-grid ]);
+    ]) ++ (with pkgs.gnomeExtensions; [ appindicator alphabetical-app-grid espresso ]);
     gnome = {
       excludePackages = (with pkgs; [ gnome-photos gnome-tour ])
         ++ (with pkgs.gnome; [

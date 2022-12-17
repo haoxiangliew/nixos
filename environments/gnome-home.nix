@@ -14,11 +14,20 @@ in {
   imports = [ (import "${home-manager}/nixos") ];
 
   home-manager.users.haoxiangliew = {
+    home.activation = {
+      gtk4Assets = ''
+        if [[ ! -h ~/.config/gtk-4.0/assets ]]; then
+          ln -s /etc/nixos/dotfiles/gtk-4.0/assets ~/.config/gtk-4.0/assets
+	fi
+      '';
+    };
     xdg = {
       configFile = {
         "keyboard-toggle.sh".source = ../dotfiles/polybar/keyboard-toggle.sh;
         "kitty/kitty.conf".source = ../dotfiles/kitty/kitty.conf;
         "qt5ct/colors/Dracula.conf".source = "${dracula-qt}";
+	"gtk-4.0/gtk.css".source = ../dotfiles/gtk-4.0/gtk.css;
+	"gtk-4.0/gtk-dark.css".source = ../dotfiles/gtk-4.0/gtk-dark.css;
         "autostart/armcord.desktop".text = ''
           [Desktop Entry]
           Name=ArmCord

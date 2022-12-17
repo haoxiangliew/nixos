@@ -13,13 +13,13 @@ let
     };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/2dea0f4c2d6e4603f54b2c56c22367e77869490c.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/0f5996b524c91677891a432cc99c7567c7c402b1.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/6e51884abe30b5c57ad248b1a8196929dfbbe029.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/815f5a9bd21891286f4d8ea7c9f08afa2cd6ac4b.tar.gz";
       }))
     ];
   };
@@ -325,8 +325,7 @@ in {
       arduino
       ghidra
       kicad
-      neovide
-      quartus-prime-lite
+      # quartus-prime-lite
       # bash
       shfmt
       # c / c++
