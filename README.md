@@ -1,9 +1,9 @@
-- [[nixos](https://git.sr.ht/~haoxiangliew/nixos)](#org17227c7)
-  - [Installation](#org2a31539)
+- [[nixos](https://git.sr.ht/~haoxiangliew/nixos)](#org9a8728f)
+  - [Installation](#orgf0a5269)
 
 
 
-<a id="org17227c7"></a>
+<a id="org9a8728f"></a>
 
 # [nixos](https://git.sr.ht/~haoxiangliew/nixos)
 
@@ -12,7 +12,7 @@ Welcome to my NixOS configuration!
 |              |                                                                   |
 |------------ |----------------------------------------------------------------- |
 | Shell        | fish                                                              |
-| Environments | gnome-wayland / lightdm + i3-gaps                                 |
+| Environments | gnome-wayland, lightdm + i3-gaps                                  |
 | Editors      | [emacs](https://git.sr.ht/~haoxiangliew/.emacs.d), vscode, neovim |
 | Term         | kitty                                                             |
 | Theme        | dracula                                                           |
@@ -22,11 +22,11 @@ Most of the [dotfiles](https://git.sr.ht/~haoxiangliew/nixos/tree/master/item/do
 Configuration is daily-driven and maintained on nixos-unstable
 
 
-<a id="org2a31539"></a>
+<a id="orgf0a5269"></a>
 
 ## Installation
 
--   Boot into the latest [nixos-unstable](https://channels.nixos.org/nixos-unstable/latest-nixos-minimal-x86_64-linux.iso)
+-   Boot into the latest [nixos-unstable](https://channels.nixos.org/nixos-unstable)
 -   To simply configure the wifi with wpa-supplicant
 
 ```sh
@@ -38,9 +38,8 @@ wpa_supplicant -B -i interface -c <(wpa_passphrase 'SSID' 'key')
 ```sh
 parted /dev/sda  -- unit MiB
 parted /dev/sda  -- mklabel gpt
-parted /dev/sda1 -- mkpart ESP fat32 1MiB 512MiB
-parted /dev/sda2 -- mkpart primary ext4 512MiB -8GiB # (if u want swap)
-parted /dev/sda3 -- mkpart swap linux-swap -8GiB 100%
+parted /dev/sda1 -- mkpart ESP fat32 0% 512MiB
+parted /dev/sda2 -- mkpart primary ext4 512MiB 100%
 parted /dev/sda  -- set 1 esp on
 
 # with btrfs & luks
@@ -55,7 +54,6 @@ cryptsetup open /dev/sda2 enc
 ```sh
 mkfs.vfat -n boot /dev/sda1
 mkfs.ext4 -L primary /dev/sda2
-mkswap -L swap /dev/sda3
 
 # with btrfs & luks
 
@@ -69,15 +67,22 @@ mkfs.btrfs /dev/mapper/enc
 mount /dev/sda2 /mnt
 mkdir /mnt/boot
 mount /dev/sda1 /mnt/boot
-swapon /dev/sda3
 
 # with btrfs & luks
 
 mount -t btrfs /dev/mapper/enc /mnt
 btrfs subvolume create /mnt/root
+btrfs subvolume create /mnt/home
+btrfs subvolume create /mnt/nix
 umount /mnt
 
 mount -o subvol=root,compress=zstd,noatime /dev/mapper/enc /mnt
+
+mkdir /mnt/home
+mount -o subvol=home,compress=zstd,noatime /dev/mapper/enc /mnt/home
+
+mkdir /mnt/nix
+mount -o subvol=nix,compress=zstd,noatime /dev/mapper/enc /mnt/nix
 
 mkdir /mnt/boot
 mount /dev/sda1 /mnt/boot
@@ -105,6 +110,8 @@ vim /mnt/etc/nixos/configuration.nix
 ```
 
 ```nix
+# the following needs to be changed for all btrfs subvolumes
+
 fileSystems."/" =
   { device = "/dev/disk/by-uuid/<uuid>";
     fsType = "btrfs";
@@ -113,11 +120,12 @@ fileSystems."/" =
 ```
 
 -   Install NixOS and reboot
-    
-    ```sh
-    nixos-install
-    
-    reboot
-    ```
+
+```sh
+nixos-install
+
+reboot
+```
+
 -   Login as `root`, `git clone` this repository, `passwd` your username, and `nixos-rebuild switch`
 -   Configure as you like

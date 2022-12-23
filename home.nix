@@ -13,13 +13,13 @@ let
     };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/0f5996b524c91677891a432cc99c7567c7c402b1.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/04f574a1c0fde90b51bf68198e2297ca4e7cccf4.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/815f5a9bd21891286f4d8ea7c9f08afa2cd6ac4b.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/b7a13b83ce72c7038d1871ccb63d055b23fc6021.tar.gz";
       }))
     ];
   };
@@ -44,13 +44,13 @@ in {
       };
       firefoxOverlay = (import "${moz-url}/firefox-overlay.nix");
       rustOverlay = (import "${moz-url}/rust-overlay.nix");
-      armcordVersion = "3.1.1";
+      armcordVersion = "3.1.2";
       armcordOverlay = (self: super: {
         armcord = super.armcord.overrideAttrs (oldAttrs: {
           version = "${armcordVersion}";
           src = builtins.fetchurl
             "https://github.com/ArmCord/ArmCord/releases/download/v${armcordVersion}/ArmCord_${armcordVersion}_amd64.deb";
-          sha256 = "0m7hdaplghvfjsxa4k5cfhnpr333i4y9g8kh9v41hy7yjnwixi2n";
+          sha256 = "0vayjrflsr6dajkjz9cljmsq3linlmn6282jaw64dnbsqlibkxjb";
         });
       });
       openasar = builtins.fetchurl {
@@ -79,7 +79,7 @@ in {
       draculaThemeOverlay = (self: super: {
         dracula-theme = super.dracula-theme.overrideAttrs (oldAttrs: {
           src = builtins.fetchTarball
-            "https://github.com/ran-dall/gtk/archive/master.tar.gz";
+            "https://github.com/dracula/gtk/archive/master.tar.gz";
           installPhase = (oldAttrs.installPhase or "") + ''
             rm $out/share/themes/Dracula/gnome-shell/gnome-shell.css
             rm $out/share/themes/Dracula/gnome-shell/gnome-shell.scss
@@ -353,7 +353,7 @@ in {
       # latex
       lua53Packages.digestif
       pandoc
-      texlive.combined.scheme-full
+      # texlive.combined.scheme-medium # clisp failing build
       # lua
       luaPackages.lua-lsp
       stylua

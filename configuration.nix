@@ -481,7 +481,7 @@
       '';
     };
     btrfs.autoScrub.enable = true;
-    # earlyoom.enable = true; # causes crashes with gnome-shell-wr
+    earlyoom.enable = false; # causes crashes with gnome-shell-wr
     flatpak.enable = true;
     fstrim.enable = true;
     fwupd.enable = true;
