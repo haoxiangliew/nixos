@@ -189,11 +189,11 @@
     enableGhostscriptFonts = true;
     fonts = with pkgs; [
       cantarell-fonts
-      cascadia-code
       cm_unicode
       corefonts
       emacs-all-the-icons-fonts
       font-awesome_4
+      jetbrains-mono
       joypixels
       noto-fonts
       noto-fonts-extra
@@ -214,7 +214,7 @@
         emoji = [ "JoyPixels" "Noto Emoji" "Noto Color Emoji" ];
         sansSerif = [ "Cantarell" "Noto Sans" "Noto Sans SC" "Noto Sans TC" ];
         monospace = [
-          "Cascadia Code"
+          "JetBrains Mono"
           "Noto Sans Mono"
           "Noto Sans Mono CJK SC"
           "Noto Sans Mono CJK TC"
@@ -227,22 +227,6 @@
     fish = {
       enable = true;
       shellInit = builtins.readFile ./dotfiles/fish/config.fish;
-    };
-    gamemode = {
-      enable = true;
-      enableRenice = true;
-      settings = {
-        general = { renice = 10; };
-        gpu = {
-          apply_gpu_optimisations = "accept-responsibility";
-          gpu_device = 0;
-          amd_performance_level = "high";
-        };
-        custom = {
-          start = "${pkgs.libnotify}/bin/notify-send 'GameMode started'";
-          end = "${pkgs.libnotify}/bin/notify-send 'GameMode ended'";
-        };
-      };
     };
     adb.enable = true;
     captive-browser = {
@@ -259,6 +243,12 @@
     bluetooth = {
       enable = true;
       powerOnBoot = false;
+      settings = {
+        General = {
+          Experimental = "true";
+          KernelExperimental = "true";
+        };
+      };
     };
     opengl = {
       enable = true;
@@ -481,7 +471,7 @@
       '';
     };
     btrfs.autoScrub.enable = true;
-    earlyoom.enable = false; # causes crashes with gnome-shell-wr
+    earlyoom.enable = true;
     flatpak.enable = true;
     fstrim.enable = true;
     fwupd.enable = true;

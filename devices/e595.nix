@@ -4,11 +4,13 @@
 
 {
   boot = {
-    kernelParams = [ ];
+    kernelParams =
+      [ "amd_iommu=on" "iommu=pt" "clocksource=tsc" "tsc=reliable" ];
     kernelModules = [ "thinkpad_acpi" "acpi_call" "kvm_amd" ];
     initrd.kernelModules = [ "amdgpu" ];
     extraModulePackages = with config.boot.kernelPackages; [ acpi_call ];
     extraModprobeConfig = "";
+    kernel.sysctl = { "vm.swappiness" = 10; };
   };
 
   environment = { systemPackages = with pkgs; [ radeontop ]; };
@@ -22,8 +24,8 @@
         libvdpau
         libvdpau-va-gl
         mesa
-        # rocm-opencl-icd
-        # rocm-opencl-runtime # NixOS/nixpkgs/issues/203949
+        rocm-opencl-icd
+        rocm-opencl-runtime
         vaapiVdpau
       ];
       extraPackages32 = with pkgs.driversi686Linux; [

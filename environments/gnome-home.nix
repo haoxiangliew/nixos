@@ -18,7 +18,7 @@ in {
       gtk4Assets = ''
         if [[ ! -h ~/.config/gtk-4.0/assets ]]; then
           ln -s /etc/nixos/dotfiles/gtk-4.0/assets ~/.config/gtk-4.0/assets
-	fi
+        fi
       '';
     };
     xdg = {
@@ -26,18 +26,18 @@ in {
         "keyboard-toggle.sh".source = ../dotfiles/polybar/keyboard-toggle.sh;
         "kitty/kitty.conf".source = ../dotfiles/kitty/kitty.conf;
         "qt5ct/colors/Dracula.conf".source = "${dracula-qt}";
-	"gtk-4.0/gtk.css".source = ../dotfiles/gtk-4.0/gtk.css;
-	"gtk-4.0/gtk-dark.css".source = ../dotfiles/gtk-4.0/gtk-dark.css;
-        "autostart/armcord.desktop".text = ''
-          [Desktop Entry]
-          Name=ArmCord
-          Comment=ArmCord is a custom client designed to enhance your Discord experience while keeping everything lightweight.
-          Exec=armcord
-          Icon=armcord
-          Terminal=false
-          Type=Application
-          Categories=Network
-        '';
+        "gtk-4.0/gtk.css".source = ../dotfiles/gtk-4.0/gtk.css;
+        "gtk-4.0/gtk-dark.css".source = ../dotfiles/gtk-4.0/gtk-dark.css;
+        # "autostart/armcord.desktop".text = ''
+        #   [Desktop Entry]
+        #   Name=ArmCord
+        #   Comment=ArmCord is a custom client designed to enhance your Discord experience while keeping everything lightweight.
+        #   Exec=armcord
+        #   Icon=armcord
+        #   Terminal=false
+        #   Type=Application
+        #   Categories=Network
+        # '';
         "autostart/easyeffects-service.desktop".text = ''
           [Desktop Entry]
           Name=EasyEffects

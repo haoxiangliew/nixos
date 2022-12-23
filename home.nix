@@ -13,13 +13,13 @@ let
     };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/04f574a1c0fde90b51bf68198e2297ca4e7cccf4.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/652e92b8064949a11bc193b90b74cb727f2a1405.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/b7a13b83ce72c7038d1871ccb63d055b23fc6021.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/d89f91c7c5ba124348e097c45f1bf8882f5c60be.tar.gz";
       }))
     ];
   };
@@ -353,7 +353,7 @@ in {
       # latex
       lua53Packages.digestif
       pandoc
-      # texlive.combined.scheme-medium # clisp failing build
+      texlive.combined.scheme-medium
       # lua
       luaPackages.lua-lsp
       stylua
