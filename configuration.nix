@@ -20,11 +20,6 @@
       };
       efi.canTouchEfiVariables = true;
     };
-    # initrd.systemd.enable = true;
-    # plymouth = {
-    #   enable = true;
-    #   font = "${pkgs.cantarell-fonts}/share/fonts/cantarell/Cantarell-VF.otf";
-    # };
     supportedFilesystems = [ "btrfs" "ntfs" ];
     tmpOnTmpfs = lib.mkDefault true;
     cleanTmpDir = lib.mkDefault (!config.boot.tmpOnTmpfs);
@@ -141,7 +136,6 @@
   };
 
   environment = {
-    # variables = { GTK_USE_PORTAL = "1"; }; # NixOS/nixpkgs/issues/156830
     pathsToLink = [ "/libexec" ];
     systemPackages = with pkgs; [
       (aspellWithDicts (dicts: with dicts; [ en en-computers en-science ]))
@@ -493,12 +487,6 @@
   security = {
     protectKernelImage = true;
     polkit.enable = true;
-    # pam = {
-    #   yubico = {
-    #     enable = true;
-    #     mode = "challenge-response";
-    #   };
-    # };
     pki = {
       certificateFiles = [
         "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"

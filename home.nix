@@ -13,13 +13,13 @@ let
     };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/1eb875e811dd59e21e77f6337f2c1592889b48b3.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/e182da8622a354d44c39b3d7a542dc12cd7baa5f.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/089d42b5ec8dcea90e4748da482bb3a2178bc1a2.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/86863292e6c99256cde3f994b433055e3dff48cc.tar.gz";
       }))
     ];
   };
@@ -208,8 +208,6 @@ in {
     shellAliases = {
       emcs = "emacs -Q -nw -l /home/haoxiangliew/.emacs.d/editor-init.el";
       emcsg = "emacs -Q -l /home/haoxiangliew/.emacs.d/editor-init.el";
-      # google-chrome-stable =
-      #   "google-chrome-stable --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder";
     };
   };
 
@@ -396,12 +394,7 @@ in {
           defaultSettings = {
             "extensions.pocket.enabled" = false;
             "gfx.webrender.all" = true;
-            "gfx.webrender.precache-shaders" = true;
             "media.ffmpeg.vaapi.enabled" = true;
-            "network.dns.echconfig.enabled" = true;
-            "network.dns.use_https_rr_as_altsvc" = true;
-            "network.security.esni.enabled" = true;
-            "security.enterprise_roots.enabled" = true;
           };
         in {
           default = {
