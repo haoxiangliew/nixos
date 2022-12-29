@@ -1,10 +1,4 @@
-set -x PATH $PATH ~/.emacs.d/bin
-
-alias 256col "TERM=xterm-256color"
-
-alias q "exit"
-alias l "ls -lh"
-alias ll "ls -lah"
+alias ssh="kitty +kitten ssh"
 
 # thefuck
 function fuck -d "Correct your previous console command"

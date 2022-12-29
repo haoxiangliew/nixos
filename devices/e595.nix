@@ -4,8 +4,7 @@
 
 {
   boot = {
-    kernelParams =
-      [ "amd_iommu=on" "iommu=pt" "clocksource=tsc" "tsc=reliable" ];
+    kernelParams = [ "clocksource=tsc" "tsc=reliable" ];
     kernelModules = [ "thinkpad_acpi" "acpi_call" "kvm_amd" ];
     initrd.kernelModules = [ "amdgpu" ];
     extraModulePackages = with config.boot.kernelPackages; [ acpi_call ];

@@ -13,13 +13,13 @@ let
     };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/652e92b8064949a11bc193b90b74cb727f2a1405.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/1eb875e811dd59e21e77f6337f2c1592889b48b3.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/d89f91c7c5ba124348e097c45f1bf8882f5c60be.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/089d42b5ec8dcea90e4748da482bb3a2178bc1a2.tar.gz";
       }))
     ];
   };
@@ -44,13 +44,14 @@ in {
       };
       firefoxOverlay = (import "${moz-url}/firefox-overlay.nix");
       rustOverlay = (import "${moz-url}/rust-overlay.nix");
-      armcordVersion = "3.1.2";
+      armcordVersion = "3.1.4";
       armcordOverlay = (self: super: {
         armcord = super.armcord.overrideAttrs (oldAttrs: {
+          buildInputs = (oldAttrs.buildInputs or [ ]) ++ [ pkgs.pipewire ];
           version = "${armcordVersion}";
           src = builtins.fetchurl
             "https://github.com/ArmCord/ArmCord/releases/download/v${armcordVersion}/ArmCord_${armcordVersion}_amd64.deb";
-          sha256 = "0vayjrflsr6dajkjz9cljmsq3linlmn6282jaw64dnbsqlibkxjb";
+          sha256 = "12gk4b2mmfq36argz9j43j3h5x5p010zk2vi09kih2ipdrqw7z07";
         });
       });
       openasar = builtins.fetchurl {

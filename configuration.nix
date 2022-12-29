@@ -11,7 +11,7 @@
   ];
 
   boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages_6_0;
     kernelModules = [ "tcp_bbr" ];
     loader = {
       systemd-boot = {
