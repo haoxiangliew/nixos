@@ -132,7 +132,7 @@
       pragmataProOverlay = (final: prev: {
         pragmataPro = prev.callPackage ./packages/pragmataPro { };
       });
-    in [ myCAOverlay ];
+    in [ myCAOverlay pragmataProOverlay ];
   };
 
   environment = {
@@ -195,6 +195,7 @@
       noto-fonts-cjk-sans
       noto-fonts-cjk-serif
       noto-fonts-emoji-blob-bin
+      pragmataPro
       vistafonts
       vistafonts-chs
       vistafonts-cht
@@ -208,7 +209,7 @@
         emoji = [ "JoyPixels" "Noto Emoji" "Noto Color Emoji" ];
         sansSerif = [ "Cantarell" "Noto Sans" "Noto Sans SC" "Noto Sans TC" ];
         monospace = [
-          "JetBrains Mono"
+          "PragmataPro Mono Liga"
           "Noto Sans Mono"
           "Noto Sans Mono CJK SC"
           "Noto Sans Mono CJK TC"
