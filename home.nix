@@ -19,7 +19,7 @@ let
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/240c1b5ebd1a675480cc203fdd98268166ff3fe2.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/27ecb795fbcd192d09a07a647696a92bbb6138ff.tar.gz";
       }))
     ];
   };

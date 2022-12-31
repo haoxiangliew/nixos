@@ -4,12 +4,12 @@
 
 {
   boot = {
-    kernelParams = [ "clocksource=tsc" "tsc=reliable" ];
+    kernelParams = [ ];
     kernelModules = [ "thinkpad_acpi" "acpi_call" "kvm_amd" ];
     initrd.kernelModules = [ "amdgpu" ];
     extraModulePackages = with config.boot.kernelPackages; [ acpi_call ];
     extraModprobeConfig = "";
-    kernel.sysctl = { "vm.swappiness" = 10; };
+    kernel.sysctl = { };
   };
 
   environment = { systemPackages = with pkgs; [ radeontop ]; };
