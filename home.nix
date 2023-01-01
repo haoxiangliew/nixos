@@ -19,7 +19,7 @@ let
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/27ecb795fbcd192d09a07a647696a92bbb6138ff.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/3c1fbbbe250bde48a947099ae61534f018290ff4.tar.gz";
       }))
     ];
   };
@@ -238,9 +238,9 @@ in {
     gtk = {
       enable = true;
       font = {
-        name = "Cantarell";
-        package = pkgs.cantarell-fonts;
-        size = 10;
+        name = "SF Pro";
+        package = pkgs.apple-fonts;
+        size = 11;
       };
       cursorTheme = {
         name = "Dracula-cursors";

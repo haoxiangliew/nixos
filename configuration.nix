@@ -129,10 +129,13 @@
       myCAOverlay = (final: prev: {
         my-ca-certs = prev.callPackage ./packages/hxliew-ca-certs { };
       });
+      appleFontsOverlay = (final: prev: {
+        apple-fonts = prev.callPackage ./packages/apple-fonts { };
+      });
       pragmataProOverlay = (final: prev: {
         pragmataPro = prev.callPackage ./packages/pragmataPro { };
       });
-    in [ myCAOverlay pragmataProOverlay ];
+    in [ myCAOverlay appleFontsOverlay pragmataProOverlay ];
   };
 
   environment = {
@@ -182,6 +185,7 @@
     fontDir.enable = true;
     enableGhostscriptFonts = true;
     fonts = with pkgs; [
+      apple-fonts
       cantarell-fonts
       cm_unicode
       corefonts
@@ -204,10 +208,9 @@
       enable = true;
       cache32Bit = true;
       defaultFonts = {
-        serif =
-          [ "Liberation Serif" "Noto Serif" "Noto Serif SC" "Noto Serif TC" ];
+        serif = [ "New York" "Noto Serif" "Noto Serif SC" "Noto Serif TC" ];
         emoji = [ "JoyPixels" "Noto Emoji" "Noto Color Emoji" ];
-        sansSerif = [ "Cantarell" "Noto Sans" "Noto Sans SC" "Noto Sans TC" ];
+        sansSerif = [ "SF Pro" "Noto Sans" "Noto Sans SC" "Noto Sans TC" ];
         monospace = [
           "PragmataPro Mono Liga"
           "Noto Sans Mono"

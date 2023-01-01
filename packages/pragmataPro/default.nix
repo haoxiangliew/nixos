@@ -15,8 +15,12 @@ in runCommand name rec {
 } ''
   unzip $src
 
-  install_path=$out/share/fonts/truetype/pragmatapro
-  mkdir -p $install_path
+  truetype_path=$out/share/fonts/truetype/pragmatapro
+  mkdir -p $truetype_path
 
-  find -name "PragmataPro*.ttf" -exec mv {} $install_path \;
+  opentype_path=$out/share/fonts/opentype/pragmatapro
+  mkdir -p $opentype_path
+
+  find -name "PragmataPro*.ttf" -exec mv {} $truetype_path \;
+  find -name "PragmataPro*.otf" -exec mv {} $opentype_path \;
 ''
