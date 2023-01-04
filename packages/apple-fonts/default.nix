@@ -4,12 +4,12 @@ stdenv.mkDerivation {
   pname = "apple-fonts";
   version = "latest";
 
-  # nix-prefetch fetchFromGitHub --owner haoxiangliew --repo apple-fonts --rev <rev>
+  # nix-prefetch fetchFromGitHub --owner haoxiangliew --repo apple-fonts --rev master
   src = fetchFromGitHub {
     owner = "haoxiangliew";
     repo = "apple-fonts";
-    rev = "4c1470e299439c5ee4ded2e02fa5b568cdaac63e";
-    sha256 = "sha256-3ejXS4PdSdSVNC9S9nxYb9A6UofNRtkTET4x3VZqnFg=";
+    rev = "master";
+    sha256 = "sha256-jPhugxbzsB7XZS7EWUizAQAIAB09/A64ejfQmph2Tew=";
   };
 
   installPhase = ''

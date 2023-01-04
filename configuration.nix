@@ -208,9 +208,16 @@
       enable = true;
       cache32Bit = true;
       defaultFonts = {
-        serif = [ "New York" "Noto Serif" "Noto Serif SC" "Noto Serif TC" ];
+        serif = [
+          "New York"
+          "Liberation Serif"
+          "Noto Serif"
+          "Noto Serif SC"
+          "Noto Serif TC"
+        ];
         emoji = [ "JoyPixels" "Noto Emoji" "Noto Color Emoji" ];
-        sansSerif = [ "SF Pro" "Noto Sans" "Noto Sans SC" "Noto Sans TC" ];
+        sansSerif =
+          [ "SF Pro" "Cantarell" "Noto Sans" "Noto Sans SC" "Noto Sans TC" ];
         monospace = [
           "PragmataPro Mono Liga"
           "Noto Sans Mono"

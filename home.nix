@@ -13,13 +13,13 @@ let
     };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/677ed08a50931e38382dbef01cba08a8f7eac8f6.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/0fc9fca9c8d43edd79d33fea0dd8409d7c4580f4.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/3c1fbbbe250bde48a947099ae61534f018290ff4.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/d59511b86c8090d92f501ffabbd4b2b804ad1da6.tar.gz";
       }))
     ];
   };
@@ -364,6 +364,7 @@ in {
       direnv
       hydra-check
       nixpkgs-fmt
+      nix-prefetch
       nix-tree
       # nodejs
       # nodejs
