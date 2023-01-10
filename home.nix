@@ -13,13 +13,13 @@ let
     };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/0fc9fca9c8d43edd79d33fea0dd8409d7c4580f4.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/a518c77148585023ff56022f09c4b2c418a51ef5.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/d59511b86c8090d92f501ffabbd4b2b804ad1da6.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/6fa004ad6204ffcd746654ed60fd8dee394ff388.tar.gz";
       }))
     ];
   };
@@ -156,6 +156,18 @@ in {
             inherit (super) spotify-unwrapped;
           };
       });
+      ventoyVersion = "1.0.87";
+      ventoyOverlay = (self: super: {
+        ventoy-bin = super.ventoy-bin.overrideAttrs (old: {
+          version = "${ventoyVersion}";
+          src = builtins.fetchurl {
+            url =
+              "https://github.com/ventoy/Ventoy/releases/download/v${ventoyVersion}/ventoy-${ventoyVersion}-linux.tar.gz";
+            sha256 =
+              "d26ecc5cbb52baaf06743157cca798f3a0c882581e43ac3212da4ec81fed8647";
+          };
+        });
+      });
       viaAppOverlay = (self: super: {
         via = super.makeDesktopItem {
           name = "VIA";
@@ -169,10 +181,10 @@ in {
           categories = [ "Development" ];
         };
       });
-      xournalppNightlyOverlay = (self: super: {
+      xournalppOverlay = (self: super: {
         xournalpp = super.xournalpp.overrideAttrs (oldAttrs: {
           src = builtins.fetchTarball
-            "https://github.com/xournalpp/xournalpp/archive/refs/tags/nightly.tar.gz";
+            "https://github.com/xournalpp/xournalpp/archive/refs/tags/v1.1.3.tar.gz";
           buildInputs = (oldAttrs.buildInputs or [ ]) ++ [ pkgs.alsa-lib ];
         });
       });
@@ -189,12 +201,12 @@ in {
       lieerOverlay
       lutrisOverlay
       masterPdfOverlay
-      neovimOverlay
       firefoxOverlay
       pythonOverlay
       rustOverlay
+      ventoyOverlay
       viaAppOverlay
-      xournalppNightlyOverlay
+      xournalppOverlay
       packagesOverlay
     ];
   };
@@ -295,7 +307,10 @@ in {
       speedtest-cli
       # spotify-unwrapped
       spotify
-      ventoy-bin-full
+      (ventoy-bin.override {
+        defaultGuiType = "gtk3";
+        withGtk3 = true;
+      })
       via
       vial
       xournalpp
@@ -367,7 +382,6 @@ in {
       nix-prefetch
       nix-tree
       # nodejs
-      # nodejs
       nodejs-16_x
       # pascal
       fpc
@@ -411,8 +425,8 @@ in {
         extraPackages = (epkgs: [ epkgs.vterm ]);
       };
       neovim = {
-        enable = true;
-        package = pkgs.neovim-nightly;
+        enable = false;
+        package = pkgs.neovim;
         viAlias = true;
         vimAlias = true;
         vimdiffAlias = true;

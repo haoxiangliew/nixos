@@ -144,6 +144,7 @@
       (aspellWithDicts (dicts: with dicts; [ en en-computers en-science ]))
       appimage-run
       aspell
+      busybox
       efibootmgr
       efitools
       feh
@@ -220,6 +221,7 @@
           [ "SF Pro" "Cantarell" "Noto Sans" "Noto Sans SC" "Noto Sans TC" ];
         monospace = [
           "PragmataPro Mono Liga"
+          "SF Mono"
           "Noto Sans Mono"
           "Noto Sans Mono CJK SC"
           "Noto Sans Mono CJK TC"
