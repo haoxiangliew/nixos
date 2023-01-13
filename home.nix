@@ -172,8 +172,8 @@ in {
         via = super.makeDesktopItem {
           name = "VIA";
           desktopName = "VIA";
-          exec = ''
-            ${google-chrome}/bin/google-chrome-stable -incognito --app="https://usevia.app"'';
+          exec =
+            ''${chromium}/bin/chromium -incognito --app="https://usevia.app"'';
           terminal = false;
           type = "Application";
           icon = "via";
@@ -195,8 +195,6 @@ in {
         quartus-prime-lite = prev.callPackage ./packages/quartus-prime { };
       });
     in [
-      armcordOverlay
-      discordOverlay
       draculaThemeOverlay
       lieerOverlay
       lutrisOverlay
@@ -224,7 +222,7 @@ in {
   };
 
   programs.chromium = {
-    enable = true;
+    enable = false;
     extensions = [
       "cjpalhdlnbpafiamejdnhcphjbkeiagm" # ublock-origin
       "dcpihecpambacapedldabdbpakmachpb;https://raw.githubusercontent.com/iamadamdev/bypass-paywalls-chrome/master/src/updates/updates.xml" # bypass-paywalls
@@ -322,7 +320,6 @@ in {
       lutris
 
       # social
-      armcord
       element-desktop
       signal-desktop
 
@@ -339,7 +336,7 @@ in {
       arduino
       ghidra
       kicad
-      # quartus-prime-lite
+      quartus-prime-lite
       # bash
       shfmt
       # c / c++
@@ -399,7 +396,7 @@ in {
 
     programs = {
       chromium = {
-        enable = true;
+        enable = false;
         package = pkgs.google-chrome;
       };
       firefox = {
@@ -467,45 +464,45 @@ in {
           settings = { StartupWMClass = "Emacs"; };
           categories = [ "Utility" "Development" "TextEditor" ];
         };
-        google-chrome = {
-          name = "Google Chrome";
-          genericName = "Web Browser";
-          comment = "Access the Internet";
-          exec =
-            "google-chrome-stable --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder";
-          startupNotify = true;
-          terminal = false;
-          icon = "google-chrome";
-          categories = [ "Network" "WebBrowser" ];
-          mimeType = [
-            "application/pdf"
-            "application/rdf+xml"
-            "application/rss+xml"
-            "application/xhtml+xml"
-            "application/xhtml_xml"
-            "application/xml"
-            "image/gif"
-            "image/jpeg"
-            "image/png"
-            "image/webp"
-            "text/html"
-            "text/xml"
-            "x-scheme-handler/http"
-            "x-scheme-handler/https"
-          ];
-          actions = {
-            new-window = {
-              name = "New Window";
-              exec =
-                "google-chrome-stable --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder";
-            };
-            new-incognito-window = {
-              name = "New Incognito Window";
-              exec =
-                "google-chrome-stable --incognito --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder";
-            };
-          };
-        };
+        # google-chrome = {
+        #   name = "Google Chrome";
+        #   genericName = "Web Browser";
+        #   comment = "Access the Internet";
+        #   exec =
+        #     "google-chrome-stable --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder";
+        #   startupNotify = true;
+        #   terminal = false;
+        #   icon = "google-chrome";
+        #   categories = [ "Network" "WebBrowser" ];
+        #   mimeType = [
+        #     "application/pdf"
+        #     "application/rdf+xml"
+        #     "application/rss+xml"
+        #     "application/xhtml+xml"
+        #     "application/xhtml_xml"
+        #     "application/xml"
+        #     "image/gif"
+        #     "image/jpeg"
+        #     "image/png"
+        #     "image/webp"
+        #     "text/html"
+        #     "text/xml"
+        #     "x-scheme-handler/http"
+        #     "x-scheme-handler/https"
+        #   ];
+        #   actions = {
+        #     new-window = {
+        #       name = "New Window";
+        #       exec =
+        #         "google-chrome-stable --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder";
+        #     };
+        #     new-incognito-window = {
+        #       name = "New Incognito Window";
+        #       exec =
+        #         "google-chrome-stable --incognito --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder";
+        #     };
+        #   };
+        # };
       };
     };
   };

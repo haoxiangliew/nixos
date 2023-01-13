@@ -1,4 +1,4 @@
-{ stdenv, lib, unstick, requireFile, supportedDevices ? [
+{ stdenv, lib, unstick, fetchurl, supportedDevices ? [
   "Arria II"
   "Cyclone V"
   "Cyclone IV"
@@ -31,16 +31,6 @@ let
     lib.filterAttrs (name: value: !(lib.hasAttr name supportedDeviceIds))
     deviceIds;
 
-  # 21.1
-  # componentHashes = {
-  #   "arria_lite" = "09aa585ef730da2738423b739f2902bd413eb73b8746355cc112ddd6a8a8b5d4";
-  #   "cyclone" = "f514ddbaede7f49b8cb0745f3497588b7456431d23342a3becadf235e683baf6";
-  #   "cyclone10lp" = "98be82d58b8255c0ad4b4be7f91dbafbe66a2c01646196d3355b6802e00bd88d";
-  #   "cyclonev" = "a87ef75b9cd5e2e9c82213b16a34f68289e9aa96e2baa4d94e1086bf2e13158a";
-  #   "max" = "7b3993e57b0716eb5fb13b0027d383d43d427ddae5635cbcba9f92c326b93afa";
-  #   "max10" = "5ed25b0b448a8f52dc7fbd7436c8d16a49fde8b9c03212c0e67fe79b48dbe727";
-  # };
-
   # 20.1
   # componentHashes = {
   #   "arria_lite" = "140jqnb97vrxx6398cpgpw35zrrx3z5kv1x5gr9is1xdbnf4fqhy";
@@ -66,55 +56,52 @@ let
       "78f2103e815d9a87e121fc9809aef76dc7b39a0d415ac68fba56dcf6b61c7d4a";
   };
 
-  # version = "21.1.1.850";
   # version = "20.1.1.720";
   version = "18.1.0.625";
-  homepage = "https://fpgasoftware.intel.com";
 
-  require = { name, sha256 }:
-    requireFile {
+  # 20.1
+  # download = { name, sha256 }:
+  #   fetchurl {
+  #     inherit name sha256;
+  #     # e.g. "20.1.1.720" -> "20.1std.1/720"
+  #     url = "https://download.altera.com/akdlm/software/acdsinst/${
+  #         lib.versions.majorMinor version
+  #       }std.${lib.versions.patch version}/${
+  #         lib.elemAt (lib.splitVersion version) 3
+  #       }/ib_installers/${name}";
+  #   };
+
+  # 18.1
+  download = { name, sha256 }:
+    fetchurl {
       inherit name sha256;
-      url = "${homepage}/${
+      # e.g. "18.1.0.625" -> "18.1std/625"
+      url = "https://download.altera.com/akdlm/software/acdsinst/${
           lib.versions.majorMinor version
-        }/?edition=lite&platform=linux";
+        }std/${lib.elemAt (lib.splitVersion version) 3}/ib_installers/${name}";
     };
 
 in stdenv.mkDerivation rec {
   inherit version;
   pname = "quartus-prime-lite-unwrapped";
 
-  # 21.1
-  # src = map require ([{
-  #   name = "QuartusLiteSetup-${version}-linux.run";
-  #   sha256 = "ea550740a2fc2d4ef459e4534f59ccb06a9aaa39afa3d85695b1503c1325ff4a";
-  # }
-  #   {
-  #     name = "QuestaSetup-${version}-linux.run";
-  #     sha256 = "16e541cf238fc2672b7387abaf2f31976c6acc6af1c08a39398ab418b5aed4f1";
-  #   }] ++ (map
-  #   (id: {
-  #     name = "${id}-${version}.qdz";
-  #     sha256 = lib.getAttr id componentHashes;
-  #   })
-  #   (lib.attrValues supportedDeviceIds)));
-
   # 20.1
-  # src = map require ([{
-  #   name = "QuartusLiteSetup-${version}-linux.run";
-  #   sha256 = "0mjp1rg312dipr7q95pb4nf4b8fwvxgflnd1vafi3g9cshbb1c3k";
-  # }
+  # src = map download ([
+  #   {
+  #     name = "QuartusLiteSetup-${version}-linux.run";
+  #     sha256 = "0mjp1rg312dipr7q95pb4nf4b8fwvxgflnd1vafi3g9cshbb1c3k";
+  #   }
   #   {
   #     name = "ModelSimSetup-${version}-linux.run";
   #     sha256 = "1cqgv8x6vqga8s4v19yhmgrr886rb6p7sbx80528df5n4rpr2k4i";
-  #   }] ++ (map
-  #   (id: {
-  #     name = "${id}-${version}.qdz";
-  #     sha256 = lib.getAttr id componentHashes;
-  #   })
-  #   (lib.attrValues supportedDeviceIds)));
+  #   }
+  # ] ++ (map (id: {
+  #   name = "${id}-${version}.qdz";
+  #   sha256 = lib.getAttr id componentHashes;
+  # }) (lib.attrValues supportedDeviceIds)));
 
   # 18.1
-  src = map require ([
+  src = map download ([
     {
       name = "QuartusLiteSetup-${version}-linux.run";
       sha256 =
@@ -142,7 +129,7 @@ in stdenv.mkDerivation rec {
       patchelf --interpreter $(cat $NIX_CC/nix-support/dynamic-linker) $TEMP/${installer.name}
     '';
     copyComponent = component: "cp ${component} $TEMP/${component.name}";
-    # leaves enabled: quartus, modelsim_ase / questa_fse, devinfo
+    # leaves enabled: quartus, modelsim_ase, devinfo
     disabledComponents = [
       "quartus_help"
       "quartus_update"
@@ -157,19 +144,18 @@ in stdenv.mkDerivation rec {
       --disable-components ${lib.concatStringsSep "," disabledComponents} \
       --mode unattended --installdir $out --accept_eula 1
 
-    # required for 18.1
+    # [WARNING]: Quartus 18.1 requirement
     patch --force --strip 0 --directory $out < ${./vsim.patch}
 
     rm -r $out/uninstall $out/logs
   '';
 
   meta = with lib; {
-    inherit homepage;
+    homepage = "https://fpgasoftware.intel.com";
     description = "FPGA design and simulation software";
     sourceProvenance = with sourceTypes; [ binaryNativeCode ];
     license = licenses.unfree;
-    platforms = platforms.linux;
-    hydraPlatforms = [ ]; # requireFile srcs cannot be fetched by hydra, ignore
+    platforms = [ "x86_64-linux" ];
     maintainers = with maintainers; [ haoxiangliew ];
   };
 }

@@ -20,6 +20,11 @@
       };
       efi.canTouchEfiVariables = true;
     };
+    initrd.systemd.enable = true;
+    plymouth = {
+      enable = true;
+      font = "${pkgs.cantarell-fonts}/share/fonts/cantarell/Cantarell-VF.otf";
+    };
     supportedFilesystems = [ "btrfs" "ntfs" ];
     tmpOnTmpfs = lib.mkDefault true;
     cleanTmpDir = lib.mkDefault (!config.boot.tmpOnTmpfs);
@@ -144,7 +149,6 @@
       (aspellWithDicts (dicts: with dicts; [ en en-computers en-science ]))
       appimage-run
       aspell
-      busybox
       efibootmgr
       efitools
       feh

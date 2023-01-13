@@ -59,7 +59,7 @@
     };
   };
 
-  qt5.platformTheme = "qt5ct";
+  qt.platformTheme = "qt5ct";
 
   sound.enable = false;
 

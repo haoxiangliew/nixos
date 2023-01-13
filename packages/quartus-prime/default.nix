@@ -17,7 +17,7 @@ let
     genericName = "Quartus Prime";
     categories = [ "Development" ];
   };
-  # I think modelsim_ase/questa_fse/linux/vlm checksums itself, so use FHSUserEnv instead of `patchelf`
+  # I think modelsim_ase/linux/vlm checksums itself, so use FHSUserEnv instead of `patchelf`
 in buildFHSUserEnv rec {
   name = "quartus-prime-lite"; # wrapped
 
@@ -32,17 +32,17 @@ in buildFHSUserEnv rec {
       # qsys requirements
       xorg.libXtst
       xorg.libXi
-      libudev0-shim
     ];
 
   multiPkgs = pkgs:
     with pkgs;
     let
+      # This seems ugly - can we override `libpng = libpng12` for all `pkgs`?
       freetype = pkgs.freetype.override { libpng = libpng12; };
       fontconfig = pkgs.fontconfig.override { inherit freetype; };
       libXft = pkgs.xorg.libXft.override { inherit freetype fontconfig; };
     in [
-      # modelsim / questa requirements
+      # modelsim requirements
       libxml2
       ncurses5
       unixODBC
@@ -54,6 +54,8 @@ in buildFHSUserEnv rec {
       xorg.libX11
       xorg.libXext
       xorg.libXrender
+      libudev0-shim
+      libxcrypt
     ];
 
   passthru = { inherit unwrapped; };
@@ -87,11 +89,6 @@ in buildFHSUserEnv rec {
     ];
 
     # Should we install all executables ?
-    # questaExecutables = map (c: "questa_fse/bin/${c}") [
-    #   "vsim"
-    #   "vlog"
-    #   "vlib"
-    # ];
     modelsimExecutables =
       map (c: "modelsim_ase/bin/${c}") [ "vsim" "vlog" "vlib" ];
   in ''
@@ -99,7 +96,6 @@ in buildFHSUserEnv rec {
     ln -s ${desktopItem}/share/applications/* $out/share/applications
     ln -s ${unwrapped}/licenses/images/dc_quartus_panel_logo.png $out/share/icons/128x128/quartus.png
 
-    # mkdir -p $out/quartus/bin $out/quartus/sopc_builder/bin $out/questa_fse/bin
     mkdir -p $out/quartus/bin $out/quartus/sopc_builder/bin $out/modelsim_ase/bin
     WRAPPER=$out/bin/${name}
     EXECUTABLES="${
@@ -108,17 +104,21 @@ in buildFHSUserEnv rec {
     }"
     for executable in $EXECUTABLES; do
         echo "#!${stdenv.shell}" >> $out/$executable
-        echo "$WRAPPER ${unwrapped}/$executable \$@" >> $out/$executable
+        echo "$WRAPPER ${unwrapped}/$executable \"\$@\"" >> $out/$executable
     done
 
     cd $out
-
     chmod +x $EXECUTABLES
     # link into $out/bin so executables become available on $PATH
     ln --symbolic --relative --target-directory ./bin $EXECUTABLES
   '';
 
+  # LD_PRELOAD fixes issues in the licensing system that cause memory corruption and crashes when
+  # starting most operations in many containerized environments, including WSL2, Docker, and LXC
+  # (a similiar fix involving LD_PRELOADing tcmalloc did not solve the issue in my situation)
+  # we use the name so that quartus can load the 64 bit verson and modelsim can load the 32 bit version
+  # https://community.intel.com/t5/Intel-FPGA-Software-Installation/Running-Quartus-Prime-Standard-on-WSL-crashes-in-libudev-so/m-p/1189032
   runScript = writeScript "${name}-wrapper" ''
-    exec $@
+    exec env LD_PRELOAD=libudev.so.0 "$@"
   '';
 }
