@@ -31,16 +31,6 @@ let
     lib.filterAttrs (name: value: !(lib.hasAttr name supportedDeviceIds))
     deviceIds;
 
-  # 20.1
-  # componentHashes = {
-  #   "arria_lite" = "140jqnb97vrxx6398cpgpw35zrrx3z5kv1x5gr9is1xdbnf4fqhy";
-  #   "cyclone" = "116kf69ryqcmlc2k8ra0v32jy7nrk7w4s5z3yll7h3c3r68xcsfr";
-  #   "cyclone10lp" = "07wpgx9bap6rlr5bcmr9lpsxi3cy4yar4n3pxfghazclzqfi2cyl";
-  #   "cyclonev" = "11baa9zpmmfkmyv33w1r57ipf490gnd3dpi2daripf38wld8lgak";
-  #   "max" = "1zy2d42dqmn97fwmv4x6pmihh4m23jypv3nd830m1mj7jkjx9kcq";
-  #   "max10" = "1hvi9cpcjgbih3l6nh8x1vsp0lky5ax85jb2yqmzla80n7dl9ahs";
-  # };
-
   # 18.1
   componentHashes = {
     "arria_lite" =
@@ -56,20 +46,7 @@ let
       "78f2103e815d9a87e121fc9809aef76dc7b39a0d415ac68fba56dcf6b61c7d4a";
   };
 
-  # version = "20.1.1.720";
   version = "18.1.0.625";
-
-  # 20.1
-  # download = { name, sha256 }:
-  #   fetchurl {
-  #     inherit name sha256;
-  #     # e.g. "20.1.1.720" -> "20.1std.1/720"
-  #     url = "https://download.altera.com/akdlm/software/acdsinst/${
-  #         lib.versions.majorMinor version
-  #       }std.${lib.versions.patch version}/${
-  #         lib.elemAt (lib.splitVersion version) 3
-  #       }/ib_installers/${name}";
-  #   };
 
   # 18.1
   download = { name, sha256 }:
@@ -84,21 +61,6 @@ let
 in stdenv.mkDerivation rec {
   inherit version;
   pname = "quartus-prime-lite-unwrapped";
-
-  # 20.1
-  # src = map download ([
-  #   {
-  #     name = "QuartusLiteSetup-${version}-linux.run";
-  #     sha256 = "0mjp1rg312dipr7q95pb4nf4b8fwvxgflnd1vafi3g9cshbb1c3k";
-  #   }
-  #   {
-  #     name = "ModelSimSetup-${version}-linux.run";
-  #     sha256 = "1cqgv8x6vqga8s4v19yhmgrr886rb6p7sbx80528df5n4rpr2k4i";
-  #   }
-  # ] ++ (map (id: {
-  #   name = "${id}-${version}.qdz";
-  #   sha256 = lib.getAttr id componentHashes;
-  # }) (lib.attrValues supportedDeviceIds)));
 
   # 18.1
   src = map download ([

@@ -37,7 +37,6 @@ in buildFHSUserEnv rec {
   multiPkgs = pkgs:
     with pkgs;
     let
-      # This seems ugly - can we override `libpng = libpng12` for all `pkgs`?
       freetype = pkgs.freetype.override { libpng = libpng12; };
       fontconfig = pkgs.fontconfig.override { inherit freetype; };
       libXft = pkgs.xorg.libXft.override { inherit freetype fontconfig; };
@@ -104,10 +103,11 @@ in buildFHSUserEnv rec {
     }"
     for executable in $EXECUTABLES; do
         echo "#!${stdenv.shell}" >> $out/$executable
-        echo "$WRAPPER ${unwrapped}/$executable \"\$@\"" >> $out/$executable
+        echo "$WRAPPER ${unwrapped}/$executable \$@" >> $out/$executable
     done
 
     cd $out
+
     chmod +x $EXECUTABLES
     # link into $out/bin so executables become available on $PATH
     ln --symbolic --relative --target-directory ./bin $EXECUTABLES
