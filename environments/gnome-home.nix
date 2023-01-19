@@ -25,7 +25,7 @@ in {
       configFile = {
         "keyboard-toggle.sh".source = ../dotfiles/polybar/keyboard-toggle.sh;
         "kitty/kitty.conf".source = ../dotfiles/kitty/kitty.conf;
-        "qt5ct/colors/Dracula.conf".source = "${dracula-qt}";
+        # "qt5ct/colors/Dracula.conf".source = "${dracula-qt}";
         "gtk-4.0/gtk.css".source = ../dotfiles/gtk-4.0/gtk.css;
         "gtk-4.0/gtk-dark.css".source = ../dotfiles/gtk-4.0/gtk-dark.css;
         # "autostart/armcord.desktop".text = ''

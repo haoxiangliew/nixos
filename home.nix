@@ -13,13 +13,13 @@ let
     };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/a518c77148585023ff56022f09c4b2c418a51ef5.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/6dccdc458512abce8d19f74195bb20fdb067df50.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/6fa004ad6204ffcd746654ed60fd8dee394ff388.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/8365523d10c9fca0a232e5dfaaad783bf34ecf02.tar.gz";
       }))
     ];
   };
@@ -156,15 +156,14 @@ in {
             inherit (super) spotify-unwrapped;
           };
       });
-      ventoyVersion = "1.0.87";
+      ventoyVersion = "1.0.88";
       ventoyOverlay = (self: super: {
         ventoy-bin = super.ventoy-bin.overrideAttrs (old: {
           version = "${ventoyVersion}";
           src = builtins.fetchurl {
             url =
               "https://github.com/ventoy/Ventoy/releases/download/v${ventoyVersion}/ventoy-${ventoyVersion}-linux.tar.gz";
-            sha256 =
-              "d26ecc5cbb52baaf06743157cca798f3a0c882581e43ac3212da4ec81fed8647";
+            sha256 = "0c0w6isvrffz2kl1ppfcc54487q5msmi20na5syi68j4fk6ms3cs";
           };
         });
       });
@@ -204,7 +203,6 @@ in {
       rustOverlay
       ventoyOverlay
       viaAppOverlay
-      xournalppOverlay
       packagesOverlay
     ];
   };
@@ -331,11 +329,12 @@ in {
       picocom
       ripgrep
       silver-searcher
+      # vagrant
       valgrind
       # ide
       arduino
       ghidra
-      kicad
+      # kicad
       quartus-prime-lite
       # bash
       shfmt
@@ -407,6 +406,7 @@ in {
             "extensions.pocket.enabled" = false;
             "gfx.webrender.all" = true;
             "media.ffmpeg.vaapi.enabled" = true;
+            "network.trr.disable-ECS" = false;
           };
         in {
           default = {

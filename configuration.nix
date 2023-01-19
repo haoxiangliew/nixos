@@ -74,6 +74,9 @@
         from = 1714;
         to = 1764;
       }];
+      extraCommands = ''
+        ip46tables -I INPUT 1 -i vboxnet+ -p tcp -m tcp --dport 2049 -j ACCEPT
+      '';
     };
   };
 
@@ -486,6 +489,7 @@
     flatpak.enable = true;
     fstrim.enable = true;
     fwupd.enable = true;
+    nfs.server.enable = true;
     openssh.enable = true;
     pcscd.enable = true;
     ratbagd.enable = true;

@@ -1,6 +1,21 @@
 { config, pkgs, lib, ... }:
 
 {
+  nixpkgs = {
+    overlays = let
+      kittyOverlay = (self: super: {
+        kitty = super.kitty.overrideAttrs (oldAttrs: {
+          patches = (oldAttrs.patches or [ ]) ++ [
+            (pkgs.fetchpatch {
+              url =
+                "https://github.com/kovidgoyal/kitty/commit/51bba9110e9920afbefeb981e43d0c1728051b5e.patch";
+              sha256 = "sha256-1aSU4aU6j1/om0LsceGfhH1Hdzp+pPaNeWAi7U6VcP4=";
+            })
+          ];
+        });
+      });
+    in [ kittyOverlay ];
+  };
   environment = {
     variables = {
       NIXOS_OZONE_WL = "1";
@@ -12,7 +27,7 @@
       evtest
       glib
       gnome-obfuscate
-      helvum
+      # helvum
       kitty
       libinput
       libsForQt5.qt5.qtwayland
@@ -37,8 +52,8 @@
           gedit # text editor
           epiphany # web browser
           geary # email reader
-          evince # document viewer
-          gnome-characters
+          # evince # document viewer
+          # gnome-characters
           totem # video player
           tali # poker game
           iagno # go game
@@ -59,7 +74,11 @@
     };
   };
 
-  qt.platformTheme = "qt5ct";
+  qt = {
+    enable = true;
+    style = "adwaita-dark";
+    platformTheme = "gnome";
+  };
 
   sound.enable = false;
 
@@ -69,7 +88,6 @@
     xserver = {
       enable = true;
       displayManager = {
-        # defaultSession = "gnome-xorg";
         defaultSession = "gnome";
         gdm = {
           enable = true;
