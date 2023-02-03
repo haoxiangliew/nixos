@@ -64,8 +64,8 @@
     };
     firewall = {
       enable = true;
-      allowedTCPPorts = [ 22 80 43 443 22000 3000 ];
-      allowedUDPPorts = [ 53 22000 21027 32410 32412 32413 32414 ];
+      allowedTCPPorts = [ 22 80 43 443 22000 3000 2049 ];
+      allowedUDPPorts = [ 53 22000 21027 32410 32412 32413 32414 2049 ];
       allowedTCPPortRanges = [{
         from = 1714;
         to = 1764;
@@ -75,7 +75,7 @@
         to = 1764;
       }];
       extraCommands = ''
-        ip46tables -I INPUT 1 -i vboxnet+ -p tcp -m tcp --dport 2049 -j ACCEPT
+        ip46tables -I INPUT 1 -i virbir+ -p tcp -m tcp --dport 2049 -j ACCEPT
       '';
     };
   };
@@ -176,6 +176,7 @@
       tree
       unrar
       unzip
+      virtiofsd
       virt-manager
       virt-viewer
       wget
@@ -183,6 +184,7 @@
       yubikey-manager-qt
       # devtools
       nixfmt
+      nixpkgs-fmt
       nodePackages.bash-language-server
       rnix-lsp
       shfmt
@@ -199,7 +201,6 @@
       corefonts
       emacs-all-the-icons-fonts
       font-awesome_4
-      jetbrains-mono
       joypixels
       noto-fonts
       noto-fonts-extra
@@ -227,7 +228,7 @@
         sansSerif =
           [ "SF Pro" "Cantarell" "Noto Sans" "Noto Sans SC" "Noto Sans TC" ];
         monospace = [
-          "PragmataPro Mono Liga"
+          "PragmataPro Liga"
           "SF Mono"
           "Noto Sans Mono"
           "Noto Sans Mono CJK SC"
@@ -485,7 +486,6 @@
       '';
     };
     btrfs.autoScrub.enable = true;
-    earlyoom.enable = true;
     flatpak.enable = true;
     fstrim.enable = true;
     fwupd.enable = true;

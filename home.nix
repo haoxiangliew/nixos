@@ -13,16 +13,17 @@ let
     };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/6dccdc458512abce8d19f74195bb20fdb067df50.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/4d7c2644dbac9cf8282c0afe68fca8f0f3e7b2db.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/8365523d10c9fca0a232e5dfaaad783bf34ecf02.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/88dcf53013b1f8f0a6a1766fc76ed181e0a6a8db.tar.gz";
       }))
     ];
   };
+
 in {
   imports = [ (import "${home-manager}/nixos") ./environments/gnome-home.nix ];
 
@@ -188,6 +189,7 @@ in {
         });
       });
       packagesOverlay = (final: prev: {
+        armcord = prev.callPackage ./packages/armcord { };
         marksman = prev.callPackage ./packages/marksman { };
         wechat-uos = prev.callPackage ./packages/wechat-uos { };
         wine-wechat = prev.callPackage ./packages/wine-wechat { };
@@ -278,6 +280,7 @@ in {
 
     home.packages = with pkgs; [
       # apps
+      armcord
       bitwarden
       bottles
       darktable
@@ -329,20 +332,20 @@ in {
       picocom
       ripgrep
       silver-searcher
-      # vagrant
+      vagrant
       valgrind
       # ide
       arduino
+      neovim
       ghidra
-      # kicad
+      kicad
       quartus-prime-lite
-      # bash
-      shfmt
       # c / c++
       avrdude
       catch2
       clang_14
       clang-tools_14
+      cmake-language-server
       cmakeWithGui
       gdb
       gnumake
@@ -374,7 +377,6 @@ in {
       # nix
       direnv
       hydra-check
-      nixpkgs-fmt
       nix-prefetch
       nix-tree
       # nodejs
@@ -386,7 +388,7 @@ in {
       pythonWithMyPackages
       nodePackages.pyright
       # rust
-      latest.rustChannels.nightly.rust
+      # latest.rustChannels.nightly.rust
       # verilog
       verible
       # yaml
@@ -396,7 +398,7 @@ in {
     programs = {
       chromium = {
         enable = false;
-        package = pkgs.google-chrome;
+        package = pkgs.google-chrome-dev;
       };
       firefox = {
         enable = true;
@@ -445,7 +447,12 @@ in {
     xdg = {
       configFile = {
         "nixpkgs/config.nix".text = ''
-          { allowUnfree = true; }
+          {
+            allowUnfree = true;
+            permittedInsecurePackages = [
+              "python-2.7.18.6"
+            ];
+          }
         '';
         "mpv/input.conf".source = ./dotfiles/mpv/input.conf;
         "mpv/mpv.conf".source = ./dotfiles/mpv/mpv.conf;
@@ -463,6 +470,16 @@ in {
           startupNotify = true;
           settings = { StartupWMClass = "Emacs"; };
           categories = [ "Utility" "Development" "TextEditor" ];
+        };
+        armcord = {
+          name = "ArmCord";
+          exec =
+            "armcord --enable-features=WaylandWindowDecorations,WebRTCPipeWireCapturer";
+          terminal = false;
+          icon = "armcord";
+          comment =
+            "ArmCord is a custom client designed to enhance your Discord experience while keeping everything lightweight.";
+          categories = [ "Network" ];
         };
         # google-chrome = {
         #   name = "Google Chrome";

@@ -1,21 +1,7 @@
 { config, pkgs, lib, ... }:
 
 {
-  nixpkgs = {
-    overlays = let
-      kittyOverlay = (self: super: {
-        kitty = super.kitty.overrideAttrs (oldAttrs: {
-          patches = (oldAttrs.patches or [ ]) ++ [
-            (pkgs.fetchpatch {
-              url =
-                "https://github.com/kovidgoyal/kitty/commit/51bba9110e9920afbefeb981e43d0c1728051b5e.patch";
-              sha256 = "sha256-1aSU4aU6j1/om0LsceGfhH1Hdzp+pPaNeWAi7U6VcP4=";
-            })
-          ];
-        });
-      });
-    in [ kittyOverlay ];
-  };
+  nixpkgs = { overlays = let in [ ]; };
   environment = {
     variables = {
       NIXOS_OZONE_WL = "1";
@@ -23,14 +9,15 @@
       QT_QPA_PLATFORM = "wayland";
     };
     systemPackages = (with pkgs; [
+      drawing
       easyeffects
       evtest
       glib
       gnome-obfuscate
-      # helvum
       kitty
       libinput
       libsForQt5.qt5.qtwayland
+      pavucontrol
       pinentry-gnome
       qt6.qtwayland
     ]) ++ (with pkgs.gnome; [
@@ -110,6 +97,15 @@
       };
       pulse.enable = true;
       jack.enable = true;
+      config.pipewire = {
+        "link.max-buffers" = 16;
+        "log.level" = 2;
+        "default.clock.rate" = 48000;
+        "default.clock.allowed-rates" = [ 44100 48000 88200 96000 192000 ];
+        "default.clock.quantum" = 1024;
+        "default.clock.min-quantum" = 32;
+        "default.clock.max-quantum" = 8192;
+      };
     };
     udev.packages = with pkgs.gnome; [ gnome-settings-daemon ];
   };

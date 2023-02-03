@@ -1,4 +1,5 @@
 alias ssh="kitty +kitten ssh"
+alias 256col="TERM=xterm-256color"
 
 # thefuck
 function fuck -d "Correct your previous console command"
