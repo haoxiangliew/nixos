@@ -13,13 +13,13 @@ let
     };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/4d7c2644dbac9cf8282c0afe68fca8f0f3e7b2db.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/d917136f550a8c36efb1724390c7245105f79023.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/88dcf53013b1f8f0a6a1766fc76ed181e0a6a8db.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/e24f948ba5bcd5d8f4e6485a6e0102f2171541c7.tar.gz";
       }))
     ];
   };
@@ -44,7 +44,10 @@ in {
           "https://github.com/mozilla/nixpkgs-mozilla/archive/${moz-rev}.tar.gz";
       };
       firefoxOverlay = (import "${moz-url}/firefox-overlay.nix");
-      rustOverlay = (import "${moz-url}/rust-overlay.nix");
+      fenix-url = builtins.fetchTarball {
+        url = "https://github.com/nix-community/fenix/archive/main.tar.gz";
+      };
+      rustOverlay = (import "${fenix-url}/overlay.nix");
       armcordVersion = "3.1.4";
       armcordOverlay = (self: super: {
         armcord = super.armcord.overrideAttrs (oldAttrs: {
@@ -181,6 +184,16 @@ in {
           categories = [ "Development" ];
         };
       });
+      vscodeInsidersOverlay = (self: super: {
+        vscode-insiders =
+          (super.vscode.override { isInsiders = true; }).overrideAttrs
+          (oldAttrs: rec {
+            name = "vscode-insiders";
+            src = builtins.fetchTarball
+              "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
+          });
+        version = "latest";
+      });
       xournalppOverlay = (self: super: {
         xournalpp = super.xournalpp.overrideAttrs (oldAttrs: {
           src = builtins.fetchTarball
@@ -205,13 +218,14 @@ in {
       rustOverlay
       ventoyOverlay
       viaAppOverlay
+      vscodeInsidersOverlay
       packagesOverlay
     ];
   };
 
   environment = {
     variables = {
-      EDITOR = "emacs -Q -nw -l /home/haoxiangliew/.emacs.d/editor-init.el";
+      EDITOR = "mg";
       FZF_DEFAULT_COMMAND = "fd --type file --follow --color=always";
       FZF_DEFAULT_OPTS = "--ansi";
     };
@@ -222,7 +236,7 @@ in {
   };
 
   programs.chromium = {
-    enable = false;
+    enable = true;
     extensions = [
       "cjpalhdlnbpafiamejdnhcphjbkeiagm" # ublock-origin
       "dcpihecpambacapedldabdbpakmachpb;https://raw.githubusercontent.com/iamadamdev/bypass-paywalls-chrome/master/src/updates/updates.xml" # bypass-paywalls
@@ -336,22 +350,24 @@ in {
       valgrind
       # ide
       arduino
-      neovim
       ghidra
       kicad
+      mg
       quartus-prime-lite
       # c / c++
       avrdude
       catch2
-      clang_14
-      clang-tools_14
+      clang_15
+      clang-tools_15
       cmake-language-server
       cmakeWithGui
       gdb
       gnumake
+      lcov
       ninja
       pkgsCross.avr.buildPackages.binutils
       pkgsCross.avr.buildPackages.gcc
+      qt6.full
       # css
       nodePackages.vscode-css-languageserver-bin
       # git
@@ -388,7 +404,14 @@ in {
       pythonWithMyPackages
       nodePackages.pyright
       # rust
-      # latest.rustChannels.nightly.rust
+      (fenix.complete.withComponents [
+        "cargo"
+        "clippy"
+        "rust-src"
+        "rustc"
+        "rustfmt"
+      ])
+      rust-analyzer-nightly
       # verilog
       verible
       # yaml
@@ -423,19 +446,9 @@ in {
         package = emacsPinnedPkgs.emacsPgtk;
         extraPackages = (epkgs: [ epkgs.vterm ]);
       };
-      neovim = {
-        enable = false;
-        package = pkgs.neovim;
-        viAlias = true;
-        vimAlias = true;
-        vimdiffAlias = true;
-        withNodeJs = true;
-        withPython3 = true;
-        withRuby = true;
-      };
       vscode = {
         enable = true;
-        package = pkgs.vscode;
+        package = pkgs.vscode-insiders;
         extensions = with pkgs.vscode-extensions; [
           ms-vscode.cpptools
           ms-vscode-remote.remote-ssh
@@ -461,16 +474,6 @@ in {
         "ranger/rc.conf".source = ./dotfiles/ranger/rc.conf;
       };
       desktopEntries = {
-        emcsg = {
-          name = "Emacs (Simple)";
-          genericName = "Text Editor";
-          comment = "Edit text in a barebones environment";
-          icon = "Emacs";
-          exec = "emacs -Q -l /home/haoxiangliew/.emacs.d/editor-init.el";
-          startupNotify = true;
-          settings = { StartupWMClass = "Emacs"; };
-          categories = [ "Utility" "Development" "TextEditor" ];
-        };
         armcord = {
           name = "ArmCord";
           exec =
@@ -517,6 +520,45 @@ in {
         #       name = "New Incognito Window";
         #       exec =
         #         "google-chrome-stable --incognito --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder";
+        #     };
+        #   };
+        # };
+        # google-chrome-unstable = {
+        #   name = "Google Chrome (unstable)";
+        #   genericName = "Web Browser";
+        #   comment = "Access the Internet";
+        #   exec =
+        #     "google-chrome-unstable --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder --ozone-platform-hint=x11";
+        #   startupNotify = true;
+        #   terminal = false;
+        #   icon = "google-chrome-unstable";
+        #   categories = [ "Network" "WebBrowser" ];
+        #   mimeType = [
+        #     "application/pdf"
+        #     "application/rdf+xml"
+        #     "application/rss+xml"
+        #     "application/xhtml+xml"
+        #     "application/xhtml_xml"
+        #     "application/xml"
+        #     "image/gif"
+        #     "image/jpeg"
+        #     "image/png"
+        #     "image/webp"
+        #     "text/html"
+        #     "text/xml"
+        #     "x-scheme-handler/http"
+        #     "x-scheme-handler/https"
+        #   ];
+        #   actions = {
+        #     new-window = {
+        #       name = "New Window";
+        #       exec =
+        #         "google-chrome-unstable --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder --ozone-platform-hint=x11";
+        #     };
+        #     new-incognito-window = {
+        #       name = "New Incognito Window";
+        #       exec =
+        #         "google-chrome-unstable --incognito --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder --ozone-platform-hint=x11";
         #     };
         #   };
         # };

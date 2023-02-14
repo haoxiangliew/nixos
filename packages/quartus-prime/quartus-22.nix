@@ -40,16 +40,16 @@ let
     "max10" = "04q1nks44rrhxlzshh68hdlbxza3n8b4v0dbf5ngzyl909qgkzla";
   };
 
-  version = "22.1.0.915";
-  downloadVersion = "22.1std.0.915";
+  version = "22.1std.0.915";
+  urlFirst = "22.1std";
+  urlSecond = "915";
 
   download = { name, sha256 }:
     fetchurl {
       inherit name sha256;
-      # e.g. "22.1.0.915" -> "22.1std/915"
-      url = "https://downloads.intel.com/akdlm/software/acdsinst/${
-          lib.versions.majorMinor version
-        }std/${lib.elemAt (lib.splitVersion version) 3}/ib_installers/${name}";
+      # e.g. "22.1std.0.915"
+      url =
+        "https://downloads.intel.com/akdlm/software/acdsinst/${urlFirst}/${urlSecond}/ib_installers/${name}";
     };
 
 in stdenv.mkDerivation rec {
@@ -58,15 +58,15 @@ in stdenv.mkDerivation rec {
 
   src = map download ([
     {
-      name = "QuartusLiteSetup-${downloadVersion}-linux.run";
+      name = "QuartusLiteSetup-${version}-linux.run";
       sha256 = "0h46s1d5dncmkrpjynqf3l4x7m6ch3d99lyh91sxgqg97ljrx9hl";
     }
     {
-      name = "QuestaSetup-${downloadVersion}-linux.run";
+      name = "QuestaSetup-${version}-linux.run";
       sha256 = "1aqlh4xif96phmsp8ll73bn9nrd6zakhsf4c0cbc44j80fjwj6qx";
     }
   ] ++ (map (id: {
-    name = "${id}-${downloadVersion}.qdz";
+    name = "${id}-${version}.qdz";
     sha256 = lib.getAttr id componentHashes;
   }) (lib.attrValues supportedDeviceIds)));
 
@@ -86,7 +86,7 @@ in stdenv.mkDerivation rec {
     disabledComponents = [
       "quartus_help"
       "quartus_update"
-      # not questa_ase
+      # not questa_fse
       "questa_fe"
     ] ++ (lib.attrValues unsupportedDeviceIds);
   in ''
