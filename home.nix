@@ -13,19 +13,23 @@ let
     };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/d917136f550a8c36efb1724390c7245105f79023.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/28319deb5ab05458d9cd5c7d99e1a24ec2e8fc4b.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/e24f948ba5bcd5d8f4e6485a6e0102f2171541c7.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/cd34501a9bcec341533c7131af77572456c100d8.tar.gz";
       }))
     ];
   };
 
 in {
-  imports = [ (import "${home-manager}/nixos") ./environments/gnome-home.nix ];
+  imports = [
+    (import "${home-manager}/nixos")
+    ./environments/gnome-home.nix
+    ./vscode.nix
+  ];
 
   nix = {
     settings = {
@@ -189,10 +193,10 @@ in {
           (super.vscode.override { isInsiders = true; }).overrideAttrs
           (oldAttrs: rec {
             name = "vscode-insiders";
+            version = "latest";
             src = builtins.fetchTarball
               "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
           });
-        version = "latest";
       });
       xournalppOverlay = (self: super: {
         xournalpp = super.xournalpp.overrideAttrs (oldAttrs: {
@@ -242,6 +246,32 @@ in {
       "dcpihecpambacapedldabdbpakmachpb;https://raw.githubusercontent.com/iamadamdev/bypass-paywalls-chrome/master/src/updates/updates.xml" # bypass-paywalls
       "ilcacnomdmddpohoakmgcboiehclpkmj;https://raw.githubusercontent.com/FastForwardTeam/releases/main/update/update.xml" # fastforward
     ];
+  };
+
+  vscode = {
+    user = "haoxiangliew";
+    homeDir = "/home/haoxiangliew";
+    extensions = with pkgs.vscode-extensions;
+      [ ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+        {
+          name = "cpptools";
+          publisher = "ms-vscode";
+          version = "latest";
+          sha256 = "sha256-5JODuuOZBfdLSOkuAdSF4yI92EGfjWqNM9kBBeYwrJo=";
+        }
+        {
+          name = "remote-ssh";
+          publisher = "ms-vscode-remote";
+          version = "latest";
+          sha256 = "sha256-m6prKl3ecjPodXsa90f/LlFPB2cTarNQyGXT/hx6st4=";
+        }
+        {
+          name = "vsliveshare";
+          publisher = "ms-vsliveshare";
+          version = "latest";
+          sha256 = "sha256-QViwZBxem0z62BLhA0zbFdQL3SfoUKZQx6X+Am1lkT0=";
+        }
+      ];
   };
 
   home-manager.users.haoxiangliew = {
@@ -351,7 +381,7 @@ in {
       # ide
       arduino
       ghidra
-      kicad
+      # kicad
       mg
       quartus-prime-lite
       # c / c++
@@ -449,11 +479,6 @@ in {
       vscode = {
         enable = true;
         package = pkgs.vscode-insiders;
-        extensions = with pkgs.vscode-extensions; [
-          ms-vscode.cpptools
-          ms-vscode-remote.remote-ssh
-          ms-vsliveshare.vsliveshare
-        ];
       };
     };
 

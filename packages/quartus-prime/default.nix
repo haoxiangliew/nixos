@@ -1,12 +1,19 @@
-{ stdenv, lib, buildFHSUserEnv, callPackage, makeDesktopItem, writeScript
+{ stdenv
+, lib
+, buildFHSUserEnv
+, callPackage
+, makeDesktopItem
+, writeScript
 , supportedDevices ? [
-  "Arria II"
-  "Cyclone V"
-  "Cyclone IV"
-  "Cyclone 10 LP"
-  "MAX II/V"
-  "MAX 10 FPGA"
-], unwrapped ? callPackage ./quartus-22.nix { inherit supportedDevices; } }:
+    "Arria II"
+    "Cyclone V"
+    "Cyclone IV"
+    "Cyclone 10 LP"
+    "MAX II/V"
+    "MAX 10 FPGA"
+  ]
+, unwrapped ? callPackage ./quartus-22.nix { inherit supportedDevices; }
+}:
 
 let
   desktopItem = makeDesktopItem {
@@ -18,7 +25,8 @@ let
     categories = [ "Development" ];
   };
   # I think modelsim_ase/linux/vlm checksums itself, so use FHSUserEnv instead of `patchelf`
-in buildFHSUserEnv rec {
+in
+buildFHSUserEnv rec {
   name = "quartus-prime-lite"; # wrapped
 
   targetPkgs = pkgs:
@@ -42,7 +50,8 @@ in buildFHSUserEnv rec {
       freetype = pkgs.freetype.override { libpng = libpng12; };
       fontconfig = pkgs.fontconfig.override { inherit freetype; };
       libXft = pkgs.xorg.libXft.override { inherit freetype fontconfig; };
-    in [
+    in
+    [
       # modelsim requirements
       expat
       libxml2
@@ -61,79 +70,81 @@ in buildFHSUserEnv rec {
 
   passthru = { inherit unwrapped; };
 
-  extraInstallCommands = let
-    quartusExecutables = (map (c: "quartus/bin/quartus_${c}") [
-      "asm"
-      "cdb"
-      "cpf"
-      "drc"
-      "eda"
-      "fit"
-      "jbcc"
-      "jli"
-      "map"
-      "pgm"
-      "pow"
-      "sh"
-      "si"
-      "sim"
-      "sta"
-      "stp"
-      "tan"
-    ])
+  extraInstallCommands =
+    let
+      quartusExecutables = (map (c: "quartus/bin/quartus_${c}") [
+        "asm"
+        "cdb"
+        "cpf"
+        "drc"
+        "eda"
+        "fit"
+        "jbcc"
+        "jli"
+        "map"
+        "pgm"
+        "pow"
+        "sh"
+        "si"
+        "sim"
+        "sta"
+        "stp"
+        "tan"
+      ])
       ++ [ "quartus/bin/quartus" "quartus/bin/jtagd" "quartus/bin/jtagconfig" ];
 
-    qsysExecutables = map (c: "quartus/sopc_builder/bin/qsys-${c}") [
-      "generate"
-      "edit"
-      "script"
-    ];
+      qsysExecutables = map (c: "quartus/sopc_builder/bin/qsys-${c}") [
+        "generate"
+        "edit"
+        "script"
+      ];
 
-    # Should we install all executables ?
-    # modelsimExecutables =
-    #   map (c: "modelsim_ase/bin/${c}") [ "vsim" "vlog" "vlib" ];
+      # Should we install all executables ?
+      # modelsimExecutables =
+      #   map (c: "modelsim_ase/bin/${c}") [ "vsim" "vlog" "vlib" ];
 
-    # modelsim -> questa
-    questaExecutables = map (c: "questa_fse/bin/${c}") [ "vsim" "vlog" "vlib" ];
+      # modelsim -> questa
+      questaExecutables = map (c: "questa_fse/bin/${c}") [ "vsim" "vlog" "vlib" ];
 
-  in ''
-    # 18.1
-    # mkdir -p $out/share/applications $out/share/icons/128x128
-    # ln -s ${desktopItem}/share/applications/* $out/share/applications
-    # ln -s ${unwrapped}/licenses/images/dc_quartus_panel_logo.png $out/share/icons/128x128/quartus.png
+    in
+    ''
+      # 18.1
+      # mkdir -p $out/share/applications $out/share/icons/128x128
+      # ln -s ${desktopItem}/share/applications/* $out/share/applications
+      # ln -s ${unwrapped}/licenses/images/dc_quartus_panel_logo.png $out/share/icons/128x128/quartus.png
 
-    # mkdir -p $out/quartus/bin $out/quartus/sopc_builder/bin $out/modelsim_ase/bin
-    # WRAPPER=$out/bin/${name}
+      # mkdir -p $out/quartus/bin $out/quartus/sopc_builder/bin $out/modelsim_ase/bin
+      # WRAPPER=$out/bin/${name}
 
-    mkdir -p $out/share/applications $out/share/icons/hicolor/64x64/apps
-    ln -s ${desktopItem}/share/applications/* $out/share/applications
-    ln -s ${unwrapped}/quartus/adm/quartusii.png $out/share/icons/hicolor/64x64/apps/quartus.png
+      mkdir -p $out/share/applications $out/share/icons/hicolor/64x64/apps
+      ln -s ${desktopItem}/share/applications/* $out/share/applications
+      ln -s ${unwrapped}/quartus/adm/quartusii.png $out/share/icons/hicolor/64x64/apps/quartus.png
 
-    mkdir -p $out/quartus/bin $out/quartus/sopc_builder/bin $out/questa_fse/bin
-    WRAPPER=$out/bin/${name}
+      mkdir -p $out/quartus/bin $out/quartus/sopc_builder/bin $out/questa_fse/bin
+      WRAPPER=$out/bin/${name}
 
-    EXECUTABLES="${
-      lib.concatStringsSep " " (quartusExecutables ++ qsysExecutables
-        ++ questaExecutables) # modelsim -> questa
-    }"
+      EXECUTABLES="${
+        lib.concatStringsSep " " (quartusExecutables ++ qsysExecutables
+          ++ questaExecutables) # modelsim -> questa
+      }"
 
-    # 18.1
-    # for executable in $EXECUTABLES; do
-    #     echo "#!${stdenv.shell}" >> $out/$executable
-    #     echo "$WRAPPER ${unwrapped}/$executable \$@" >> $out/$executable
-    # done
+      # 18.1
+      # for executable in $EXECUTABLES; do
+      #     echo "#!${stdenv.shell}" >> $out/$executable
+      #     echo "$WRAPPER ${unwrapped}/$executable \$@" >> $out/$executable
+      # done
 
-    for executable in $EXECUTABLES; do
-        echo "#!${stdenv.shell}" >> $out/$executable
-        echo "$WRAPPER ${unwrapped}/$executable \"\$@\"" >> $out/$executable
-    done
+      for executable in $EXECUTABLES; do
+          echo "#!${stdenv.shell}" >> $out/$executable
+          echo "$WRAPPER ${unwrapped}/$executable \"\$@\"" >> $out/$executable
+      done
 
-    cd $out
+      cd $out
 
-    chmod +x $EXECUTABLES
-    # link into $out/bin so executables become available on $PATH
-    ln --symbolic --relative --target-directory ./bin $EXECUTABLES
-  '';
+      chmod +x $EXECUTABLES
+      # link into $out/bin so executables become available on $PATH
+      ln --symbolic --relative --target-directory ./bin $EXECUTABLES
+    '';
 
   # LD_PRELOAD fixes issues in the licensing system that cause memory corruption and crashes when
   # starting most operations in many containerized environments, including WSL2, Docker, and LXC

@@ -47,7 +47,7 @@ let
   download = { name, sha256 }:
     fetchurl {
       inherit name sha256;
-      # e.g. "22.1std.0.915"
+      # e.g. "20.1.1.720" -> "20.1std.1/720"
       url =
         "https://downloads.intel.com/akdlm/software/acdsinst/${urlFirst}/${urlSecond}/ib_installers/${name}";
     };
@@ -82,11 +82,11 @@ in stdenv.mkDerivation rec {
       patchelf --interpreter $(cat $NIX_CC/nix-support/dynamic-linker) $TEMP/${installer.name}
     '';
     copyComponent = component: "cp ${component} $TEMP/${component.name}";
-    # leaves enabled: quartus, questa_fse, devinfo
+    # leaves enabled: quartus, modelsim_ase, devinfo
     disabledComponents = [
       "quartus_help"
       "quartus_update"
-      # not questa_fse
+      # not modelsim_ase
       "questa_fe"
     ] ++ (lib.attrValues unsupportedDeviceIds);
   in ''
