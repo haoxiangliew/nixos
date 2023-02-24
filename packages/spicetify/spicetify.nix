@@ -1,4 +1,4 @@
-{ spotify-unwrapped, lib, fetchFromGitHub, formats, spicetify-cli }:
+{ spotify-unwrapped, pkgs, lib, fetchFromGitHub, formats, spicetify-cli }:
 let
   booleanToString = boolean: if boolean then "1" else "0";
   listToString = list: lib.concatStringsSep "|" list;
@@ -9,7 +9,7 @@ let
         owner = "spicetify";
         repo = "spicetify-themes";
         rev = "master";
-        sha256 = "sha256-Q/LBS+bjt2WP/s43LE8hDjYHxPVorT/RA71esPraLOM=";
+        sha256 = "sha256-cJH7hQerXPktMKbk72c2zC9Dibs4WQI0+bD76R7j/44=";
       }
     }/Dribbblish";
 
@@ -52,11 +52,126 @@ let
       "with" = "";
     };
   };
+
+  deviceScaleFactor = null;
+
+  version = "1.1.99.878.g1e4ccc6e";
+  rev = "62";
+
+  deps = with pkgs; [
+    alsa-lib
+    at-spi2-atk
+    at-spi2-core
+    atk
+    cairo
+    cups
+    curlWithGnuTls
+    dbus
+    expat
+    ffmpeg
+    fontconfig
+    freetype
+    gdk-pixbuf
+    glib
+    gtk3
+    libdrm
+    libgcrypt
+    libnotify
+    libpng
+    libpulseaudio
+    libxkbcommon
+    mesa
+    nss
+    pango
+    stdenv.cc.cc
+    systemd
+    xorg.libICE
+    xorg.libSM
+    xorg.libX11
+    xorg.libxcb
+    xorg.libXcomposite
+    xorg.libXcursor
+    xorg.libXdamage
+    xorg.libXext
+    xorg.libXfixes
+    xorg.libXi
+    xorg.libXrandr
+    xorg.libXrender
+    xorg.libXScrnSaver
+    xorg.libxshmfence
+    xorg.libXtst
+    zlib
+  ];
+
 in spotify-unwrapped.overrideAttrs (oldAttrs: {
+
+  src = builtins.fetchurl {
+    url =
+      "https://api.snapcraft.io/api/v1/snaps/download/pOBIoZ2LrCB3rDohMxoYGnbN14EHOgD7_${rev}.snap";
+    sha256 = "0naf37qk5jijnbr0gd6i271yky435y8c97nhrk8nnawf5yv8cikb";
+  };
+
   nativeBuildInputs = (oldAttrs.nativeBuildInputs or [ ]) ++ [ spicetify-cli ];
 
   # ln -s ${dribbblish}/dribbblish.js $spicetifyDir/Extensions/dribbblish.js
   # ln -s ${dribbblish} $spicetifyDir/Themes/Dribbblish
+
+  installPhase = ''
+    runHook preInstall
+
+    libdir=$out/lib/spotify
+    mkdir -p $libdir
+    mv ./usr/* $out/
+
+    cp meta/snap.yaml $out
+
+    # Work around Spotify referring to a specific minor version of
+    # OpenSSL.
+
+    ln -s ${lib.getLib pkgs.openssl}/lib/libssl.so $libdir/libssl.so.1.0.0
+    ln -s ${lib.getLib pkgs.openssl}/lib/libcrypto.so $libdir/libcrypto.so.1.0.0
+    ln -s ${pkgs.nspr.out}/lib/libnspr4.so $libdir/libnspr4.so
+    ln -s ${pkgs.nspr.out}/lib/libplc4.so $libdir/libplc4.so
+
+    ln -s ${pkgs.ffmpeg.lib}/lib/libavcodec.so* $libdir
+    ln -s ${pkgs.ffmpeg.lib}/lib/libavformat.so* $libdir
+
+    rpath="$out/share/spotify:$libdir"
+
+    patchelf \
+      --interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
+      --set-rpath $rpath $out/share/spotify/spotify
+
+    librarypath="${lib.makeLibraryPath deps}:$libdir"
+    wrapProgram $out/share/spotify/spotify \
+      ''${gappsWrapperArgs[@]} \
+      ${
+        lib.optionalString (deviceScaleFactor != null) ''
+          --add-flags "--force-device-scale-factor=${
+            toString deviceScaleFactor
+          }" \
+        ''
+      } \
+      --prefix LD_LIBRARY_PATH : "$librarypath" \
+      --prefix PATH : "${pkgs.gnome.zenity}/bin"
+
+    # fix Icon line in the desktop file (#48062)
+    sed -i "s:^Icon=.*:Icon=spotify-client:" "$out/share/spotify/spotify.desktop"
+
+    # Desktop file
+    mkdir -p "$out/share/applications/"
+    cp "$out/share/spotify/spotify.desktop" "$out/share/applications/"
+
+    # Icons
+    for i in 16 22 24 32 48 64 128 256 512; do
+      ixi="$i"x"$i"
+      mkdir -p "$out/share/icons/hicolor/$ixi/apps"
+      ln -s "$out/share/spotify/icons/spotify-linux-$i.png" \
+        "$out/share/icons/hicolor/$ixi/apps/spotify-client.png"
+    done
+
+    runHook postInstall
+  '';
 
   postInstall = (oldAttrs.postInstall or "") + ''
     export HOME=$TMP

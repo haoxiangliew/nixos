@@ -2,8 +2,8 @@
 
 # Update WeChat
 # https://github.com/microsoft/winget-pkgs/tree/master/manifests/t/Tencent/WeChat
-, version ? "3.7.6.44"
-, sha256 ? "134646155A7D878D86DE2333276E8FED68804928117609D31D44D2468B85418C"
+, version ? "3.9.0.28"
+, sha256 ? "F1D1139498D0E76C5356E1F6542AB9A2CC468F11FB4A88FFC1E826BAEF02CAFC"
 
 , fetchurl, pkgs, lib, p7zip, wine, winetricks, writeShellScript, ... }:
 
@@ -32,14 +32,12 @@ let
     '';
   });
 
-  # wechatWine = wine;
-
   wechatFiles = stdenv.mkDerivation rec {
     pname = "wechat";
     inherit version;
 
     src = fetchurl {
-      url = "https://webcdn.m.qq.com/spcmgr/download/WeChat${version}.exe";
+      url = "https://dldir1.qq.com/weixin/Windows/WeChat${version}.exe";
       inherit sha256;
     };
 
@@ -111,5 +109,6 @@ in stdenv.mkDerivation {
     homepage = "https://weixin.qq.com/";
     platforms = [ "x86_64-linux" ];
     license = licenses.unfreeRedistributable;
+    maintainers = with maintainers; [ haoxiangliew ];
   };
 }

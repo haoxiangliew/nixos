@@ -13,13 +13,13 @@ let
     };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/28319deb5ab05458d9cd5c7d99e1a24ec2e8fc4b.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/988cc958c57ce4350ec248d2d53087777f9e1949.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/cd34501a9bcec341533c7131af77572456c100d8.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/88e410d7f1ddef554b40f66755626e5c883487d9.tar.gz";
       }))
     ];
   };
@@ -65,7 +65,7 @@ in {
       openasar = builtins.fetchurl {
         url =
           "https://github.com/GooseMod/OpenAsar/releases/download/nightly/app.asar";
-        sha256 = "0cygr2xihdr5qz24v0gbrax08vr9h8w8cm190v6fkbggjb8x8417";
+        sha256 = "0di54lgqj5lscwi2pdaifpqjfkqjbzk1r0bgvhffl2bap94rm5bw";
       };
       discordOverlay = (self: super: {
         discord = super.discord.overrideAttrs (oldAttrs: {
@@ -151,10 +151,6 @@ in {
         "https://github.com/spicetify/spicetify-cli/archive/master.tar.gz";
       spicetifyOverlay = (self: super: {
         spicetify-cli = super.spicetify-cli.overrideAttrs (old: {
-          version = "2.9.9";
-          src = builtins.fetchTarball
-            "https://github.com/spicetify/spicetify-cli/archive/refs/tags/v2.9.9.tar.gz";
-          vendorSha256 = "sha256-zYIbtcDM9iYSRHagvI9D284Y7w0ZxG4Ba1p4jqmQyng=";
           postInstall = (old.postInstall or "") + ''
             cp -r ${spicetify-src}/css-map.json $out/bin/css-map.json
           '';
@@ -201,28 +197,27 @@ in {
       xournalppOverlay = (self: super: {
         xournalpp = super.xournalpp.overrideAttrs (oldAttrs: {
           src = builtins.fetchTarball
-            "https://github.com/xournalpp/xournalpp/archive/refs/tags/v1.1.3.tar.gz";
+            "https://github.com/xournalpp/xournalpp/archive/refs/tags/nightly.tar.gz";
           buildInputs = (oldAttrs.buildInputs or [ ]) ++ [ pkgs.alsa-lib ];
         });
       });
       packagesOverlay = (final: prev: {
         armcord = prev.callPackage ./packages/armcord { };
-        marksman = prev.callPackage ./packages/marksman { };
-        wechat-uos = prev.callPackage ./packages/wechat-uos { };
-        wine-wechat = prev.callPackage ./packages/wine-wechat { };
         quartus-prime-lite = prev.callPackage ./packages/quartus-prime { };
+        spotify = prev.callPackage ./packages/spotify { };
       });
     in [
       draculaThemeOverlay
       lieerOverlay
-      lutrisOverlay
       masterPdfOverlay
       firefoxOverlay
       pythonOverlay
       rustOverlay
+      spicetifyOverlay
       ventoyOverlay
       viaAppOverlay
       vscodeInsidersOverlay
+      xournalppOverlay
       packagesOverlay
     ];
   };
@@ -327,7 +322,7 @@ in {
       armcord
       bitwarden
       bottles
-      darktable
+      # darktable
       ffmpeg
       ffmpeg-normalize
       firebird-emu
@@ -348,8 +343,7 @@ in {
       rclone
       scrcpy
       speedtest-cli
-      # spotify-unwrapped
-      spotify
+      spotify-unwrapped
       (ventoy-bin.override {
         defaultGuiType = "gtk3";
         withGtk3 = true;
@@ -362,7 +356,7 @@ in {
       zoom-us
 
       # games
-      lutris
+      # lutris
 
       # social
       element-desktop

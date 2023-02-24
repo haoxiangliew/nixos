@@ -84,7 +84,7 @@
     defaultLocale = "en_US.UTF-8";
     inputMethod = {
       enabled = "ibus";
-      ibus.engines = with pkgs.ibus-engines; [ rime ];
+      ibus.engines = with pkgs.ibus-engines; [ libpinyin rime ];
     };
   };
 
@@ -201,6 +201,9 @@
       corefonts
       emacs-all-the-icons-fonts
       font-awesome_4
+      iosevka-bin
+      (iosevka-bin.override { variant = "aile"; })
+      (iosevka-bin.override { variant = "etoile"; })
       joypixels
       noto-fonts
       noto-fonts-extra
