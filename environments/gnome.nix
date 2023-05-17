@@ -1,6 +1,7 @@
 { config, pkgs, lib, ... }:
 
-{
+let
+in {
   nixpkgs = { overlays = let in [ ]; };
   environment = {
     variables = {
@@ -14,12 +15,14 @@
       evtest
       glib
       gnome-obfuscate
+      helvum
       kitty
       libinput
       libsForQt5.qt5.qtwayland
       pavucontrol
       pinentry-gnome
       qt6.qtwayland
+      wezterm
     ]) ++ (with pkgs.gnome; [
       adwaita-icon-theme
       dconf-editor
@@ -28,7 +31,8 @@
     ]) ++ (with pkgs.gnomeExtensions; [
       appindicator
       alphabetical-app-grid
-      espresso
+      caffeine
+      pip-on-top
     ]);
     gnome = {
       excludePackages = (with pkgs; [ gnome-photos gnome-tour ])
@@ -97,15 +101,6 @@
       };
       pulse.enable = true;
       jack.enable = true;
-      config.pipewire = {
-        "link.max-buffers" = 16;
-        "log.level" = 2;
-        "default.clock.rate" = 48000;
-        "default.clock.allowed-rates" = [ 44100 48000 88200 96000 192000 ];
-        "default.clock.quantum" = 1024;
-        "default.clock.min-quantum" = 32;
-        "default.clock.max-quantum" = 8192;
-      };
     };
     udev.packages = with pkgs.gnome; [ gnome-settings-daemon ];
   };

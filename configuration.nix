@@ -26,8 +26,10 @@
       font = "${pkgs.cantarell-fonts}/share/fonts/cantarell/Cantarell-VF.otf";
     };
     supportedFilesystems = [ "btrfs" "ntfs" ];
-    tmpOnTmpfs = lib.mkDefault true;
-    cleanTmpDir = lib.mkDefault (!config.boot.tmpOnTmpfs);
+    tmp = {
+      useTmpfs = lib.mkDefault true;
+      cleanOnBoot = lib.mkDefault (!config.boot.tmp.useTmpfs);
+    };
     kernel.sysctl = {
       # Disable sysreq
       "kernel.sysreq" = "0";
@@ -163,6 +165,7 @@
       libsecret
       lm_sensors
       mesa-demos
+      mg
       mpv
       ncdu
       neofetch
@@ -180,6 +183,7 @@
       virt-manager
       virt-viewer
       wget
+      win-virtio
       xdg-utils
       yubikey-manager-qt
       # devtools
@@ -188,6 +192,7 @@
       nodePackages.bash-language-server
       rnix-lsp
       shfmt
+      stylua
     ];
   };
 
@@ -195,15 +200,14 @@
     fontDir.enable = true;
     enableGhostscriptFonts = true;
     fonts = with pkgs; [
+      (nerdfonts.override {
+        fonts = [ "JetBrainsMono" "NerdFontsSymbolsOnly" ];
+      })
       apple-fonts
       cantarell-fonts
       cm_unicode
       corefonts
-      emacs-all-the-icons-fonts
       font-awesome_4
-      iosevka-bin
-      (iosevka-bin.override { variant = "aile"; })
-      (iosevka-bin.override { variant = "etoile"; })
       joypixels
       noto-fonts
       noto-fonts-extra
@@ -211,7 +215,7 @@
       noto-fonts-cjk-sans
       noto-fonts-cjk-serif
       noto-fonts-emoji-blob-bin
-      pragmataPro
+      ubuntu_font_family
       vistafonts
       vistafonts-chs
       vistafonts-cht
@@ -221,17 +225,23 @@
       cache32Bit = true;
       defaultFonts = {
         serif = [
-          "New York"
           "Liberation Serif"
+          "New York"
           "Noto Serif"
           "Noto Serif SC"
           "Noto Serif TC"
         ];
         emoji = [ "JoyPixels" "Noto Emoji" "Noto Color Emoji" ];
-        sansSerif =
-          [ "SF Pro" "Cantarell" "Noto Sans" "Noto Sans SC" "Noto Sans TC" ];
+        sansSerif = [
+          "Ubuntu"
+          "Cantarell"
+          "SF Pro"
+          "Noto Sans"
+          "Noto Sans SC"
+          "Noto Sans TC"
+        ];
         monospace = [
-          "PragmataPro Liga"
+          "JetBrainsMono Nerd Font"
           "SF Mono"
           "Noto Sans Mono"
           "Noto Sans Mono CJK SC"
@@ -488,6 +498,10 @@
         LABEL="mm_usb_device_blacklist_end"
       '';
     };
+    mullvad-vpn = {
+      enable = true;
+      package = pkgs.mullvad-vpn;
+    };
     btrfs.autoScrub.enable = true;
     flatpak.enable = true;
     fstrim.enable = true;
@@ -523,7 +537,13 @@
   location.provider = "geoclue2";
 
   virtualisation = {
-    libvirtd.enable = true;
+    libvirtd = {
+      enable = true;
+      qemu = {
+        ovmf.enable = true;
+        swtpm.enable = true;
+      };
+    };
     spiceUSBRedirection.enable = true;
   };
 

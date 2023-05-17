@@ -1,5 +1,9 @@
-alias ssh="kitty +kitten ssh"
+# alias ssh="kitty +kitten ssh"
 alias 256col="TERM=xterm-256color"
+
+abbr q 'exit'
+abbr l 'ls -lh'
+abbr ll 'ls -lah'
 
 # thefuck
 function fuck -d "Correct your previous console command"
@@ -53,7 +57,17 @@ function vterm_cmd --description 'Run an Emacs command among the ones been defin
   vterm_printf '51;E'(string join '' $vterm_elisp)
 end
 
+function gg
+  set -q argv[1]; or set argv[1] "."
+  vterm_cmd magit-status (realpath "$argv")
+end
+
 function ff
+  set -q argv[1]; or set argv[1] "."
+  vterm_cmd find-file (realpath "$argv")
+end
+
+function find-file
   set -q argv[1]; or set argv[1] "."
   vterm_cmd find-file (realpath "$argv")
 end
@@ -66,6 +80,16 @@ end
 function magit-clone
   set -q argv[1]; or set argv[1] "."
   vterm_cmd magit-clone (realpath "$argv")
+end
+
+function cdp
+  set -q argv[1]; or set argv[1] "."
+  vterm_cmd project-find-file (realpath "$argv")
+end
+
+function project-find-file
+  set -q argv[1]; or set argv[1] "."
+  vterm_cmd project-find-file (realpath "$argv")
 end
 
 function say

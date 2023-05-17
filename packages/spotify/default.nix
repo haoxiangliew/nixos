@@ -1,7 +1,7 @@
 { fetchurl, lib, stdenv, squashfsTools, xorg, alsa-lib, makeWrapper
 , wrapGAppsHook, openssl, freetype, glib, pango, cairo, atk, gdk-pixbuf, gtk3
-, cups, nspr, nss, libpng, libnotify, libgcrypt, systemd, fontconfig, dbus
-, expat, ffmpeg, curlWithGnuTls, zlib, gnome, at-spi2-atk, at-spi2-core
+, harfbuzz, cups, nspr, nss, libpng, libnotify, libgcrypt, systemd, fontconfig
+, dbus, expat, ffmpeg, curlWithGnuTls, zlib, gnome, at-spi2-atk, at-spi2-core
 , libpulseaudio, libdrm, mesa, libxkbcommon
 # High-DPI support: Spotify's --force-device-scale-factor argument
 # not added if `null`, otherwise, should be a number.
@@ -13,14 +13,14 @@ let
   # If an update breaks things, one of those might have valuable info:
   # https://aur.archlinux.org/packages/spotify/
   # https://community.spotify.com/t5/Desktop-Linux
-  version = "1.1.99.878.g1e4ccc6e";
+  version = "1.2.11.916.geb595a67";
   # To get the latest stable revision:
   # curl -H 'X-Ubuntu-Series: 16' 'https://api.snapcraft.io/api/v1/snaps/details/spotify?channel=stable' | jq '.download_url,.version,.last_updated'
   # To get general information:
   # curl -H 'Snap-Device-Series: 16' 'https://api.snapcraft.io/v2/snaps/info/spotify' | jq '.'
   # More examples of api usage:
   # https://github.com/canonical-websites/snapcraft.io/blob/master/webapp/publisher/snaps/views.py
-  rev = "62";
+  rev = "67";
 
   deps = [
     alsa-lib
@@ -38,6 +38,7 @@ let
     gdk-pixbuf
     glib
     gtk3
+    harfbuzz
     libdrm
     libgcrypt
     libnotify
@@ -82,7 +83,7 @@ in stdenv.mkDerivation {
   src = fetchurl {
     url =
       "https://api.snapcraft.io/api/v1/snaps/download/pOBIoZ2LrCB3rDohMxoYGnbN14EHOgD7_${rev}.snap";
-    sha256 = "0naf37qk5jijnbr0gd6i271yky435y8c97nhrk8nnawf5yv8cikb";
+    sha256 = "0a8dzj2j3wrcjvyib0pzlfw8nmkb3xrj3am0v2f4gm4sayhz5gmz";
   };
 
   nativeBuildInputs = [ makeWrapper wrapGAppsHook squashfsTools ];

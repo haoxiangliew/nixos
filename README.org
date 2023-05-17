@@ -9,8 +9,8 @@ Welcome to my NixOS configuration!
 | Shell        | fish                              |
 | Environments | gnome-wayland, lightdm + i3-gaps  |
 | Editors      | [[https://git.sr.ht/~haoxiangliew/.emacs.d][emacs]], vscode, neovim             |
-| Term         | kitty                             |
-| Theme        | dracula                           |
+| Term         | wezterm, kitty                    |
+| Theme        | catppuccin-mocha, dracula         |
 
 Most of the [[https://git.sr.ht/~haoxiangliew/nixos/tree/master/item/dotfiles][dotfiles]] found in other configurations are managed by home-manager in this nixos configuration, except for emacs
 

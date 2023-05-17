@@ -4,19 +4,29 @@ let
   listToString = list: lib.concatStringsSep "|" list;
 
   # nix-shell -p nix-prefetch --run 'nix-prefetch fetchFromGitHub --owner spicetify --repo spicetify-themes --rev master'
-  dribbblish = "${
-      fetchFromGitHub {
-        owner = "spicetify";
-        repo = "spicetify-themes";
-        rev = "master";
-        sha256 = "sha256-cJH7hQerXPktMKbk72c2zC9Dibs4WQI0+bD76R7j/44=";
-      }
-    }/Dribbblish";
+  # dribbblish = "${
+  #     fetchFromGitHub {
+  #       owner = "spicetify";
+  #       repo = "spicetify-themes";
+  #       rev = "master";
+  #       sha256 = "sha256-87afREB/TLqs4rObsDPG/PaM5A5keB3GbXTATWcqMN0=";
+  #     }
+  #   }/Dribbblish";
+
+  # nix-shell -p nix-prefetch --run 'nix-prefetch fetchFromGitHub --owner catppuccin --repo spicetify --rev main'
+  catppuccin = "${fetchFromGitHub {
+    owner = "catppuccin";
+    repo = "spicetify";
+    rev = "main";
+    sha256 = "sha256-yitiDqXZgX5NQlX66FW4YgS5fO2eF1W0QX5rKLD9uRE=";
+  }}";
 
   configFile = (formats.ini { }).generate "config-xpui.ini" {
     Setting = {
-      current_theme = "Dribbblish";
-      color_scheme = "dracula";
+      # current_theme = "Dribbblish";
+      # color_scheme = "dracula";
+      current_theme = "catppuccin-mocha";
+      color_scheme = "mauve";
       overwrite_assets = booleanToString true;
       check_spicetify_upgrade = booleanToString false;
       prefs_path = "PREFS_PATH";
@@ -35,17 +45,18 @@ let
     };
 
     AdditionalOptions = {
-      extensions = listToString [ "dribbblish.js" ];
+      # extensions = listToString [ "dribbblish.js" ];
+      extensions = listToString [ "catppuccin-mocha.js" ];
       custom_apps = listToString [ ];
       sidebar_config = booleanToString true;
       home_config = booleanToString true;
       experimental_features = booleanToString true;
     };
 
-    Patch = {
-      "xpui.js_find_8008" = ",(w+=)32,";
-      "xpui.js_repl_8008" = ",\${1}56,";
-    };
+    # Patch = {
+    #   "xpui.js_find_8008" = ",(w+=)32,";
+    #   "xpui.js_repl_8008" = ",\${1}56,";
+    # };
 
     Backup = {
       version = "";
@@ -55,8 +66,8 @@ let
 
   deviceScaleFactor = null;
 
-  version = "1.1.99.878.g1e4ccc6e";
-  rev = "62";
+  version = "1.2.11.916.geb595a67";
+  rev = "67";
 
   deps = with pkgs; [
     alsa-lib
@@ -74,6 +85,7 @@ let
     gdk-pixbuf
     glib
     gtk3
+    harfbuzz
     libdrm
     libgcrypt
     libnotify
@@ -105,10 +117,13 @@ let
 
 in spotify-unwrapped.overrideAttrs (oldAttrs: {
 
+  version = "${version}";
+
+  # curl -H 'Snap-Device-Series: 16' http://api.snapcraft.io/v2/snaps/info/spotify | jq
   src = builtins.fetchurl {
     url =
       "https://api.snapcraft.io/api/v1/snaps/download/pOBIoZ2LrCB3rDohMxoYGnbN14EHOgD7_${rev}.snap";
-    sha256 = "0naf37qk5jijnbr0gd6i271yky435y8c97nhrk8nnawf5yv8cikb";
+    sha256 = "0a8dzj2j3wrcjvyib0pzlfw8nmkb3xrj3am0v2f4gm4sayhz5gmz";
   };
 
   nativeBuildInputs = (oldAttrs.nativeBuildInputs or [ ]) ++ [ spicetify-cli ];
@@ -173,21 +188,24 @@ in spotify-unwrapped.overrideAttrs (oldAttrs: {
     runHook postInstall
   '';
 
+  # cp -r ${dribbblish}/dribbblish.js $spicetifyDir/Extensions/dribbblish.js
+  # cp -r ${dribbblish} $spicetifyDir/Themes/Dribbblish
+
   postInstall = (oldAttrs.postInstall or "") + ''
     export HOME=$TMP
 
     spicetifyDir=$(dirname "$(spicetify-cli -c)")
 
-    cp -r ${dribbblish}/dribbblish.js $spicetifyDir/Extensions/dribbblish.js
-    cp -r ${dribbblish} $spicetifyDir/Themes/Dribbblish
+    cp -r ${catppuccin}/js/catppuccin-mocha.js $spicetifyDir/Extensions/catppuccin-mocha.js
+    cp -r ${catppuccin}/catppuccin-mocha $spicetifyDir/Themes/catppuccin-mocha
 
     touch $out/prefs
     cp -f ${configFile} $spicetifyDir/config-xpui.ini
 
-    substituteInPlace $spicetifyDir/Themes/Dribbblish/color.ini \
-      --replace "44475a" "22212C" \
-      --replace "6272a4" "17161D" \
-      --replace "ffb86c" "9580FF"
+    # substituteInPlace $spicetifyDir/Themes/Dribbblish/color.ini \
+    #   --replace "44475a" "22212C" \
+    #   --replace "6272a4" "17161D" \
+    #   --replace "ffb86c" "9580FF"
 
     substituteInPlace $spicetifyDir/config-xpui.ini \
       --replace "PREFS_PATH" "$out/prefs" \

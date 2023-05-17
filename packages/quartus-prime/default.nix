@@ -6,7 +6,7 @@
   "Cyclone 10 LP"
   "MAX II/V"
   "MAX 10 FPGA"
-], unwrapped ? callPackage ./quartus-22.nix { inherit supportedDevices; } }:
+], unwrapped ? callPackage ./quartus.nix { inherit supportedDevices; } }:
 
 let
   desktopItem = makeDesktopItem {
@@ -90,32 +90,32 @@ in buildFHSUserEnv rec {
     ];
 
     # Should we install all executables ?
-    # modelsimExecutables =
-    #   map (c: "modelsim_ase/bin/${c}") [ "vsim" "vlog" "vlib" ];
+    modelsimExecutables =
+      map (c: "modelsim_ase/bin/${c}") [ "vsim" "vlog" "vlib" ];
 
     # modelsim -> questa
-    questaExecutables = map (c: "questa_fse/bin/${c}") [ "vsim" "vlog" "vlib" ];
+    # questaExecutables = map (c: "questa_fse/bin/${c}") [ "vsim" "vlog" "vlib" ];
 
   in ''
     # 18.1, 20.1
-    # mkdir -p $out/share/applications $out/share/icons/128x128
-    # ln -s ${desktopItem}/share/applications/* $out/share/applications
-    # ln -s ${unwrapped}/licenses/images/dc_quartus_panel_logo.png $out/share/icons/128x128/quartus.png
+    mkdir -p $out/share/applications $out/share/icons/128x128
+    ln -s ${desktopItem}/share/applications/* $out/share/applications
+    ln -s ${unwrapped}/licenses/images/dc_quartus_panel_logo.png $out/share/icons/128x128/quartus.png
 
-    # mkdir -p $out/quartus/bin $out/quartus/sopc_builder/bin $out/modelsim_ase/bin
-    # WRAPPER=$out/bin/${name}
+    mkdir -p $out/quartus/bin $out/quartus/sopc_builder/bin $out/modelsim_ase/bin
+    WRAPPER=$out/bin/${name}
 
     # 22.1
-    mkdir -p $out/share/applications $out/share/icons/hicolor/64x64/apps
-    ln -s ${desktopItem}/share/applications/* $out/share/applications
-    ln -s ${unwrapped}/quartus/adm/quartusii.png $out/share/icons/hicolor/64x64/apps/quartus.png
+    # mkdir -p $out/share/applications $out/share/icons/hicolor/64x64/apps
+    # ln -s ${desktopItem}/share/applications/* $out/share/applications
+    # ln -s ${unwrapped}/quartus/adm/quartusii.png $out/share/icons/hicolor/64x64/apps/quartus.png
 
-    mkdir -p $out/quartus/bin $out/quartus/sopc_builder/bin $out/questa_fse/bin
-    WRAPPER=$out/bin/${name}
+    # mkdir -p $out/quartus/bin $out/quartus/sopc_builder/bin $out/questa_fse/bin
+    # WRAPPER=$out/bin/${name}
 
     EXECUTABLES="${
       lib.concatStringsSep " " (quartusExecutables ++ qsysExecutables
-        ++ questaExecutables) # modelsim -> questa
+        ++ modelsimExecutables) # modelsim -> questa
     }"
 
     # 18.1

@@ -13,23 +13,19 @@ let
     };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/988cc958c57ce4350ec248d2d53087777f9e1949.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/0470f36b02ef01d4f43c641bbf07020bcab71bf1.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/88e410d7f1ddef554b40f66755626e5c883487d9.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/fabfebd7b94348ff179d630d192da5c62429a68d.tar.gz";
       }))
     ];
   };
 
 in {
-  imports = [
-    (import "${home-manager}/nixos")
-    ./environments/gnome-home.nix
-    ./vscode.nix
-  ];
+  imports = [ (import "${home-manager}/nixos") ./environments/gnome-home.nix ];
 
   nix = {
     settings = {
@@ -52,14 +48,13 @@ in {
         url = "https://github.com/nix-community/fenix/archive/main.tar.gz";
       };
       rustOverlay = (import "${fenix-url}/overlay.nix");
-      armcordVersion = "3.1.4";
+      armcordVersion = "3.2.0";
       armcordOverlay = (self: super: {
         armcord = super.armcord.overrideAttrs (oldAttrs: {
-          buildInputs = (oldAttrs.buildInputs or [ ]) ++ [ pkgs.pipewire ];
           version = "${armcordVersion}";
           src = builtins.fetchurl
-            "https://github.com/ArmCord/ArmCord/releases/download/v${armcordVersion}/ArmCord_${armcordVersion}_amd64.deb";
-          sha256 = "12gk4b2mmfq36argz9j43j3h5x5p010zk2vi09kih2ipdrqw7z07";
+            "https://build.armcord.xyz/dev/v21.4.4/ArmCord_${armcordVersion}_amd64.deb";
+          sha256 = "0yb4gmjhsajfcpjcfxz3ld8n3v5s2sp9frkgf92bicf17gi2cnpr";
         });
       });
       openasar = builtins.fetchurl {
@@ -110,10 +105,27 @@ in {
             ++ [ pkgs.python3Packages.pypresence ];
         });
       });
+      masterPdfVersion = "5.9.40";
       masterPdfOverlay = (self: super: {
         masterpdfeditor = super.masterpdfeditor.overrideAttrs (oldAttrs: {
-          # src = builtins.fetchTarball
-          #   "https://web.archive.org/web/20201119203557/https://code-industry.net/public/master-pdf-editor-5.6.49-qt5.x86_64.tar.gz";
+          src = builtins.fetchurl {
+            url =
+              "https://code-industry.net/public/master-pdf-editor-${masterPdfVersion}-qt5.x86_64.tar.gz";
+            sha256 = "1f654d4afgq68v1nj856afi0xpy33z861bf2apzcl4kh58xmvzlr";
+          };
+          version = "${masterPdfVersion}";
+          desktopFile = pkgs.writeText "masterpdfeditor5.desktop" ''
+            [Desktop Entry]
+            Name=Master PDF Editor 5
+            Comment=Edit PDF files
+            Exec=/opt/master-pdf-editor-5/masterpdfeditor5 %f
+            Path=/opt/master-pdf-editor-5
+            Terminal=false
+            Icon=/opt/master-pdf-editor-5/masterpdfeditor5.png
+            Type=Application
+            Categories=Office;Graphics;
+            MimeType=application/pdf;application/x-bzpdf;application/x-gzpdf;
+          '';
           installPhase = ''
             runHook preInstall
             p=$out/opt/masterpdfeditor
@@ -121,6 +133,7 @@ in {
             echo "Unlocking..."
             ${pkgs.perl}/bin/perl -pi -e 's/(\xE8...\xFF)\x88(..\xBF\x30)/$1\xFE$2/g' masterpdfeditor5
             echo "Unlocked!"
+            cp $desktopFile masterpdfeditor5.desktop
             substituteInPlace masterpdfeditor5.desktop \
               --replace 'Exec=/opt/master-pdf-editor-5' "Exec=$out/bin" \
               --replace 'Path=/opt/master-pdf-editor-5' "Path=$out/bin" \
@@ -128,7 +141,7 @@ in {
             install -Dm644 -t $out/share/pixmaps      masterpdfeditor5.png
             install -Dm644 -t $out/share/applications masterpdfeditor5.desktop
             install -Dm755 -t $p                      masterpdfeditor5
-            install -Dm644 license.txt $out/share/$name/LICENSE
+            # install -Dm644 license.txt $out/share/$name/LICENSE
             ln -s $p/masterpdfeditor5 $out/bin/masterpdfeditor5
             cp -v -r stamps templates lang fonts $p
             runHook postInstall
@@ -139,10 +152,14 @@ in {
         with python-packages; [
           aioconsole
           bleak
+          catppuccin
           matplotlib
+          openpyxl
+          pandas
           pygame
-          pygame-gui
+          # pygame-gui
           regex
+          tkinter
         ];
       pythonOverlay = (self: super: {
         pythonWithMyPackages = super.python3.withPackages pythonPackages;
@@ -160,39 +177,27 @@ in {
             inherit (super) spotify-unwrapped;
           };
       });
-      ventoyVersion = "1.0.88";
+      ventoyVersion = "1.0.91";
       ventoyOverlay = (self: super: {
-        ventoy-bin = super.ventoy-bin.overrideAttrs (old: {
+        ventoy = super.ventoy.overrideAttrs (old: {
           version = "${ventoyVersion}";
           src = builtins.fetchurl {
             url =
               "https://github.com/ventoy/Ventoy/releases/download/v${ventoyVersion}/ventoy-${ventoyVersion}-linux.tar.gz";
-            sha256 = "0c0w6isvrffz2kl1ppfcc54487q5msmi20na5syi68j4fk6ms3cs";
+            sha256 =
+              "f6fb0574ec6c5b50acd3a8153ef42eb23bb6fb0a783e90706c7654ba0c1bddca";
           };
         });
       });
+      viaAppVersion = "3.0.0";
       viaAppOverlay = (self: super: {
-        via = super.makeDesktopItem {
-          name = "VIA";
-          desktopName = "VIA";
-          exec =
-            ''${chromium}/bin/chromium -incognito --app="https://usevia.app"'';
-          terminal = false;
-          type = "Application";
-          icon = "via";
-          comment = "Yet another keyboard configurator";
-          categories = [ "Development" ];
-        };
-      });
-      vscodeInsidersOverlay = (self: super: {
-        vscode-insiders =
-          (super.vscode.override { isInsiders = true; }).overrideAttrs
-          (oldAttrs: rec {
-            name = "vscode-insiders";
-            version = "latest";
-            src = builtins.fetchTarball
-              "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
-          });
+        via = super.via.overrideAttrs (oldAttrs: {
+          src = builtins.fetchurl {
+            url =
+              "https://github.com/the-via/releases/releases/download/v${viaAppVersion}/via-${viaAppVersion}-linux.AppImage";
+            sha256 = "06qydry7mvvfijphym6w98ymir35k5q51r8gakwv4aw7padfzr7s";
+          };
+        });
       });
       xournalppOverlay = (self: super: {
         xournalpp = super.xournalpp.overrideAttrs (oldAttrs: {
@@ -202,12 +207,13 @@ in {
         });
       });
       packagesOverlay = (final: prev: {
-        armcord = prev.callPackage ./packages/armcord { };
-        quartus-prime-lite = prev.callPackage ./packages/quartus-prime { };
+        # armcord = prev.callPackage ./packages/armcord { };
+        catppuccin-gtk-mocha = prev.callPackage ./packages/catppuccin-gtk { };
+        # quartus-prime-lite = prev.callPackage ./packages/quartus-prime { };
         spotify = prev.callPackage ./packages/spotify { };
       });
     in [
-      draculaThemeOverlay
+      armcordOverlay
       lieerOverlay
       masterPdfOverlay
       firefoxOverlay
@@ -216,7 +222,6 @@ in {
       spicetifyOverlay
       ventoyOverlay
       viaAppOverlay
-      vscodeInsidersOverlay
       xournalppOverlay
       packagesOverlay
     ];
@@ -225,48 +230,18 @@ in {
   environment = {
     variables = {
       EDITOR = "mg";
-      FZF_DEFAULT_COMMAND = "fd --type file --follow --color=always";
+      FZF_DEFAULT_COMMAND =
+        "fd --type file --color=always --strip-cwd-prefix --hidden --exclude .git";
       FZF_DEFAULT_OPTS = "--ansi";
     };
-    shellAliases = {
-      emcs = "emacs -Q -nw -l /home/haoxiangliew/.emacs.d/editor-init.el";
-      emcsg = "emacs -Q -l /home/haoxiangliew/.emacs.d/editor-init.el";
-    };
   };
-
   programs.chromium = {
     enable = true;
     extensions = [
       "cjpalhdlnbpafiamejdnhcphjbkeiagm" # ublock-origin
       "dcpihecpambacapedldabdbpakmachpb;https://raw.githubusercontent.com/iamadamdev/bypass-paywalls-chrome/master/src/updates/updates.xml" # bypass-paywalls
-      "ilcacnomdmddpohoakmgcboiehclpkmj;https://raw.githubusercontent.com/FastForwardTeam/releases/main/update/update.xml" # fastforward
+      "gfolbeacfbanmnohmnppjgenmmajffop;https://younesaassila.github.io/ttv-lol-pro/updates.xml" # ttv-lol-pro
     ];
-  };
-
-  vscode = {
-    user = "haoxiangliew";
-    homeDir = "/home/haoxiangliew";
-    extensions = with pkgs.vscode-extensions;
-      [ ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
-        {
-          name = "cpptools";
-          publisher = "ms-vscode";
-          version = "latest";
-          sha256 = "sha256-5JODuuOZBfdLSOkuAdSF4yI92EGfjWqNM9kBBeYwrJo=";
-        }
-        {
-          name = "remote-ssh";
-          publisher = "ms-vscode-remote";
-          version = "latest";
-          sha256 = "sha256-m6prKl3ecjPodXsa90f/LlFPB2cTarNQyGXT/hx6st4=";
-        }
-        {
-          name = "vsliveshare";
-          publisher = "ms-vsliveshare";
-          version = "latest";
-          sha256 = "sha256-QViwZBxem0z62BLhA0zbFdQL3SfoUKZQx6X+Am1lkT0=";
-        }
-      ];
   };
 
   home-manager.users.haoxiangliew = {
@@ -287,18 +262,18 @@ in {
     gtk = {
       enable = true;
       font = {
-        name = "SF Pro";
-        package = pkgs.apple-fonts;
+        name = "Ubuntu";
+        package = pkgs.ubuntu_font_family;
         size = 11;
       };
       cursorTheme = {
-        name = "Dracula-cursors";
-        package = pkgs.dracula-theme;
+        name = "Catppuccin-Mocha-Dark-Cursors";
+        package = pkgs.catppuccin-cursors.mochaDark;
         size = 8;
       };
       theme = {
-        name = "Dracula";
-        package = pkgs.dracula-theme;
+        name = "Catppuccin-Mocha-Standard-Mauve-Dark";
+        package = catppuccin-gtk-mocha;
       };
       iconTheme = {
         name = "Papirus-Dark";
@@ -307,11 +282,11 @@ in {
     };
 
     home.file.".icons/default/cursors".source =
-      "${pkgs.dracula-theme}/share/icons/Dracula-cursors/cursors";
+      "${catppuccin-cursors.mochaDark}/share/icons/Catppuccin-Mocha-Dark-Cursors/cursors";
 
     home.pointerCursor = {
-      name = "Dracula-cursors";
-      package = pkgs.dracula-theme;
+      name = "Catppuccin-Mocha-Dark-Cursors";
+      package = pkgs.catppuccin-cursors.mochaDark;
       size = 8;
       x11.enable = true;
       gtk.enable = true;
@@ -322,7 +297,7 @@ in {
       armcord
       bitwarden
       bottles
-      # darktable
+      darktable
       ffmpeg
       ffmpeg-normalize
       firebird-emu
@@ -337,6 +312,7 @@ in {
       notmuch
       obs-studio
       octaveFull
+      play-with-mpv
       plex-mpv-shim
       qmk
       rbw
@@ -344,7 +320,7 @@ in {
       scrcpy
       speedtest-cli
       spotify-unwrapped
-      (ventoy-bin.override {
+      (ventoy.override {
         defaultGuiType = "gtk3";
         withGtk3 = true;
       })
@@ -356,7 +332,7 @@ in {
       zoom-us
 
       # games
-      # lutris
+      lutris
 
       # social
       element-desktop
@@ -376,22 +352,23 @@ in {
       arduino
       ghidra
       # kicad
-      mg
-      quartus-prime-lite
       # c / c++
       avrdude
       catch2
-      clang_15
-      clang-tools_15
+      clang
+      clang-tools
       cmake-language-server
       cmakeWithGui
+      dfu-util
+      # gcc-arm-embedded
+      gcovr
       gdb
       gnumake
       lcov
+      libllvm
       ninja
       pkgsCross.avr.buildPackages.binutils
       pkgsCross.avr.buildPackages.gcc
-      qt6.full
       # css
       nodePackages.vscode-css-languageserver-bin
       # git
@@ -409,11 +386,8 @@ in {
       texlive.combined.scheme-medium
       # lua
       luaPackages.lua-lsp
-      stylua
       # markdown
       marksman
-      # mips
-      qtspim
       # nix
       direnv
       hydra-check
@@ -444,12 +418,18 @@ in {
 
     programs = {
       chromium = {
-        enable = false;
-        package = pkgs.google-chrome-dev;
+        enable = true;
+        package = (pkgs.google-chrome.override {
+          commandLineArgs = [
+            "--force-dark-mode"
+            "--enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder"
+            "--disable-features=UseChromeOSDirectVideoDecoder"
+          ];
+        });
       };
       firefox = {
         enable = true;
-        package = pkgs.latest.firefox-nightly-bin;
+        package = pkgs.firefox-bin;
         profiles = let
           defaultSettings = {
             "extensions.pocket.enabled" = false;
@@ -472,7 +452,7 @@ in {
       };
       vscode = {
         enable = true;
-        package = pkgs.vscode-insiders;
+        package = pkgs.vscode.fhsWithPackages (ps: with ps; [ ]);
       };
     };
 
@@ -488,99 +468,11 @@ in {
         '';
         "mpv/input.conf".source = ./dotfiles/mpv/input.conf;
         "mpv/mpv.conf".source = ./dotfiles/mpv/mpv.conf;
+        "mpv/scripts/mpv-gnome-inhibit.lua".source =
+          ./dotfiles/mpv/mpv-gnome-inhibit.lua;
         "plex-mpv-shim/input.conf".source = ./dotfiles/mpv/input.conf;
         "plex-mpv-shim/mpv.conf".source = ./dotfiles/mpv/mpv.conf;
         "ranger/rc.conf".source = ./dotfiles/ranger/rc.conf;
-      };
-      desktopEntries = {
-        armcord = {
-          name = "ArmCord";
-          exec =
-            "armcord --enable-features=WaylandWindowDecorations,WebRTCPipeWireCapturer";
-          terminal = false;
-          icon = "armcord";
-          comment =
-            "ArmCord is a custom client designed to enhance your Discord experience while keeping everything lightweight.";
-          categories = [ "Network" ];
-        };
-        # google-chrome = {
-        #   name = "Google Chrome";
-        #   genericName = "Web Browser";
-        #   comment = "Access the Internet";
-        #   exec =
-        #     "google-chrome-stable --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder";
-        #   startupNotify = true;
-        #   terminal = false;
-        #   icon = "google-chrome";
-        #   categories = [ "Network" "WebBrowser" ];
-        #   mimeType = [
-        #     "application/pdf"
-        #     "application/rdf+xml"
-        #     "application/rss+xml"
-        #     "application/xhtml+xml"
-        #     "application/xhtml_xml"
-        #     "application/xml"
-        #     "image/gif"
-        #     "image/jpeg"
-        #     "image/png"
-        #     "image/webp"
-        #     "text/html"
-        #     "text/xml"
-        #     "x-scheme-handler/http"
-        #     "x-scheme-handler/https"
-        #   ];
-        #   actions = {
-        #     new-window = {
-        #       name = "New Window";
-        #       exec =
-        #         "google-chrome-stable --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder";
-        #     };
-        #     new-incognito-window = {
-        #       name = "New Incognito Window";
-        #       exec =
-        #         "google-chrome-stable --incognito --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder";
-        #     };
-        #   };
-        # };
-        # google-chrome-unstable = {
-        #   name = "Google Chrome (unstable)";
-        #   genericName = "Web Browser";
-        #   comment = "Access the Internet";
-        #   exec =
-        #     "google-chrome-unstable --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder --ozone-platform-hint=x11";
-        #   startupNotify = true;
-        #   terminal = false;
-        #   icon = "google-chrome-unstable";
-        #   categories = [ "Network" "WebBrowser" ];
-        #   mimeType = [
-        #     "application/pdf"
-        #     "application/rdf+xml"
-        #     "application/rss+xml"
-        #     "application/xhtml+xml"
-        #     "application/xhtml_xml"
-        #     "application/xml"
-        #     "image/gif"
-        #     "image/jpeg"
-        #     "image/png"
-        #     "image/webp"
-        #     "text/html"
-        #     "text/xml"
-        #     "x-scheme-handler/http"
-        #     "x-scheme-handler/https"
-        #   ];
-        #   actions = {
-        #     new-window = {
-        #       name = "New Window";
-        #       exec =
-        #         "google-chrome-unstable --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder --ozone-platform-hint=x11";
-        #     };
-        #     new-incognito-window = {
-        #       name = "New Incognito Window";
-        #       exec =
-        #         "google-chrome-unstable --incognito --use-gl=egl --enable-native-gpu-memory-buffers --force-dark-mode --gtk-version=4 --enable-features=WebUIDarkMode,VaapiVideoDecoder,VaapiVideoEncoder,VaapiIgnoreDriverChecks --disable-features=UseChromeOSDirectVideoDecoder --ozone-platform-hint=x11";
-        #     };
-        #   };
-        # };
       };
     };
   };

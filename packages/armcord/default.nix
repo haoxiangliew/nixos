@@ -6,17 +6,13 @@
 
 stdenv.mkDerivation rec {
   pname = "armcord";
-  version = "3.1.4";
+  version = "3.1.6";
 
   src = let base = "https://github.com/ArmCord/ArmCord/releases/download";
   in {
     x86_64-linux = fetchurl {
       url = "${base}/v${version}/ArmCord_${version}_amd64.deb";
-      sha256 = "12gk4b2mmfq36argz9j43j3h5x5p010zk2vi09kih2ipdrqw7z07";
-    };
-    aarch64-linux = fetchurl {
-      url = "${base}/v${version}/ArmCord_${version}_arm64.deb";
-      sha256 = "0vzpg6g7s7iji5wyryri2igaw73ds2vdnz36nvqyh5yyn6rv2nbh";
+      sha256 = "14qbc59hzgx538b2iifwygpv1ijjd8rvd7r04f7625kc3f8h0b64";
     };
   }.${stdenv.hostPlatform.system} or (throw
     "Unsupported system: ${stdenv.hostPlatform.system}");

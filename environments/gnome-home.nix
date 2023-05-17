@@ -9,6 +9,10 @@ let
     url = "https://raw.githubusercontent.com/dracula/qt5/master/Dracula.conf";
     sha256 = "06bhak8ix01gpa2p43bf3hzw74375zgdhbjjzr8qj91qddycpvdb";
   };
+  catppuccin-gtk-mocha = pkgs.catppuccin-gtk.override {
+    accents = [ "mauve" ];
+    variant = "mocha";
+  };
 
 in {
   imports = [ (import "${home-manager}/nixos") ];
@@ -16,23 +20,28 @@ in {
   home-manager.users.haoxiangliew = {
     home.activation = {
       gtk4Assets = ''
-        if [[ ! -h ~/.config/gtk-4.0/assets ]]; then
-          ln -s /etc/nixos/dotfiles/gtk-4.0/assets ~/.config/gtk-4.0/assets
-        fi
+        rm -rf ~/.config/gtk-4.0/assets
+        rm -rf ~/.config/gtk-4.0/gtk.css
+        rm -rf ~/.config/gtk-4.0/gtk-dark.css
+        ln -sf ${catppuccin-gtk-mocha}/share/themes/Catppuccin-Mocha-Standard-Mauve-Dark/gtk-4.0/assets ~/.config/gtk-4.0/assets
+        ln -sf ${catppuccin-gtk-mocha}/share/themes/Catppuccin-Mocha-Standard-Mauve-Dark/gtk-4.0/gtk.css ~/.config/gtk-4.0/gtk.css
+        ln -sf ${catppuccin-gtk-mocha}/share/themes/Catppuccin-Mocha-Standard-Mauve-Dark/gtk-4.0/gtk-dark.css ~/.config/gtk-4.0/gtk-dark.css
       '';
     };
     xdg = {
       configFile = {
         "keyboard-toggle.sh".source = ../dotfiles/keyboard-toggle.sh;
         "kitty/kitty.conf".source = ../dotfiles/kitty/kitty.conf;
+        "wezterm/wezterm.lua".source = ../dotfiles/wezterm/wezterm.lua;
+        "wezterm/.stylua.toml".source = ../dotfiles/wezterm/.stylua.toml;
+        "fish/themes/catppuccin-mocha.theme".source =
+          ../dotfiles/fish/catppuccin-mocha.theme;
         # "qt5ct/colors/Dracula.conf".source = "${dracula-qt}";
-        "gtk-4.0/gtk.css".source = ../dotfiles/gtk-4.0/gtk.css;
-        "gtk-4.0/gtk-dark.css".source = ../dotfiles/gtk-4.0/gtk-dark.css;
         "autostart/armcord.desktop".text = ''
           [Desktop Entry]
           Name=ArmCord
           Comment=ArmCord is a custom client designed to enhance your Discord experience while keeping everything lightweight.
-          Exec=armcord --enable-features=WaylandWindowDecorations,WebRTCPipeWireCapturer
+          Exec=armcord
           Icon=armcord
           Terminal=false
           Type=Application
@@ -60,6 +69,36 @@ in {
         #   Type=Application
         #   Categories=Settings
         # '';
+        "autostart/mullvad-vpn.desktop".text = ''
+          [Desktop Entry]
+          Name=Mullvad VPN
+          Exec=mullvad-vpn
+          Terminal=false
+          Type=Application
+          Icon=mullvad-vpn
+          StartupWMClass=Mullvad VPN
+          Comment=Mullvad VPN client
+          Categories=Network;
+        '';
+        "autostart/onedrive-mount.desktop".text = ''
+          [Desktop Entry]
+          Name=OneDrive Mount
+          Exec=sh -c "rclone --vfs-cache-mode writes mount \"VTOneDrive\": ~/VTOneDrive"
+          Icon=rclone
+          StartupNotify=false
+          Terminal=false
+          Type=Application
+        '';
+        "autostart/play-with-mpv.desktop".text = ''
+          [Desktop Entry]
+          Name=play-with-mpv
+          Comment=Play with MPV Service
+          Exec=play-with-mpv
+          Icon=mpv
+          StartupNotify=false
+          Terminal=false
+          Type=Application
+        '';
         "autostart/plex-mpv-shim.desktop".text = ''
           [Desktop Entry]
           Name=plex-mpv-shim
@@ -86,7 +125,7 @@ in {
           [Desktop Entry]
           Name=Emacs (Daemon)
           Comment=Start the Emacs Daemon
-          Exec=kitty emacs --daemon
+          Exec=wezterm -e emacs --daemon
           Icon=emacs
           StartupNotify=true
           Terminal=false
