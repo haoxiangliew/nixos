@@ -31,6 +31,8 @@ in {
     xdg = {
       configFile = {
         "keyboard-toggle.sh".source = ../dotfiles/keyboard-toggle.sh;
+        "mount.sh".source = ../dotfiles/mount.sh;
+        "umount.sh".source = ../dotfiles/umount.sh;
         "kitty/kitty.conf".source = ../dotfiles/kitty/kitty.conf;
         # "wezterm/wezterm.lua".source = ../dotfiles/wezterm/wezterm.lua;
         # "wezterm/.stylua.toml".source = ../dotfiles/wezterm/.stylua.toml;
@@ -80,25 +82,6 @@ in {
           Comment=Mullvad VPN client
           Categories=Network;
         '';
-        "autostart/onedrive-mount.desktop".text = ''
-          [Desktop Entry]
-          Name=OneDrive Mount
-          Exec=sh -c "rclone --vfs-cache-mode writes mount \"VTOneDrive\": ~/VTOneDrive"
-          Icon=rclone
-          StartupNotify=false
-          Terminal=false
-          Type=Application
-        '';
-        # "autostart/play-with-mpv.desktop".text = ''
-        #   [Desktop Entry]
-        #   Name=play-with-mpv
-        #   Comment=Play with MPV Service
-        #   Exec=play-with-mpv
-        #   Icon=mpv
-        #   StartupNotify=false
-        #   Terminal=false
-        #   Type=Application
-        # '';
         "autostart/plex-mpv-shim.desktop".text = ''
           [Desktop Entry]
           Name=plex-mpv-shim

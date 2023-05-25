@@ -200,6 +200,7 @@ in {
         spotify = prev.callPackage ./packages/spotify { };
       });
     in [
+      armcordOverlay
       masterPdfOverlay
       pythonOverlay
       rustOverlay
@@ -278,6 +279,7 @@ in {
 
     home.packages = with pkgs; [
       # apps
+      armcord
       bitwarden
       bottles
       darktable
