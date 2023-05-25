@@ -32,21 +32,21 @@ in {
       configFile = {
         "keyboard-toggle.sh".source = ../dotfiles/keyboard-toggle.sh;
         "kitty/kitty.conf".source = ../dotfiles/kitty/kitty.conf;
-        "wezterm/wezterm.lua".source = ../dotfiles/wezterm/wezterm.lua;
-        "wezterm/.stylua.toml".source = ../dotfiles/wezterm/.stylua.toml;
+        # "wezterm/wezterm.lua".source = ../dotfiles/wezterm/wezterm.lua;
+        # "wezterm/.stylua.toml".source = ../dotfiles/wezterm/.stylua.toml;
         "fish/themes/catppuccin-mocha.theme".source =
           ../dotfiles/fish/catppuccin-mocha.theme;
         # "qt5ct/colors/Dracula.conf".source = "${dracula-qt}";
-        "autostart/armcord.desktop".text = ''
-          [Desktop Entry]
-          Name=ArmCord
-          Comment=ArmCord is a custom client designed to enhance your Discord experience while keeping everything lightweight.
-          Exec=armcord
-          Icon=armcord
-          Terminal=false
-          Type=Application
-          Categories=Network
-        '';
+        # "autostart/armcord.desktop".text = ''
+        #   [Desktop Entry]
+        #   Name=ArmCord
+        #   Comment=ArmCord is a custom client designed to enhance your Discord experience while keeping everything lightweight.
+        #   Exec=armcord
+        #   Icon=armcord
+        #   Terminal=false
+        #   Type=Application
+        #   Categories=Network
+        # '';
         "autostart/easyeffects-service.desktop".text = ''
           [Desktop Entry]
           Name=EasyEffects
@@ -89,16 +89,16 @@ in {
           Terminal=false
           Type=Application
         '';
-        "autostart/play-with-mpv.desktop".text = ''
-          [Desktop Entry]
-          Name=play-with-mpv
-          Comment=Play with MPV Service
-          Exec=play-with-mpv
-          Icon=mpv
-          StartupNotify=false
-          Terminal=false
-          Type=Application
-        '';
+        # "autostart/play-with-mpv.desktop".text = ''
+        #   [Desktop Entry]
+        #   Name=play-with-mpv
+        #   Comment=Play with MPV Service
+        #   Exec=play-with-mpv
+        #   Icon=mpv
+        #   StartupNotify=false
+        #   Terminal=false
+        #   Type=Application
+        # '';
         "autostart/plex-mpv-shim.desktop".text = ''
           [Desktop Entry]
           Name=plex-mpv-shim
@@ -125,7 +125,7 @@ in {
           [Desktop Entry]
           Name=Emacs (Daemon)
           Comment=Start the Emacs Daemon
-          Exec=wezterm -e emacs --daemon
+          Exec=kitty -e emacs --daemon
           Icon=emacs
           StartupNotify=true
           Terminal=false

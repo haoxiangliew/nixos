@@ -86,7 +86,7 @@
     defaultLocale = "en_US.UTF-8";
     inputMethod = {
       enabled = "ibus";
-      ibus.engines = with pkgs.ibus-engines; [ libpinyin rime ];
+      ibus.engines = with pkgs.ibus-engines; [ rime ];
     };
   };
 
@@ -145,7 +145,7 @@
       pragmataProOverlay = (final: prev: {
         pragmataPro = prev.callPackage ./packages/pragmataPro { };
       });
-    in [ myCAOverlay appleFontsOverlay pragmataProOverlay ];
+    in [ myCAOverlay appleFontsOverlay ];
   };
 
   environment = {
@@ -156,6 +156,7 @@
       aspell
       efibootmgr
       efitools
+      enchant
       feh
       git
       htop
@@ -187,10 +188,12 @@
       xdg-utils
       yubikey-manager-qt
       # devtools
+      luaPackages.lua-lsp
+      nil
       nixfmt
       nixpkgs-fmt
       nodePackages.bash-language-server
-      rnix-lsp
+      nodePackages.yaml-language-server
       shfmt
       stylua
     ];

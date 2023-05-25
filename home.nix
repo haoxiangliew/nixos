@@ -11,15 +11,19 @@ let
     "https://github.com/nixos/nixpkgs/archive/master.tar.gz") {
       config = config.nixpkgs.config;
     };
+  lieerPkgs = import (builtins.fetchTarball
+    "https://github.com/archer-65/nixpkgs/archive/refs/heads/update/lieer.tar.gz") {
+      config = config.nixpkgs.config;
+    };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/0470f36b02ef01d4f43c641bbf07020bcab71bf1.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/d30264c2691128adc261d7c9388033645f0e742b.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/fabfebd7b94348ff179d630d192da5c62429a68d.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/8f327ba75dc95080ffab59a4f68b2c73b52d3cb3.tar.gz";
       }))
     ];
   };
@@ -90,12 +94,6 @@ in {
             rm $out/share/themes/Dracula/gnome-shell/_common.scss
             cp -a gnome-shell/v40/* $out/share/themes/Dracula/gnome-shell
           '';
-        });
-      });
-      lieerOverlay = (self: super: {
-        lieer = super.lieer.overrideAttrs (_: {
-          src = builtins.fetchTarball
-            "https://github.com/gauteh/lieer/archive/11c792fbf416aedb0466f64973e29e1f4aed4916.tar.gz";
         });
       });
       lutrisOverlay = (self: super: {
@@ -189,16 +187,6 @@ in {
           };
         });
       });
-      viaAppVersion = "3.0.0";
-      viaAppOverlay = (self: super: {
-        via = super.via.overrideAttrs (oldAttrs: {
-          src = builtins.fetchurl {
-            url =
-              "https://github.com/the-via/releases/releases/download/v${viaAppVersion}/via-${viaAppVersion}-linux.AppImage";
-            sha256 = "06qydry7mvvfijphym6w98ymir35k5q51r8gakwv4aw7padfzr7s";
-          };
-        });
-      });
       xournalppOverlay = (self: super: {
         xournalpp = super.xournalpp.overrideAttrs (oldAttrs: {
           src = builtins.fetchTarball
@@ -207,21 +195,16 @@ in {
         });
       });
       packagesOverlay = (final: prev: {
-        # armcord = prev.callPackage ./packages/armcord { };
         catppuccin-gtk-mocha = prev.callPackage ./packages/catppuccin-gtk { };
         # quartus-prime-lite = prev.callPackage ./packages/quartus-prime { };
         spotify = prev.callPackage ./packages/spotify { };
       });
     in [
-      armcordOverlay
-      lieerOverlay
       masterPdfOverlay
-      firefoxOverlay
       pythonOverlay
       rustOverlay
       spicetifyOverlay
       ventoyOverlay
-      viaAppOverlay
       xournalppOverlay
       packagesOverlay
     ];
@@ -246,7 +229,8 @@ in {
 
   home-manager.users.haoxiangliew = {
 
-    home.stateVersion = config.system.nixos.release;
+    # home.stateVersion = config.system.nixos.release;
+    home.stateVersion = "23.05";
 
     nixpkgs = {
       config = {
@@ -294,7 +278,6 @@ in {
 
     home.packages = with pkgs; [
       # apps
-      armcord
       bitwarden
       bottles
       darktable
@@ -307,12 +290,12 @@ in {
       inkscape
       libreoffice-fresh
       libsForQt5.kdenlive
-      lieer
+      lieerPkgs.lieer
       masterpdfeditor
       notmuch
       obs-studio
       octaveFull
-      play-with-mpv
+      # play-with-mpv
       plex-mpv-shim
       qmk
       rbw
@@ -343,6 +326,7 @@ in {
       fd
       fzf
       insomnia
+      jq
       picocom
       ripgrep
       silver-searcher
@@ -351,7 +335,7 @@ in {
       # ide
       arduino
       ghidra
-      # kicad
+      kicad
       # c / c++
       avrdude
       catch2
@@ -384,8 +368,6 @@ in {
       lua53Packages.digestif
       pandoc
       texlive.combined.scheme-medium
-      # lua
-      luaPackages.lua-lsp
       # markdown
       marksman
       # nix
@@ -394,7 +376,7 @@ in {
       nix-prefetch
       nix-tree
       # nodejs
-      nodejs-16_x
+      nodejs
       # pascal
       fpc
       # python
@@ -412,8 +394,6 @@ in {
       rust-analyzer-nightly
       # verilog
       verible
-      # yaml
-      nodePackages.yaml-language-server
     ];
 
     programs = {
@@ -447,8 +427,9 @@ in {
       };
       emacs = {
         enable = true;
-        package = emacsPinnedPkgs.emacsPgtk;
-        extraPackages = (epkgs: [ epkgs.vterm ]);
+        # package = emacsPinnedPkgs.emacsPgtk;
+        package = pkgs.emacs-gtk;
+        extraPackages = (epkgs: [ epkgs.jinx epkgs.vterm ]);
       };
       vscode = {
         enable = true;
@@ -461,6 +442,7 @@ in {
         "nixpkgs/config.nix".text = ''
           {
             allowUnfree = true;
+            # python2 nix-shell
             permittedInsecurePackages = [
               "python-2.7.18.6"
             ];

@@ -1,8 +1,6 @@
 { config, pkgs, lib, ... }:
 
-let
-in {
-  nixpkgs = { overlays = let in [ ]; };
+{
   environment = {
     variables = {
       NIXOS_OZONE_WL = "1";
@@ -22,7 +20,7 @@ in {
       pavucontrol
       pinentry-gnome
       qt6.qtwayland
-      wezterm
+      # wezterm
     ]) ++ (with pkgs.gnome; [
       adwaita-icon-theme
       dconf-editor
