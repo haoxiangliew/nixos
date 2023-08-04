@@ -228,21 +228,15 @@
       cache32Bit = true;
       defaultFonts = {
         serif = [
-          "Liberation Serif"
           "New York"
+          "Liberation Serif"
           "Noto Serif"
           "Noto Serif SC"
           "Noto Serif TC"
         ];
         emoji = [ "JoyPixels" "Noto Emoji" "Noto Color Emoji" ];
-        sansSerif = [
-          "Ubuntu"
-          "Cantarell"
-          "SF Pro"
-          "Noto Sans"
-          "Noto Sans SC"
-          "Noto Sans TC"
-        ];
+        sansSerif =
+          [ "SF Pro" "Cantarell" "Noto Sans" "Noto Sans SC" "Noto Sans TC" ];
         monospace = [
           "JetBrainsMono Nerd Font"
           "SF Mono"
@@ -548,6 +542,7 @@
       };
     };
     spiceUSBRedirection.enable = true;
+    lxd.enable = true;
   };
 
   xdg.portal.enable = true;

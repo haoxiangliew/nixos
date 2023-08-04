@@ -23,9 +23,9 @@ in {
         rm -rf ~/.config/gtk-4.0/assets
         rm -rf ~/.config/gtk-4.0/gtk.css
         rm -rf ~/.config/gtk-4.0/gtk-dark.css
-        ln -sf ${catppuccin-gtk-mocha}/share/themes/Catppuccin-Mocha-Standard-Mauve-Dark/gtk-4.0/assets ~/.config/gtk-4.0/assets
-        ln -sf ${catppuccin-gtk-mocha}/share/themes/Catppuccin-Mocha-Standard-Mauve-Dark/gtk-4.0/gtk.css ~/.config/gtk-4.0/gtk.css
-        ln -sf ${catppuccin-gtk-mocha}/share/themes/Catppuccin-Mocha-Standard-Mauve-Dark/gtk-4.0/gtk-dark.css ~/.config/gtk-4.0/gtk-dark.css
+        ln -sf ${catppuccin-gtk-mocha}/share/themes/Catppuccin-Mocha-Standard-Mauve-dark/gtk-4.0/assets ~/.config/gtk-4.0/assets
+        ln -sf ${catppuccin-gtk-mocha}/share/themes/Catppuccin-Mocha-Standard-Mauve-dark/gtk-4.0/gtk.css ~/.config/gtk-4.0/gtk.css
+        ln -sf ${catppuccin-gtk-mocha}/share/themes/Catppuccin-Mocha-Standard-Mauve-dark/gtk-4.0/gtk-dark.css ~/.config/gtk-4.0/gtk-dark.css
       '';
     };
     xdg = {
@@ -39,16 +39,16 @@ in {
         "fish/themes/catppuccin-mocha.theme".source =
           ../dotfiles/fish/catppuccin-mocha.theme;
         # "qt5ct/colors/Dracula.conf".source = "${dracula-qt}";
-        # "autostart/armcord.desktop".text = ''
-        #   [Desktop Entry]
-        #   Name=ArmCord
-        #   Comment=ArmCord is a custom client designed to enhance your Discord experience while keeping everything lightweight.
-        #   Exec=armcord
-        #   Icon=armcord
-        #   Terminal=false
-        #   Type=Application
-        #   Categories=Network
-        # '';
+        "autostart/armcord.desktop".text = ''
+          [Desktop Entry]
+          Name=ArmCord
+          Comment=ArmCord is a custom client designed to enhance your Discord experience while keeping everything lightweight.
+          Exec=armcord --disable-gpu
+          Icon=armcord
+          Terminal=false
+          Type=Application
+          Categories=Network
+        '';
         "autostart/easyeffects-service.desktop".text = ''
           [Desktop Entry]
           Name=EasyEffects

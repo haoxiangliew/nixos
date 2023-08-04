@@ -7,23 +7,15 @@ let
 
   home-manager = builtins.fetchTarball
     "https://github.com/nix-community/home-manager/archive/master.tar.gz";
-  masterPkgs = import (builtins.fetchTarball
-    "https://github.com/nixos/nixpkgs/archive/master.tar.gz") {
-      config = config.nixpkgs.config;
-    };
-  lieerPkgs = import (builtins.fetchTarball
-    "https://github.com/archer-65/nixpkgs/archive/refs/heads/update/lieer.tar.gz") {
-      config = config.nixpkgs.config;
-    };
   emacsPinnedPkgs = import (builtins.fetchTarball {
     url =
-      "https://github.com/nixos/nixpkgs/archive/d30264c2691128adc261d7c9388033645f0e742b.tar.gz";
+      "https://github.com/nixos/nixpkgs/archive/5e871d8aa6f57cc8e0dc087d1c5013f6e212b4ce.tar.gz";
   }) {
     config = config.nixpkgs.config;
     overlays = [
       (import (builtins.fetchTarball {
         url =
-          "https://github.com/nix-community/emacs-overlay/archive/8f327ba75dc95080ffab59a4f68b2c73b52d3cb3.tar.gz";
+          "https://github.com/nix-community/emacs-overlay/archive/6ec96835d9328bcb245d81c5997eea2ec6144fea.tar.gz";
       }))
     ];
   };
@@ -52,13 +44,13 @@ in {
         url = "https://github.com/nix-community/fenix/archive/main.tar.gz";
       };
       rustOverlay = (import "${fenix-url}/overlay.nix");
-      armcordVersion = "3.2.0";
+      armcordVersion = "3.2.1";
       armcordOverlay = (self: super: {
         armcord = super.armcord.overrideAttrs (oldAttrs: {
           version = "${armcordVersion}";
           src = builtins.fetchurl
-            "https://build.armcord.xyz/dev/v21.4.4/ArmCord_${armcordVersion}_amd64.deb";
-          sha256 = "0yb4gmjhsajfcpjcfxz3ld8n3v5s2sp9frkgf92bicf17gi2cnpr";
+            "https://github.com/ArmCord/ArmCord/releases/download/v${armcordVersion}/ArmCord_${armcordVersion}_amd64.deb";
+          sha256 = "1cfbypn9kh566s09c1bvxswpc0r11pmsvxlh4dixd5s622ia3h7r";
         });
       });
       openasar = builtins.fetchurl {
@@ -103,13 +95,13 @@ in {
             ++ [ pkgs.python3Packages.pypresence ];
         });
       });
-      masterPdfVersion = "5.9.40";
+      masterPdfVersion = "5.9.50";
       masterPdfOverlay = (self: super: {
         masterpdfeditor = super.masterpdfeditor.overrideAttrs (oldAttrs: {
           src = builtins.fetchurl {
             url =
               "https://code-industry.net/public/master-pdf-editor-${masterPdfVersion}-qt5.x86_64.tar.gz";
-            sha256 = "1f654d4afgq68v1nj856afi0xpy33z861bf2apzcl4kh58xmvzlr";
+            sha256 = "1q3wq39f2yl019riwfz1i9kziydf18lis94gl44nmflm06gj9ik2";
           };
           version = "${masterPdfVersion}";
           desktopFile = pkgs.writeText "masterpdfeditor5.desktop" ''
@@ -175,17 +167,15 @@ in {
             inherit (super) spotify-unwrapped;
           };
       });
-      ventoyVersion = "1.0.91";
-      ventoyOverlay = (self: super: {
-        ventoy = super.ventoy.overrideAttrs (old: {
-          version = "${ventoyVersion}";
-          src = builtins.fetchurl {
-            url =
-              "https://github.com/ventoy/Ventoy/releases/download/v${ventoyVersion}/ventoy-${ventoyVersion}-linux.tar.gz";
-            sha256 =
-              "f6fb0574ec6c5b50acd3a8153ef42eb23bb6fb0a783e90706c7654ba0c1bddca";
-          };
-        });
+      vscodeInsidersOverlay = (self: super: {
+        vscode-insiders =
+          (super.vscode.override { isInsiders = true; }).overrideAttrs
+          (oldAttrs: rec {
+            name = "vscode-insiders";
+            version = "latest";
+            src = builtins.fetchTarball
+              "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
+          });
       });
       xournalppOverlay = (self: super: {
         xournalpp = super.xournalpp.overrideAttrs (oldAttrs: {
@@ -204,8 +194,7 @@ in {
       masterPdfOverlay
       pythonOverlay
       rustOverlay
-      spicetifyOverlay
-      ventoyOverlay
+      # vscodeInsidersOverlay
       xournalppOverlay
       packagesOverlay
     ];
@@ -247,8 +236,8 @@ in {
     gtk = {
       enable = true;
       font = {
-        name = "Ubuntu";
-        package = pkgs.ubuntu_font_family;
+        name = "SF Pro";
+        package = pkgs.apple-fonts;
         size = 11;
       };
       cursorTheme = {
@@ -279,9 +268,10 @@ in {
 
     home.packages = with pkgs; [
       # apps
-      armcord
+      anki-bin
       bitwarden
       bottles
+      croc
       darktable
       ffmpeg
       ffmpeg-normalize
@@ -292,7 +282,7 @@ in {
       inkscape
       libreoffice-fresh
       libsForQt5.kdenlive
-      lieerPkgs.lieer
+      lieer
       masterpdfeditor
       notmuch
       obs-studio
@@ -304,7 +294,7 @@ in {
       rclone
       scrcpy
       speedtest-cli
-      spotify-unwrapped
+      spotify
       (ventoy.override {
         defaultGuiType = "gtk3";
         withGtk3 = true;
@@ -314,14 +304,16 @@ in {
       xournalpp
       yt-dlp
       zathura
-      zoom-us
+      # zoom-us
 
       # games
       lutris
 
       # social
+      armcord
       element-desktop
       signal-desktop
+      teams
 
       # devtools
       criu
@@ -337,7 +329,7 @@ in {
       # ide
       arduino
       ghidra
-      kicad
+      # kicad
       # c / c++
       avrdude
       catch2
@@ -429,9 +421,8 @@ in {
       };
       emacs = {
         enable = true;
-        # package = emacsPinnedPkgs.emacsPgtk;
-        package = pkgs.emacs-gtk;
-        extraPackages = (epkgs: [ epkgs.jinx epkgs.vterm ]);
+        package = pkgs.emacs29-pgtk;
+        extraPackages = (epkgs: [ epkgs.vterm ]);
       };
       vscode = {
         enable = true;

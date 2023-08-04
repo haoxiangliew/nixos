@@ -18,7 +18,7 @@ let
     owner = "catppuccin";
     repo = "spicetify";
     rev = "main";
-    sha256 = "sha256-yitiDqXZgX5NQlX66FW4YgS5fO2eF1W0QX5rKLD9uRE=";
+    sha256 = "sha256-dBJ0vLvCdzpZZNHrsY6V8JQ2t4RB2L5OF/MdHGmIk4Y=";
   }}";
 
   configFile = (formats.ini { }).generate "config-xpui.ini" {
